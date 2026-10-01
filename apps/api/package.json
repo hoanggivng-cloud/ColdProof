@@ -1,0 +1,36 @@
+{
+  "name": "@coldproof/api",
+  "private": true,
+  "version": "0.1.0",
+  "scripts": {
+    "dev": "nest start --watch",
+    "build": "nest build",
+    "start": "node dist/main.js",
+    "typecheck": "tsc --noEmit",
+    "db:generate": "prisma generate",
+    "db:migrate": "prisma migrate deploy",
+    "db:validate": "prisma validate"
+  },
+  "dependencies": {
+    "@nestjs/common": "^11.1.9",
+    "@nestjs/core": "^11.1.9",
+    "@nestjs/platform-express": "^11.1.9",
+    "@nestjs/swagger": "^11.2.3",
+    "@nestjs/config": "^4.0.2",
+    "@prisma/client": "6.19.1",
+    "prisma": "6.19.1",
+    "class-validator": "^0.14.3",
+    "class-transformer": "^0.5.1",
+    "reflect-metadata": "^0.2.2",
+    "rxjs": "^7.8.2",
+    "bullmq": "^5.65.0",
+    "minio": "^8.0.6",
+    "@coldproof/canonical-schema": "workspace:*",
+    "@coldproof/parser-contracts": "workspace:*",
+    "@coldproof/scenario-schema": "workspace:*",
+    "@coldproof/shared-types": "workspace:*"
+  },
+  "devDependencies": {
+    "@nestjs/cli": "^11.0.14"
+  }
+}

@@ -1,0 +1,40 @@
+{
+  "name": "coldproof",
+  "private": true,
+  "version": "0.1.0",
+  "packageManager": "pnpm@10.28.2",
+  "engines": {
+    "node": ">=22.12.0 <25"
+  },
+  "scripts": {
+    "dev": "pnpm --filter \"./packages/**\" build && dotenv -e .env -- pnpm -r --parallel --filter \"./apps/**\" dev",
+    "build": "pnpm -r build",
+    "lint": "eslint .",
+    "typecheck": "pnpm --filter \"./packages/**\" build && pnpm -r typecheck",
+    "test": "pnpm --filter \"./packages/**\" build && jest --runInBand",
+    "test:unit": "pnpm test -- --testPathPatterns=\"tests/unit|tests/parser-contract|tests/scenario-regression|src/.*spec\"",
+    "test:integration": "pnpm test -- --testPathPatterns=tests/integration",
+    "test:e2e": "playwright test",
+    "db:generate": "pnpm --filter @coldproof/api db:generate",
+    "db:migrate": "dotenv -e .env -- pnpm --filter @coldproof/api db:migrate",
+    "db:validate": "dotenv -e .env.example -- pnpm --filter @coldproof/api db:validate",
+    "infra:up": "docker compose up -d --wait",
+    "infra:down": "docker compose down"
+  },
+  "devDependencies": {
+    "typescript": "~5.9.3",
+    "@types/node": "^22.19.0",
+    "eslint": "^9.39.1",
+    "typescript-eslint": "^8.48.1",
+    "eslint-plugin-react-hooks": "^7.0.1",
+    "jest": "^30.2.0",
+    "ts-jest": "^29.4.5",
+    "@types/jest": "^30.0.0",
+    "supertest": "^7.1.4",
+    "@types/supertest": "^6.0.3",
+    "@nestjs/testing": "^11.1.9",
+    "@playwright/test": "^1.57.0",
+    "dotenv-cli": "^8.0.0",
+    "yaml": "^2.8.1"
+  }
+}

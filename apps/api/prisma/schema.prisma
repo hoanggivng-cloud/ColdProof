@@ -1,0 +1,184 @@
+generator client {
+  provider = "prisma-client-js"
+}
+datasource db {
+  provider = "postgresql"
+  url = env("DATABASE_URL")
+}
+enum MeasurementOrigin {
+  REAL_PUBLIC_DATA
+  DERIVED
+  SYNTHETIC
+}
+enum BusinessContextOrigin {
+  REAL
+  SYNTHETIC
+}
+enum ImportStatus {
+  QUEUED
+  PARSING
+  NORMALIZING
+  QUALITY_CHECK
+  COMPLETE
+  FAILED
+}
+model User {
+  id String @id @default(uuid()) @db.Uuid
+  email String @unique
+  role String @default("VIEWER")
+  created_at DateTime @default(now()) @db.Timestamptz(3)
+  @@map("users")
+}
+model SourceAsset {
+  id String @id @default(uuid()) @db.Uuid
+  dataset String
+  file_name String
+  checksum_sha256 String @db.Char(64)
+  version String
+  origin MeasurementOrigin
+  uri String?
+  license_ref String?
+  created_at DateTime @default(now()) @db.Timestamptz(3)
+  imports ImportJob[]
+  @@unique([dataset, file_name, version])
+  @@map("source_assets")
+}
+model ImportJob {
+  id String @id @default(uuid()) @db.Uuid
+  source_id String @db.Uuid
+  source SourceAsset @relation(fields: [source_id], references: [id], onDelete: Restrict)
+  parser_id String
+  parser_version String
+  status ImportStatus @default(QUEUED)
+  parsed_count Int @default(0)
+  rejected_count Int @default(0)
+  warning_count Int @default(0)
+  error_message String?
+  created_at DateTime @default(now()) @db.Timestamptz(3)
+  completed_at DateTime? @db.Timestamptz(3)
+  @@index([source_id])
+  @@map("imports")
+}
+model Scenario {
+  id String @id
+  version Int
+  name String
+  manifest Json
+  created_at DateTime @default(now()) @db.Timestamptz(3)
+  @@map("scenarios")
+}
+model Batch {
+  id String @id
+  scenario_id String?
+  business_context_origin BusinessContextOrigin @default(SYNTHETIC)
+  profile_id String?
+  lower_threshold Float?
+  upper_threshold Float?
+  created_at DateTime @default(now()) @db.Timestamptz(3)
+  @@map("batches")
+}
+model Segment {
+  id String @id
+  batch_id String
+  source_id String? @db.Uuid
+  selector String
+  handover_id String?
+  business_context_origin BusinessContextOrigin @default(SYNTHETIC)
+  @@index([batch_id])
+  @@map("segments")
+}
+model Measurement {
+  record_id String @id
+  scenario_id String?
+  batch_id String?
+  segment_id String?
+  timestamp DateTime? @db.Timestamptz(3)
+  temperature_c Float?
+  humidity_pct Float?
+  source_dataset String
+  source_file String
+  source_sensor_id String?
+  source_row_or_ref String
+  source_format String
+  source_checksum_sha256 String @db.Char(64)
+  parser_id String
+  parser_version String
+  measurement_origin MeasurementOrigin
+  business_context_origin BusinessContextOrigin
+  missing_flag Boolean @default(false)
+  duplicate_flag Boolean @default(false)
+  conflict_flag Boolean @default(false)
+  data_quality_code String?
+  profile_id String?
+  lower_threshold Float?
+  upper_threshold Float?
+  excursion_flag Boolean?
+  exception_id String?
+  review_status String?
+  @@index([source_dataset, source_file, source_row_or_ref])
+  @@index([batch_id, timestamp])
+  @@map("measurements")
+}
+model SpatialMeasurement {
+  record_id String @id
+  source_dataset String
+  source_file String
+  source_row_or_ref String
+  parser_id String
+  parser_version String
+  measurement_origin MeasurementOrigin
+  condition_id String
+  position_x Float
+  position_y Float
+  position_z Float?
+  temperature_c Float
+  @@map("spatial_measurements")
+}
+model QualityIssue {
+  id String @id @default(uuid()) @db.Uuid
+  record_ids String[]
+  code String
+  detail String
+  created_at DateTime @default(now()) @db.Timestamptz(3)
+  @@map("quality_issues")
+}
+model Exception {
+  id String @id @default(uuid()) @db.Uuid
+  batch_id String
+  record_ids String[]
+  profile_id String
+  status String @default("PENDING_REVIEW")
+  created_at DateTime @default(now()) @db.Timestamptz(3)
+  @@map("exceptions")
+}
+model Review {
+  id String @id @default(uuid()) @db.Uuid
+  exception_id String @db.Uuid
+  reviewer_id String @db.Uuid
+  status String @default("PENDING")
+  notes String?
+  created_at DateTime @default(now()) @db.Timestamptz(3)
+  @@map("reviews")
+}
+model Report {
+  id String @id @default(uuid()) @db.Uuid
+  batch_id String
+  version Int
+  uri String?
+  checksum_sha256 String? @db.Char(64)
+  provenance Json
+  created_at DateTime @default(now()) @db.Timestamptz(3)
+  @@unique([batch_id, version])
+  @@map("reports")
+}
+model AuditEvent {
+  id String @id @default(uuid()) @db.Uuid
+  actor_id String? @db.Uuid
+  action String
+  entity_type String
+  entity_id String
+  payload Json
+  created_at DateTime @default(now()) @db.Timestamptz(3)
+  @@index([entity_type, entity_id])
+  @@map("audit_events")
+}

@@ -1,0 +1,34 @@
+# Replace placeholder handles with real GitHub users/teams before requiring reviews.
+* @tv4
+/apps/api/src/sources/ @tv1
+/apps/api/src/imports/ @tv1
+/apps/api/src/adapters/ @tv1
+/apps/api/src/parsers/ @tv1
+/apps/api/src/normalization/ @tv1
+/apps/api/src/data-quality/ @tv1
+/apps/api/src/auth/ @tv2
+/apps/api/src/users/ @tv2
+/apps/api/src/scenarios/ @tv2
+/apps/api/src/batches/ @tv2
+/apps/api/src/exceptions/ @tv2
+/apps/api/src/qa-reviews/ @tv4
+/apps/api/src/reports/ @tv4
+/apps/api/src/audit/ @tv4
+/apps/api/src/common/ @tv2 @tv4
+/apps/api/src/app.module.ts @tv2 @tv4
+/apps/api/src/main.ts @tv2 @tv4
+/apps/api/prisma/ @tv2 @tv4
+/apps/web/ @tv3
+/packages/canonical-schema/ @tv1
+/packages/parser-contracts/ @tv1
+/packages/scenario-schema/ @tv2
+/packages/shared-types/ @tv1 @tv2 @tv3 @tv4
+/data/observed/ @tv1
+/data/fixtures/ @tv1
+/data/manifests/ @tv1
+/data/scenarios/ @tv2
+/data/expected/ @tv1 @tv4
+/tests/ @tv4
+/infra/ @tv4
+/infra/db/migrations/ @tv2 @tv4
+/.github/ @tv4

@@ -1,0 +1,22 @@
+{
+  "name": "@coldproof/web",
+  "private": true,
+  "version": "0.1.0",
+  "scripts": {
+    "dev": "node scripts/next.mjs dev",
+    "build": "next build --webpack",
+    "start": "node scripts/next.mjs start",
+    "typecheck": "tsc --noEmit"
+  },
+  "dependencies": {
+    "next": "^16.1.6",
+    "react": "^19.2.3",
+    "react-dom": "^19.2.3",
+    "@coldproof/canonical-schema": "workspace:*",
+    "@coldproof/shared-types": "workspace:*"
+  },
+  "devDependencies": {
+    "@types/react": "^19.2.7",
+    "@types/react-dom": "^19.2.3"
+  }
+}

@@ -1,0 +1,1 @@
+export default function Admin() { return <><h1>Administration</h1><section className="panel"><h2>Access control</h2><p>RBAC and sign-in are TODO. This local foundation preview has no authentication.</p></section></>; }

@@ -1,0 +1,10 @@
+{
+  "extends": "./tsconfig.base.json",
+  "compilerOptions": {
+    "experimentalDecorators": true,
+    "emitDecoratorMetadata": true,
+    "baseUrl": ".",
+    "paths": { "@coldproof/*": ["packages/*/src/index.ts"] }
+  },
+  "include": ["tests/**/*.ts", "apps/api/src/**/*.ts", "packages/*/src/**/*.ts"]
+}
