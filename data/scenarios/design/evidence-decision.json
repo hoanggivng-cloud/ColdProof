@@ -1,0 +1,41 @@
+{
+  "decision_version": "1.0.0",
+  "blueprint_id": "CP-DEMO-BLUEPRINT-001",
+  "decision_status": "APPROVED",
+
+  "selected_time_series_evidence": {
+    "candidate_id": "ZEN-09-20240910T073000-180M",
+    "sensor_id": "SENSOR09",
+    "source_file": "SENSOR09.CSV",
+    "start_timestamp": "2024-09-10T07:30:00",
+    "end_timestamp": "2024-09-10T10:30:00",
+    "duration_seconds": 10800,
+    "observation_count": 2161,
+
+    "selection_origin": "HUMAN_REVIEW",
+    "timezone_status": "UNKNOWN_SOURCE_LOCAL"
+  },
+
+  "selection_rationale": [
+    "Meets all required evidence-selection criteria.",
+    "Meets all preferred blueprint-fit criteria.",
+    "Contains a stable pre-variation baseline.",
+    "Contains meaningful but reviewable thermal variation.",
+    "Contains documented experimental source events.",
+    "Contains post-variation behavior without requiring fabricated recovery.",
+    "Has zero internal missing intervals, duplicates, and out-of-order timestamps."
+  ],
+
+  "known_limitations": [
+    "The source environment is a cold storage room, not a pharmaceutical shipment.",
+    "The interval does not show clear recovery to baseline.",
+    "Source timestamps do not have a verified timezone.",
+    "Observed experiment events must not be interpreted as logistics handovers.",
+    "Selection does not constitute compliance evaluation."
+  ],
+
+  "profile_neutral_selection": true,
+  "demo_2_8c_used_for_ranking": false,
+
+  "next_step": "SCENARIO_MATERIALIZATION"
+}
