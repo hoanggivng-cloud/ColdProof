@@ -29,4 +29,4 @@ The adapter never creates a timestamp, temporal ordering, duration, excursion, s
 
 This dataset is controlled experimental spatial thermal data. It is not a pharmaceutical shipment, vaccine transport dataset, datalogger vendor export, real cold-chain batch or compliance evidence. No 2–8°C profile or compliance conclusion is applied here.
 
-Spatial canonical normalization (`ParsedSpatialRecord` → `SpatialMeasurement`) is not yet implemented. The existing normalization service is time-series-only and should be extended in a separate, scoped task.
+Downstream spatial normalization maps `ParsedSpatialRecord` to `SpatialMeasurement` while preserving workbook-cell provenance. It does not add temporal or business semantics.
