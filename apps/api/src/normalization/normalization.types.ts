@@ -1,19 +1,32 @@
-import type { CanonicalTimeSeriesMeasurement } from '@coldproof/canonical-schema';
+import type {
+  CanonicalTimeSeriesMeasurement,
+  SpatialMeasurement,
+} from '@coldproof/canonical-schema';
 
 export type TimezoneOrigin = 'SOURCE_DECLARED' | 'EXPLICIT_ASSUMPTION';
 
-export interface NormalizationContext {
+export interface ParserIdentityContext {
   parserId: string;
   parserVersion: string;
+}
+
+export interface NormalizationContext extends ParserIdentityContext {
   timezoneOffset?: string;
   timezoneOrigin?: TimezoneOrigin;
 }
+
+export type SpatialNormalizationContext = ParserIdentityContext;
 
 export interface AppliedNormalizationContext {
   parserId: string;
   parserVersion: string;
   timezoneOffset: string;
   timezoneOrigin: TimezoneOrigin;
+}
+
+export interface AppliedSpatialNormalizationContext {
+  parserId: string;
+  parserVersion: string;
 }
 
 export type NormalizationErrorCode =
@@ -25,6 +38,8 @@ export type NormalizationErrorCode =
   | 'INVALID_PARSED_TIMESTAMP'
   | 'INVALID_TEMPERATURE'
   | 'INVALID_HUMIDITY'
+  | 'INVALID_CONDITION_ID'
+  | 'INVALID_COORDINATE'
   | 'MISSING_SOURCE_SENSOR_ID'
   | 'PARSER_WARNING'
   | 'CANONICAL_VALIDATION_FAILED';
@@ -41,6 +56,17 @@ export type NormalizationResult =
       success: true;
       measurement: CanonicalTimeSeriesMeasurement;
       appliedContext: AppliedNormalizationContext;
+    }
+  | {
+      success: false;
+      errors: NormalizationError[];
+    };
+
+export type SpatialNormalizationResult =
+  | {
+      success: true;
+      measurement: SpatialMeasurement;
+      appliedContext: AppliedSpatialNormalizationContext;
     }
   | {
       success: false;

@@ -10,7 +10,9 @@ Core canonical measurement thuộc Data Engineering và chỉ mô tả physical 
 
 Normalization chuyển `ParsedTimeSeriesRecord` thành core canonical time-series measurement. Caller phải truyền parser identity và timezone context explicit. Timestamp local-naive không được mặc định thành `Z` hoặc một offset bất kỳ; numeric offset chỉ được gắn khi context đánh dấu nguồn là `SOURCE_DECLARED` hoặc `EXPLICIT_ASSUMPTION`. Context đã áp dụng được trả cùng kết quả để caller giữ audit trail.
 
-`record_id` được tạo deterministic bằng SHA-256 từ source checksum, raw reference, parser id và parser version. Parsed rows thiếu temperature, thiếu sensor provenance, có timestamp/context không hợp lệ hoặc chứa parser warning trả về normalization failure có cấu trúc; normalizer không impute, clamp hoặc silently drop row.
+Spatial normalization chuyển `ParsedSpatialRecord` từ Mendeley thành `SpatialMeasurement`. Parser identity được truyền explicit; condition, X/Y/Z, temperature và source provenance được giữ nguyên. `source_row_or_ref` tiếp tục trỏ đến physical workbook cell. Spatial normalization không nhận timezone context và không tạo timestamp, duration, interpolation, excursion hoặc compliance interpretation.
+
+`record_id` được tạo deterministic bằng SHA-256 từ source checksum, raw reference, parser id và parser version cho cả time-series và spatial records. Parsed rows thiếu physical fields bắt buộc, có context/provenance không hợp lệ hoặc chứa parser warning trả về normalization failure có cấu trúc; normalizer không impute, clamp hoặc silently drop row.
 
 Business enrichment thuộc backend/workflow, bao gồm scenario, batch, segment, business-context origin, profile, thresholds, excursion, exception và review status. Các field này không phải raw source provenance.
 
