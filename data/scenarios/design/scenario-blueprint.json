@@ -1,0 +1,335 @@
+{
+  "schema_version": "1.0.0",
+  "blueprint_id": "CP-DEMO-BLUEPRINT-001",
+  "blueprint_version": "0.1.0",
+  "status": "DRAFT",
+
+  "scenario_family": "COLD_CHAIN_EVIDENCE_REPLAY",
+
+  "title": "ColdProof Golden Evidence Replay Blueprint",
+
+  "purpose": "Define the behavior, evidence requirements, synthetic context, assumptions, provenance rules and validation invariants required to build the CP-DEMO-001 benchmark.",
+
+  "benchmark_scope": {
+    "benchmark_type": "SEMI_SYNTHETIC_SOFTWARE_EVIDENCE_BENCHMARK",
+    "primary_goal": "Evaluate whether ColdProof can ingest, normalize, organize, trace and evaluate heterogeneous cold-chain evidence without altering the underlying observed measurements.",
+    "is_real_pharma_shipment": false,
+    "is_real_vendor_integration": false,
+    "is_regulatory_certification": false
+  },
+
+  "test_objectives": [
+    {
+      "id": "OBJ-001",
+      "name": "measurement_provenance",
+      "description": "Every observed measurement used by the scenario must remain traceable to its original public source asset and raw row or workbook cell."
+    },
+    {
+      "id": "OBJ-002",
+      "name": "multi_segment_evidence_replay",
+      "description": "A single synthetic batch and shipment must be organized into four ordered synthetic logistics segments."
+    },
+    {
+      "id": "OBJ-003",
+      "name": "handover_workflow",
+      "description": "Three synthetic handover boundaries must exist between the four logistics segments."
+    },
+    {
+      "id": "OBJ-004",
+      "name": "temperature_rule_evaluation",
+      "description": "The selected time-series evidence should contain meaningful observed thermal variation suitable for evaluating a versioned demo excursion policy."
+    },
+    {
+      "id": "OBJ-005",
+      "name": "data_quality_evaluation",
+      "description": "Observed time-series evidence must be evaluated using the frozen ColdProof data-quality policy without synthetic interpolation."
+    },
+    {
+      "id": "OBJ-006",
+      "name": "spatial_context_handling",
+      "description": "Mendeley spatial evidence must be presented as independent supplemental thermal context and must not participate in time-based excursion duration."
+    },
+    {
+      "id": "OBJ-007",
+      "name": "multi_format_normalization",
+      "description": "The same selected observed measurement content will later be re-encoded into vendor-inspired formats and normalized back to equivalent measurement content."
+    }
+  ],
+
+  "observed_evidence": {
+    "time_series": {
+      "required": true,
+      "source_dataset": "ZENODO_COLD_STORAGE_ROOM",
+      "origin": "REAL_PUBLIC_DATA",
+      "expected_record_type": "TIMESERIES",
+      "role": "PRIMARY_TIME_SERIES_EVIDENCE",
+      "exact_sensor_id": null,
+      "exact_window_start": null,
+      "exact_window_end": null,
+      "selection_status": "PENDING_EVIDENCE_SELECTION"
+    },
+
+    "spatial": {
+      "required": true,
+      "source_dataset": "MENDELEY_INSULATED_BOX",
+      "origin": "REAL_PUBLIC_DATA",
+      "expected_record_type": "SPATIAL_SNAPSHOT",
+      "role": "SUPPLEMENTAL_ILLUSTRATIVE_CONTEXT",
+      "selected_condition_ids": [],
+      "selection_status": "PENDING_CONDITION_CROSSWALK"
+    }
+  },
+
+  "synthetic_context": {
+    "origin": "SYNTHETIC",
+
+    "scenario": {
+      "required": true,
+      "planned_id": "CP-DEMO-001"
+    },
+
+    "batch": {
+      "required": true,
+      "planned_count": 1
+    },
+
+    "shipment": {
+      "required": true,
+      "planned_count": 1
+    },
+
+    "segments": [
+      {
+        "sequence": 1,
+        "segment_code": "LEG-01",
+        "segment_type": "ORIGIN_STORAGE",
+        "boundary_origin": "SYNTHETIC"
+      },
+      {
+        "sequence": 2,
+        "segment_code": "LEG-02",
+        "segment_type": "TRANSPORT",
+        "boundary_origin": "SYNTHETIC"
+      },
+      {
+        "sequence": 3,
+        "segment_code": "LEG-03",
+        "segment_type": "TRANSIT",
+        "boundary_origin": "SYNTHETIC"
+      },
+      {
+        "sequence": 4,
+        "segment_code": "LEG-04",
+        "segment_type": "DESTINATION_STORAGE",
+        "boundary_origin": "SYNTHETIC"
+      }
+    ],
+
+    "handover_count": 3,
+
+    "planned_business_fields": [
+      "batch_id",
+      "shipment_id",
+      "segment_id",
+      "segment_type",
+      "segment_order",
+      "handover_id",
+      "carrier",
+      "custodian",
+      "origin_location",
+      "destination_location",
+      "route",
+      "device_alias"
+    ]
+  },
+
+  "assumptions": {
+    "product_profile": {
+      "profile_id": "DEMO_2_8C",
+      "origin": "ASSUMPTION",
+      "lower_threshold_c": 2,
+      "upper_threshold_c": 8,
+      "purpose": "Software rule evaluation only",
+      "does_not_describe_source_dataset": true
+    },
+
+    "data_quality_policy": {
+      "policy_id": "DQ-POLICY-V1",
+      "status": "EXISTING_IMPLEMENTATION",
+      "expected_interval_seconds": 5,
+      "tolerance_seconds": 0,
+      "interpolation_allowed": false
+    },
+
+    "excursion_policy": {
+      "policy_id": "EXCURSION-POLICY-V1",
+      "status": "DRAFT",
+      "threshold_source": "DEMO_2_8C",
+      "boundary_semantics": "TO_BE_FROZEN",
+      "gap_semantics": "TO_BE_FROZEN",
+      "duration_semantics": "TO_BE_FROZEN"
+    }
+  },
+
+  "evidence_selection_criteria": {
+    "zenodo": {
+      "required": [
+        "raw provenance available",
+        "continuous timestamps within selected replay interval",
+        "sufficient duration to divide into four synthetic segments",
+        "no fabricated temperature values",
+        "no unresolved malformed source rows"
+      ],
+
+      "preferred": [
+        "single source sensor",
+        "regular five-second sampling",
+        "no internal missing interval",
+        "meaningful thermal variation",
+        "documented experiment event available",
+        "stable period before thermal variation",
+        "post-event behavior visible if supported by source"
+      ],
+
+      "not_required": [
+        "real pharmaceutical usage",
+        "real transport environment",
+        "natural compliance with DEMO_2_8C",
+        "predefined excursion duration"
+      ]
+    },
+
+    "mendeley": {
+      "required": [
+        "condition identity verified through crosswalk",
+        "coordinate provenance available",
+        "temperature measurement meaning understood",
+        "source workbook and cell traceability preserved"
+      ],
+
+      "allowed_uses": [
+        "supplemental thermal context",
+        "spatial visualization",
+        "experimental-condition comparison"
+      ],
+
+      "forbidden_uses": [
+        "shipment timeline generation",
+        "excursion duration calculation",
+        "causal explanation of Zenodo thermal behavior",
+        "synthetic timestamp generation"
+      ]
+    }
+  },
+
+  "mapping_rules": {
+    "zenodo_to_segment": {
+      "relation_type": "SYNTHETIC_REPLAY_ASSIGNMENT",
+      "preserve_source_environment": true,
+      "rewrite_source_timestamp": false,
+      "rewrite_measurement_value": false
+    },
+
+    "mendeley_to_scenario": {
+      "relation_type": "ILLUSTRATIVE_CONTEXT",
+      "origin": "SYNTHETIC",
+      "same_physical_experiment_claim": false,
+      "same_time_claim": false,
+      "same_goods_claim": false,
+      "used_for_excursion_calculation": false
+    }
+  },
+
+  "replay_policy": {
+    "preferred_mode": "SINGLE_CONTINUOUS_SOURCE_INTERVAL",
+
+    "segment_interval_semantics": "[start,end)",
+
+    "allow_composite_replay": true,
+
+    "composite_replay_constraints": [
+      "preserve each source window original timestamp",
+      "assign explicit sequence_index",
+      "show replay boundaries",
+      "do not calculate event duration across independent source windows"
+    ],
+
+    "handover_boundary_rule": "A synthetic handover boundary does not automatically terminate an observed thermal event."
+  },
+
+  "provenance_model": {
+    "origin_categories": [
+      "REAL_PUBLIC_DATA",
+      "SYNTHETIC",
+      "DERIVED",
+      "ASSUMPTION",
+      "VENDOR_INSPIRED"
+    ],
+
+    "required_observed_lineage": [
+      "source_dataset",
+      "source_file",
+      "source_row_or_ref",
+      "source_checksum_sha256",
+      "parser_id",
+      "parser_version"
+    ],
+
+    "required_derived_lineage": [
+      "input_measurement_ids",
+      "algorithm_version",
+      "policy_id"
+    ],
+
+    "required_assumption_lineage": [
+      "assumption_id",
+      "assumption_version",
+      "origin"
+    ]
+  },
+
+  "vendor_format_plan": {
+    "status": "FUTURE_PHASE",
+    "format_ids": [
+      "VENDOR_INSPIRED_A",
+      "VENDOR_INSPIRED_B",
+      "VENDOR_INSPIRED_C"
+    ],
+    "rule": "Re-encode selected observed measurement content without creating new physical observations.",
+    "equivalence_target": "MEASUREMENT_CONTENT_EQUIVALENCE",
+    "full_object_equality_required": false
+  },
+
+  "validation_invariants": [
+    "Observed temperature values must remain unchanged.",
+    "Observed humidity values must remain unchanged.",
+    "Observed source timestamps must remain unchanged.",
+    "Every observed record must remain traceable to source asset and row or workbook cell.",
+    "Every synthetic mapping must declare origin.",
+    "No synthetic temperature may fill an observed source gap.",
+    "No duration may cross an independent replay boundary.",
+    "Mendeley records must never receive synthetic timestamps.",
+    "Mendeley illustrative context must not participate in time-based excursion calculation.",
+    "Derived findings must reference their input measurements and policy version.",
+    "DEMO_2_8C must remain explicitly labeled as an assumption.",
+    "Zenodo evidence mapped to TRANSPORT must still preserve its original cold-storage-room source context.",
+    "Vendor-inspired formats must not be presented as real commercial vendor integrations."
+  ],
+
+  "design_decisions_pending": [
+    "Exact Zenodo sensor",
+    "Exact continuous Zenodo source interval",
+    "Exact synthetic segment boundaries",
+    "Verified Mendeley condition mapping",
+    "Selected Mendeley illustrative conditions",
+    "Excursion threshold boundary semantics",
+    "Maximum gap allowed within one derived excursion",
+    "Reference method for independently verifying expected results"
+  ],
+
+  "next_phase_outputs": [
+    "condition-crosswalk.csv",
+    "candidate-zenodo-windows.csv",
+    "evidence-selection-report.md"
+  ]
+}
