@@ -1,12 +1,11 @@
-import type { CanonicalMeasurement } from '@coldproof/canonical-schema';
-import { detectSensorConflicts } from '../../apps/api/src/exceptions/exception-engine';
+import { detectSensorConflicts, EngineMeasurement } from '../../apps/api/src/exceptions/exception-engine';
 
 // Expected interface: CanonicalMeasurement[] → QualityIssue[]; retain both sensor streams
 describe('TC-004 • Sensor conflict (S04 Sensor Conflict Preservation)', () => {
   const baseTime = new Date('2026-10-01T08:00:00.000Z').getTime();
 
   // Create mock measurements for S04: 2 sensors (SENSOR01 & SENSOR02) measuring simultaneously with temperature divergence
-  const mockMeasurements: CanonicalMeasurement[] = [
+  const mockMeasurements: EngineMeasurement[] = [
     {
       record_id: 'M-S04-A1',
       batch_id: 'BATCH-S04-001',
@@ -90,7 +89,7 @@ describe('TC-004 • Sensor conflict (S04 Sensor Conflict Preservation)', () => 
   ];
 
   it('detects sensor divergence and outputs QualityIssue with code SENSOR_CONFLICT', () => {
-    const { issues, conflictRecordIds } = detectSensorConflicts(mockMeasurements);
+    const { issues } = detectSensorConflicts(mockMeasurements);
 
     expect(issues.length).toBeGreaterThanOrEqual(1);
     const conflictIssue = issues.find(i => i.code === 'SENSOR_CONFLICT');

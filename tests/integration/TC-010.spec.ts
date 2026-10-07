@@ -1,4 +1,5 @@
 import 'reflect-metadata';
+import { INestApplication } from '@nestjs/common';
 import { Test } from '@nestjs/testing';
 import request from 'supertest';
 import { AppModule } from '../../apps/api/src/app.module';
@@ -7,7 +8,7 @@ import { PrismaService } from '../../apps/api/src/common/prisma.service';
 
 // Expected interface: Role + protected route → authorized response or 401/403
 describe('TC-010 • RBAC (Operator review forbidden, QA permitted)', () => {
-  let app: any;
+  let app: INestApplication;
   let prisma: PrismaService;
   const exceptionId = 'e1111111-1111-1111-1111-111111111111';
 
@@ -78,7 +79,7 @@ describe('TC-010 • RBAC (Operator review forbidden, QA permitted)', () => {
     });
 
     expect(auditRecord).toBeDefined();
-    expect((auditRecord?.payload as any)?.role).toBe('DATA_ENGINEER');
+    expect((auditRecord?.payload as Record<string, unknown>)?.role).toBe('DATA_ENGINEER');
   });
 
   it('authorizes QA Reviewer (QA_REVIEWER) to successfully submit exception review', async () => {

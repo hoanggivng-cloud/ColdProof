@@ -1,5 +1,4 @@
-import type { CanonicalMeasurement } from '@coldproof/canonical-schema';
-import { detectExcursions, ProductProfile } from '../../apps/api/src/exceptions/exception-engine';
+import { detectExcursions, ProductProfile, EngineMeasurement } from '../../apps/api/src/exceptions/exception-engine';
 
 // Expected interface: CanonicalMeasurement[] + product profile → ExceptionCandidate[]; human review required
 describe('TC-005 • Excursion Detection (S02 Handover Heat Excursion)', () => {
@@ -12,7 +11,7 @@ describe('TC-005 • Excursion Detection (S02 Handover Heat Excursion)', () => {
   const baseTime = new Date('2026-10-01T08:00:00.000Z').getTime();
 
   // Create mock measurements for S02: LEG-01 (normal), LEG-02 (heat excursion at handover), LEG-03 (normal)
-  const mockMeasurements: CanonicalMeasurement[] = [
+  const mockMeasurements: EngineMeasurement[] = [
     // LEG-01: Within [2.0, 8.0]
     {
       record_id: 'M-01',
@@ -214,7 +213,7 @@ describe('TC-005 • Excursion Detection (S02 Handover Heat Excursion)', () => {
 
   it('enforces Segment Boundary Reset (Guardrail 2) without bridging between segments', () => {
     // Add an out-of-range point at the end of LEG-01 and at start of LEG-02
-    const testMeasurements: CanonicalMeasurement[] = [
+    const testMeasurements: EngineMeasurement[] = [
       {
         ...mockMeasurements[0],
         segment_id: 'LEG-01',
@@ -235,7 +234,7 @@ describe('TC-005 • Excursion Detection (S02 Handover Heat Excursion)', () => {
   });
 
   it('enforces Spatial vs Time-series Guardrail (AC-06): no duration calculated for spatial data', () => {
-    const spatialMeasurements: CanonicalMeasurement[] = [
+    const spatialMeasurements: EngineMeasurement[] = [
       {
         ...mockMeasurements[0],
         timestamp: undefined, // Spatial snapshot without timestamp

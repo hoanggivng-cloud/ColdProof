@@ -28,6 +28,10 @@ import { JwtAuthGuard } from '../auth/guards/jwt-auth.guard';
 import { RolesGuard } from '../auth/guards/roles.guard';
 import { Roles } from '../auth/decorators/roles.decorator';
 
+interface RequestWithUser {
+  user?: { id?: string; email?: string; role?: string };
+}
+
 @ApiTags('exceptions')
 @Controller('exceptions')
 export class ExceptionsController {
@@ -66,7 +70,7 @@ export class ExceptionsController {
   review(
     @Param('id', ParseUUIDPipe) id: string,
     @Body() dto: ReviewActionDto,
-    @Req() req: any,
+    @Req() req: RequestWithUser,
   ) {
     const reviewerId = dto.reviewer_id ?? req.user?.id;
     return this.service.review(id, { ...dto, reviewer_id: reviewerId });

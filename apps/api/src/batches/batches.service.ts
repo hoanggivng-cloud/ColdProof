@@ -1,5 +1,6 @@
 import { Injectable, NotFoundException } from '@nestjs/common';
 import { PrismaService } from '../common/prisma.service';
+import { TimelineEventDto } from './batches.dto';
 import * as crypto from 'crypto';
 
 @Injectable()
@@ -80,8 +81,8 @@ export class BatchesService {
     });
 
     // Build timeline events
-    const timeline: any[] = [];
-    const operationalEvents: any[] = [];
+    const timeline: TimelineEventDto[] = [];
+    const operationalEvents: TimelineEventDto[] = [];
 
     // Map device aliases per segment
     const segmentDtoList = segments.map((s) => {
@@ -128,7 +129,7 @@ export class BatchesService {
 
       // Operational events (e.g. door opened during cargo transfer at LEG-02)
       if (seg.selector.includes('door_open') || seg.id === 'LEG-02') {
-        const doorEvent = {
+        const doorEvent: TimelineEventDto = {
           id: `TL-OP-DOOR-${seg.id}`,
           timestamp: startTime,
           event_type: 'DOOR_OPEN',

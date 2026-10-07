@@ -81,6 +81,6 @@ export class CanonicalMeasurementDto {
 }
 
 export class BatchExceptionsDto {
-  @ApiProperty() exceptions!: any[];
-  @ApiProperty() quality_issues!: any[];
+  @ApiProperty() exceptions!: Record<string, unknown>[];
+  @ApiProperty() quality_issues!: Record<string, unknown>[];
 }

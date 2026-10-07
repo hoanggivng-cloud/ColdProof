@@ -4,7 +4,7 @@ import * as path from 'node:path';
 import { PrismaService } from '../common/prisma.service';
 import { ExceptionsService } from '../exceptions/exceptions.service';
 import { ScenarioManifestSchema, ScenarioManifest } from '@coldproof/scenario-schema';
-import { MeasurementOrigin, BusinessContextOrigin } from '@prisma/client';
+import { MeasurementOrigin, BusinessContextOrigin, Prisma } from '@prisma/client';
 
 @Injectable()
 export class ScenariosService {
@@ -57,18 +57,18 @@ export class ScenariosService {
             update: {
               name: validated.name,
               version: validated.version,
-              manifest: validated as any,
+              manifest: validated as unknown as Prisma.InputJsonValue,
             },
             create: {
               id,
               name: validated.name,
               version: validated.version,
-              manifest: validated as any,
+              manifest: validated as unknown as Prisma.InputJsonValue,
             },
           });
 
           return validated;
-        } catch (err) {
+        } catch {
           // Fall through to database on error
         }
       }

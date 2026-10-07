@@ -1,11 +1,12 @@
 import 'reflect-metadata';
+import { INestApplication } from '@nestjs/common';
 import { Test } from '@nestjs/testing';
 import request from 'supertest';
 import { AppModule } from '../../apps/api/src/app.module';
 import { configureApp } from '../../apps/api/src/common/configure-app';
 
 describe('ColdProof MVP API Endpoints', () => {
-  let app: any;
+  let app: INestApplication;
 
   beforeAll(async () => {
     const moduleRef = await Test.createTestingModule({
@@ -34,7 +35,7 @@ describe('ColdProof MVP API Endpoints', () => {
   it('GET /api/scenarios returns S01-S06', async () => {
     const res = await request(app.getHttpServer()).get('/api/scenarios').expect(200);
     expect(Array.isArray(res.body)).toBe(true);
-    const ids = res.body.map((s: any) => s.id);
+    const ids = (res.body as Array<{ id: string }>).map((s) => s.id);
     expect(ids).toContain('S01');
     expect(ids).toContain('S02');
   });
@@ -42,10 +43,10 @@ describe('ColdProof MVP API Endpoints', () => {
   it('GET /api/batches returns demo batch CP-DEMO-001 with status and segments', async () => {
     const res = await request(app.getHttpServer()).get('/api/batches').expect(200);
     expect(Array.isArray(res.body)).toBe(true);
-    const demoBatch = res.body.find((b: any) => b.id === 'CP-DEMO-001');
+    const demoBatch = (res.body as Array<{ id: string; status: string; segments_count: number }>).find((b) => b.id === 'CP-DEMO-001');
     expect(demoBatch).toBeDefined();
-    expect(demoBatch.status).toBe('EXCEPTION');
-    expect(demoBatch.segments_count).toBe(3);
+    expect(demoBatch?.status).toBe('EXCEPTION');
+    expect(demoBatch?.segments_count).toBe(3);
   });
 
   it('GET /api/batches/CP-DEMO-001/measurements returns canonical stream', async () => {

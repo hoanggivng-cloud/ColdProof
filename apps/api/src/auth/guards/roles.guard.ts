@@ -54,7 +54,7 @@ export class RolesGuard implements CanActivate {
             },
           },
         });
-      } catch (err) {
+      } catch {
         // Continue even if audit write encounters transient issue
       }
 

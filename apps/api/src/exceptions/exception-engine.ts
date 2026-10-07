@@ -1,6 +1,16 @@
 import type { CanonicalMeasurement } from '@coldproof/canonical-schema';
 import type { ExceptionCandidate, QualityIssue } from '@coldproof/shared-types';
 
+export type EngineMeasurement = Omit<CanonicalMeasurement, 'timestamp' | 'record_type' | 'source_sensor_id'> & {
+  record_type?: string;
+  source_sensor_id?: string;
+  timestamp?: string;
+  batch_id?: string;
+  segment_id?: string;
+  business_context_origin?: string;
+  review_status?: string;
+};
+
 export interface ProductProfile {
   id: string;
   lower_threshold: number;
@@ -29,14 +39,14 @@ export interface ExcursionInterval {
  * NEVER discard or average either stream!
  */
 export function detectSensorConflicts(
-  measurements: CanonicalMeasurement[],
+  measurements: EngineMeasurement[],
   divergenceThresholdC: number = 1.0
 ): { issues: QualityIssue[]; conflictRecordIds: Set<string> } {
   const issues: QualityIssue[] = [];
   const conflictRecordIds = new Set<string>();
 
   // Group measurements by timestamp (or nearest minute)
-  const timeBuckets = new Map<string, CanonicalMeasurement[]>();
+  const timeBuckets = new Map<string, EngineMeasurement[]>();
 
   for (const m of measurements) {
     if (!m.timestamp || m.temperature_c === undefined || m.temperature_c === null) {
@@ -91,7 +101,7 @@ export function detectSensorConflicts(
  * Guardrail 4 (No Pharma Disposition): Status is strictly 'PENDING_REVIEW'. No automatic PASS/REJECT.
  */
 export function detectExcursions(
-  measurements: CanonicalMeasurement[],
+  measurements: EngineMeasurement[],
   profile: ProductProfile
 ): {
   exceptions: ExceptionCandidate[];
@@ -107,7 +117,7 @@ export function detectExcursions(
   }
 
   // Group measurements by segment to enforce Segment Boundary Reset (Guardrail 2)
-  const segmentGroups = new Map<string, CanonicalMeasurement[]>();
+  const segmentGroups = new Map<string, EngineMeasurement[]>();
   for (const m of measurements) {
     const segKey = m.segment_id ?? 'DEFAULT_SEGMENT';
     const group = segmentGroups.get(segKey) ?? [];
@@ -124,7 +134,7 @@ export function detectExcursions(
       return new Date(a.timestamp).getTime() - new Date(b.timestamp).getTime();
     });
 
-    let currentStreak: CanonicalMeasurement[] = [];
+    let currentStreak: EngineMeasurement[] = [];
 
     const flushStreak = () => {
       if (!currentStreak.length) return;

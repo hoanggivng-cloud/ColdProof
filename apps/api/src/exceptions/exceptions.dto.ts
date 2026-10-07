@@ -1,5 +1,5 @@
 import { ApiProperty, ApiPropertyOptional } from '@nestjs/swagger';
-import { IsEnum, IsNotEmpty, IsOptional, IsString, IsUUID } from 'class-validator';
+import { IsOptional, IsString, IsUUID } from 'class-validator';
 
 export class ExceptionsStatusDto {
   @ApiProperty({ example: 'exceptions' }) module!: string;
@@ -17,9 +17,18 @@ export class ExceptionResponseDto {
 }
 
 export class ReviewActionDto {
-  @ApiProperty({ enum: ['REVIEWED', 'NEEDS_EVIDENCE', 'REJECTED'], example: 'REVIEWED' })
-  @IsEnum(['REVIEWED', 'NEEDS_EVIDENCE', 'REJECTED'])
-  status!: 'REVIEWED' | 'NEEDS_EVIDENCE' | 'REJECTED';
+  @ApiPropertyOptional({
+    enum: ['REVIEWED', 'NEEDS_EVIDENCE', 'REJECTED', 'FLAG_FOR_DISPOSITION'],
+    example: 'REVIEWED',
+  })
+  @IsOptional()
+  @IsString()
+  status?: string;
+
+  @ApiPropertyOptional({ example: 'FLAG_FOR_DISPOSITION' })
+  @IsOptional()
+  @IsString()
+  action?: string;
 
   @ApiPropertyOptional({ example: '00000000-0000-0000-0000-000000000003' })
   @IsOptional()
@@ -30,6 +39,11 @@ export class ReviewActionDto {
   @IsOptional()
   @IsString()
   notes?: string;
+
+  @ApiPropertyOptional({ example: 'Handover door open duration exceeded 15 mins. Quarantine batch.' })
+  @IsOptional()
+  @IsString()
+  justification?: string;
 
   @ApiPropertyOptional({ example: 'Quarantine batch and verify secondary logger.' })
   @IsOptional()

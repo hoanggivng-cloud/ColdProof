@@ -5,8 +5,8 @@ import {
   detectExcursions,
   detectSensorConflicts,
   ProductProfile,
+  EngineMeasurement,
 } from './exception-engine';
-import type { CanonicalMeasurement } from '@coldproof/canonical-schema';
 
 @Injectable()
 export class ExceptionsService {
@@ -43,28 +43,31 @@ export class ExceptionsService {
   async review(id: string, dto: ReviewActionDto) {
     const exception = await this.findOne(id);
 
-    // Create review entry
     const reviewerId = dto.reviewer_id ?? '00000000-0000-0000-0000-000000000003';
+    const effectiveStatus = dto.status ?? (dto.action === 'FLAG_FOR_DISPOSITION' ? 'REVIEWED' : dto.action) ?? 'REVIEWED';
+    const effectiveNotes = dto.notes ?? dto.justification ?? null;
+
+    // Create review entry
     const review = await this.prisma.review.create({
       data: {
         exception_id: id,
         reviewer_id: reviewerId,
-        status: dto.status,
-        notes: dto.notes ?? null,
+        status: effectiveStatus,
+        notes: effectiveNotes,
       },
     });
 
     // Update exception status
     await this.prisma.exception.update({
       where: { id },
-      data: { status: dto.status },
+      data: { status: effectiveStatus },
     });
 
     // Update review status on measurements WITHOUT mutating observed temperatures (Immutable raw data standard)
     if (exception.record_ids && exception.record_ids.length > 0) {
       await this.prisma.measurement.updateMany({
         where: { record_id: { in: exception.record_ids } },
-        data: { review_status: dto.status },
+        data: { review_status: effectiveStatus },
       });
     }
 
@@ -75,9 +78,10 @@ export class ExceptionsService {
         entity_type: 'exceptions',
         entity_id: id,
         payload: {
-          status: dto.status,
+          status: effectiveStatus,
+          action: dto.action,
           reviewer_id: reviewerId,
-          notes: dto.notes,
+          notes: effectiveNotes,
           corrective_action: dto.corrective_action,
         },
       },
@@ -87,8 +91,8 @@ export class ExceptionsService {
       id: review.id,
       exception_id: id,
       reviewer_id: reviewerId,
-      status: dto.status,
-      notes: dto.notes,
+      status: effectiveStatus,
+      notes: effectiveNotes,
       created_at: review.created_at,
     };
   }
@@ -116,9 +120,10 @@ export class ExceptionsService {
       orderBy: { timestamp: 'asc' },
     });
 
-    // Cast measurements to CanonicalMeasurement format
-    const measurements: CanonicalMeasurement[] = rawMeasurements.map(m => ({
+    // Cast measurements to EngineMeasurement format
+    const measurements: EngineMeasurement[] = rawMeasurements.map(m => ({
       record_id: m.record_id,
+      record_type: 'TIMESERIES' as const,
       scenario_id: m.scenario_id ?? undefined,
       batch_id: m.batch_id ?? undefined,
       segment_id: m.segment_id ?? undefined,
@@ -127,14 +132,14 @@ export class ExceptionsService {
       humidity_pct: m.humidity_pct ?? undefined,
       source_dataset: m.source_dataset,
       source_file: m.source_file,
-      source_sensor_id: m.source_sensor_id ?? undefined,
+      source_sensor_id: m.source_sensor_id ?? 'UNKNOWN',
       source_row_or_ref: m.source_row_or_ref,
       source_checksum_sha256: m.source_checksum_sha256,
       source_format: m.source_format,
       parser_id: m.parser_id,
       parser_version: m.parser_version,
-      measurement_origin: m.measurement_origin as any,
-      business_context_origin: m.business_context_origin as any,
+      measurement_origin: m.measurement_origin as EngineMeasurement['measurement_origin'],
+      business_context_origin: m.business_context_origin,
       missing_flag: m.missing_flag,
       duplicate_flag: m.duplicate_flag,
       conflict_flag: m.conflict_flag,
@@ -144,7 +149,7 @@ export class ExceptionsService {
       upper_threshold: m.upper_threshold ?? undefined,
       excursion_flag: m.excursion_flag ?? undefined,
       exception_id: m.exception_id ?? undefined,
-      review_status: m.review_status as any,
+      review_status: m.review_status ?? undefined,
     }));
 
     // 1. Detect sensor conflicts (FR-DQ-003, S04)
@@ -178,7 +183,7 @@ export class ExceptionsService {
     }
 
     // 2. Detect temperature excursions (FR-EXC-002, FR-EXC-001)
-    const { intervals, excursionRecordIds } = detectExcursions(measurements, profile);
+    const { intervals } = detectExcursions(measurements, profile);
 
     for (const interval of intervals) {
       // Check if exception already exists for this batch and record_ids
