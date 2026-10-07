@@ -63,10 +63,8 @@
       "origin": "REAL_PUBLIC_DATA",
       "expected_record_type": "TIMESERIES",
       "role": "PRIMARY_TIME_SERIES_EVIDENCE",
-      "exact_sensor_id": null,
-      "exact_window_start": null,
-      "exact_window_end": null,
-      "selection_status": "PENDING_EVIDENCE_SELECTION"
+      "selection_status": "RESOLVED_BY_EVIDENCE_DECISION",
+      "evidence_decision_ref": "data/scenarios/design/evidence-decision.json"
     },
 
     "spatial": {
@@ -317,8 +315,6 @@
   ],
 
   "design_decisions_pending": [
-    "Exact Zenodo sensor",
-    "Exact continuous Zenodo source interval",
     "Exact synthetic segment boundaries",
     "Verified Mendeley condition mapping",
     "Selected Mendeley illustrative conditions",

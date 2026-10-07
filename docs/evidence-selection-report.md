@@ -4,7 +4,7 @@
 
 This work verifies Mendeley condition semantics and profiles Zenodo source-local time-series windows. It does not materialize `CP-DEMO-001`, assign logistics meaning, apply `DEMO_2_8C`, calculate excursions, or create segment boundaries.
 
-The scenario blueprint loaded and validated successfully. No candidate is automatically marked `SELECTED`: the generated shortlist requires manual scientific review before a golden interval is frozen.
+The scenario blueprint loaded and validated successfully. Candidate generation does not mark a row `SELECTED`; `candidate-zenodo-windows.csv` remains the deterministic machine shortlist. Human approval is stored separately in `data/scenarios/design/evidence-decision.json`. Decision v1.0.0 subsequently approved SENSOR09 for the source-local interval `2024-09-10T07:30:00–10:30:00`.
 
 Blueprint metadata:
 
@@ -115,7 +115,7 @@ These are gaps between observed records. Data omitted outside a selected candida
 | 8 | ZEN-03-20240909T080000-180M | SENSOR03 | 2024-09-09 08:00-11:00 | 180 min | 7/7 | 7.541667 | REJECTED |
 | 9 | ZEN-05-20240910T074500-180M | SENSOR05 | 2024-09-10 07:45-10:45 | 180 min | 7/7 | 5.196667 | REJECTED |
 
-No candidate is `SELECTED`. The current outcome is `FINAL_SELECTION_PENDING_MANUAL_SCIENTIFIC_REVIEW`.
+The machine-generated artifact has no `SELECTED` row by design. Its result is five `SHORTLISTED` candidates with unchanged eligibility, blueprint fit, scores, and ranking. The authoritative human overlay in `evidence-decision.json` has status `APPROVED` and selects `ZEN-09-20240910T073000-180M` without mutating this table.
 
 The source supports `SINGLE_CONTINUOUS_SOURCE_INTERVAL`: each shortlisted row is a one-sensor, 180-minute, exactly 5-second interval with 2,161 observations, zero internal gaps, zero duplicates, zero out-of-order records, thermal variation, and documented source-event overlap. A composite replay is not currently required by evidence availability.
 
@@ -136,8 +136,8 @@ Event counts and exact `experiment_actions.csv` physical row references are reco
 
 ## 9. Blueprint refinement and next step
 
-The current blueprint is operational for Zenodo eligibility and shortlist generation; no structural refinement is required to establish that `SINGLE_CONTINUOUS_SOURCE_INTERVAL` is feasible. It remains `DRAFT`, and its exact sensor/window fields correctly remain pending manual selection.
+The current blueprint is operational for Zenodo eligibility and shortlist generation; no structural refinement is required to establish that `SINGLE_CONTINUOUS_SOURCE_INTERVAL` is feasible. It remains `DRAFT`. Its time-series selection status is `RESOLVED_BY_EVIDENCE_DECISION` and references `data/scenarios/design/evidence-decision.json`, which is the only authoritative location for the approved sensor and exact window.
 
 One evidence issue remains for the Mendeley side of the blueprint: condition identity and cell provenance are available, but the source does not fully document measurement medium or averaging semantics. Before materialization, either obtain stronger source documentation or explicitly accept this limitation while keeping Mendeley in its declared `SUPPLEMENTAL_ILLUSTRATIVE_CONTEXT` role.
 
-Next, manually review the five shortlisted Zenodo candidates, record the selected sensor/window in the blueprint through a separately reviewed design update, and only then define synthetic replay boundaries. No observed values, timestamps, or gaps need to change, and no composite replay is indicated by the current evidence.
+The manual review is complete and decision v1.0.0 approved SENSOR09 `2024-09-10T07:30:00–10:30:00`. The next scoped phase may use that decision for Scenario Materialization; synthetic replay boundaries remain undefined. No observed values, timestamps, or gaps need to change, and no composite replay is indicated by the current evidence.

@@ -90,6 +90,38 @@ export interface EvidenceBlueprint {
   [key: string]: unknown;
 }
 
+export interface EvidenceDecision {
+  decision_version: string;
+  blueprint_id: string;
+  decision_status: string;
+  selected_time_series_evidence: {
+    candidate_id: string;
+    sensor_id: string;
+    source_file: string;
+    start_timestamp: string;
+    end_timestamp: string;
+    duration_seconds: number;
+    observation_count: number;
+    selection_origin: string;
+    timezone_status: string;
+  };
+  selection_rationale: string[];
+  known_limitations: string[];
+  [key: string]: unknown;
+}
+
+export interface SerializedEvidenceCandidate {
+  candidate_id: string;
+  sensor_id: string;
+  source_file: string;
+  start_timestamp: string;
+  end_timestamp: string;
+  duration_seconds: number | string;
+  observation_count: number | string;
+  selection_status: string;
+  [key: string]: unknown;
+}
+
 export interface SelectionContext {
   provenanceFiles: Set<string>;
   malformedRowsByFile: Map<string, number>;
@@ -106,6 +138,7 @@ export interface ParsedSource {
 
 export const DEFAULT_POLICY: Readonly<CandidatePolicy>;
 export function loadBlueprint(text: string): EvidenceBlueprint;
+export function loadEvidenceDecision(text: string): EvidenceDecision;
 export function getBlueprintMetadata(blueprint: EvidenceBlueprint): {
   blueprintId: string;
   blueprintVersion: string;
@@ -120,7 +153,12 @@ export function getBlueprintMetadata(blueprint: EvidenceBlueprint): {
   mendeleyUsedForExcursionCalculation: boolean;
   productProfileId: string;
   productProfileExcludedFromSelection: boolean;
+  timeSeriesSelectionStatus: string;
+  evidenceDecisionRef?: string;
 };
+export function resolveApprovedCandidate<
+  T extends EvidenceCandidate | SerializedEvidenceCandidate,
+>(candidates: T[], decision: EvidenceDecision, blueprint?: EvidenceBlueprint): T;
 export function evaluateContinuity(
   records: EvidenceRecord[],
   expectedIntervalSeconds?: number,

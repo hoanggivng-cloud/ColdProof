@@ -4,7 +4,13 @@ import { fileURLToPath } from 'node:url';
 
 import core from './evidence-selection-core.cjs';
 
-const { loadBlueprint, parseExperimentActions, parseZenodoCsv } = core;
+const {
+  loadBlueprint,
+  loadEvidenceDecision,
+  parseExperimentActions,
+  parseZenodoCsv,
+  resolveApprovedCandidate,
+} = core;
 
 const MOVEMENT_THRESHOLD_C = 0.25;
 const BIN_SECONDS = 300;
@@ -184,15 +190,21 @@ const rawDirectory = path.join(repoRoot, 'data/observed/zenodo/raw');
 const eventPath = path.join(repoRoot, 'data/observed/zenodo/metadata/experiment_actions.csv');
 const blueprintPath = path.join(repoRoot, 'data/scenarios/design/scenario-blueprint.json');
 
-const candidates = parseCsv(await readFile(candidatePath, 'utf8')).filter(
+const allCandidates = parseCsv(await readFile(candidatePath, 'utf8'));
+const candidates = allCandidates.filter(
   (candidate) => candidate.selection_status === 'SHORTLISTED',
 );
-if (candidates.length !== 5) {
-  throw new Error(`Expected exactly five SHORTLISTED candidates; found ${candidates.length}.`);
-}
+if (candidates.length === 0) throw new Error('Generated candidate shortlist is empty.');
 
 const events = parseExperimentActions(await readFile(eventPath, 'utf8'));
 const blueprint = loadBlueprint(await readFile(blueprintPath, 'utf8'));
+const decisionRef = blueprint.observed_evidence.time_series.evidence_decision_ref;
+const decisionPath = path.resolve(repoRoot, decisionRef);
+if (!decisionPath.startsWith(`${repoRoot}${path.sep}`)) {
+  throw new Error(`Evidence decision reference escapes the repository: ${decisionRef}`);
+}
+const decision = loadEvidenceDecision(await readFile(decisionPath, 'utf8'));
+const approvedCandidate = resolveApprovedCandidate(allCandidates, decision, blueprint);
 const demoUpperThresholdC = blueprint.assumptions.product_profile.upper_threshold_c;
 const reviews = [];
 for (const candidate of candidates) {
@@ -235,30 +247,52 @@ for (const candidate of candidates) {
     internalGapCount: Number(candidate.internal_missing_interval_count),
     eventCount: overlappingEvents.length,
     events: overlappingEvents,
+    humanDecisionStatus:
+      candidate.candidate_id === approvedCandidate.candidate_id ? 'APPROVED' : 'NOT_SELECTED',
     designSuitabilityOnly: thresholdSuitability(records, demoUpperThresholdC),
   };
   review.thermalShape = classifyShape(review, movements, baseline, postVariation);
   reviews.push(review);
 }
 
-const sensor09 = reviews.find((review) => review.sensorId === 'SENSOR09');
-if (!sensor09) throw new Error('SENSOR09 shortlist review is missing.');
-const sensor09Records = parseZenodoCsv(
-  await readFile(path.join(rawDirectory, sensor09.sourceFile), 'utf8'),
-  sensor09.sourceFile,
-).records.filter(
-  (record) => record.timestamp >= sensor09.startTimestamp && record.timestamp <= sensor09.endTimestamp,
+const approvedReview = reviews.find(
+  (review) => review.candidateId === approvedCandidate.candidate_id,
 );
-const sensor09StartMs = sensor09Records[0].arithmeticTimeMs;
+if (!approvedReview) throw new Error('Approved candidate review is missing.');
+const approvedRecords = parseZenodoCsv(
+  await readFile(path.join(rawDirectory, approvedReview.sourceFile), 'utf8'),
+  approvedReview.sourceFile,
+).records.filter(
+  (record) =>
+    record.timestamp >= approvedReview.startTimestamp && record.timestamp <= approvedReview.endTimestamp,
+);
+const sensor09StartMs = approvedRecords[0].arithmeticTimeMs;
 const at0800 = sensor09StartMs + 30 * 60 * 1000;
 const at0830 = sensor09StartMs + 60 * 60 * 1000;
-sensor09.periodReview = {
-  before0800: summarizePeriod(sensor09Records, sensor09StartMs, at0800),
-  from0800To0830: summarizePeriod(sensor09Records, at0800, at0830),
-  after0830: summarizePeriod(sensor09Records, at0830, sensor09Records.at(-1).arithmeticTimeMs, true),
+approvedReview.periodReview = {
+  before0800: summarizePeriod(approvedRecords, sensor09StartMs, at0800),
+  from0800To0830: summarizePeriod(approvedRecords, at0800, at0830),
+  after0830: summarizePeriod(
+    approvedRecords,
+    at0830,
+    approvedRecords.at(-1).arithmeticTimeMs,
+    true,
+  ),
 };
 
 console.log(JSON.stringify({
+  approvedDecision: {
+    decisionVersion: decision.decision_version,
+    decisionStatus: decision.decision_status,
+    selectionOrigin: decision.selected_time_series_evidence.selection_origin,
+    candidateId: decision.selected_time_series_evidence.candidate_id,
+    sensorId: decision.selected_time_series_evidence.sensor_id,
+    sourceFile: decision.selected_time_series_evidence.source_file,
+    startTimestamp: decision.selected_time_series_evidence.start_timestamp,
+    endTimestamp: decision.selected_time_series_evidence.end_timestamp,
+    timezoneStatus: decision.selected_time_series_evidence.timezone_status,
+    knownLimitations: decision.known_limitations,
+  },
   method: {
     binSeconds: BIN_SECONDS,
     movementThresholdC: MOVEMENT_THRESHOLD_C,

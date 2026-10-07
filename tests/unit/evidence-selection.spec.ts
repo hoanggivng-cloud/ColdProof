@@ -7,8 +7,10 @@ import {
   generateCandidates,
   getBlueprintMetadata,
   loadBlueprint,
+  loadEvidenceDecision,
   parseExperimentActions,
   parseZenodoCsv,
+  resolveApprovedCandidate,
   selectSensorWinners,
   serializeCandidates,
   type EvidenceRecord,
@@ -38,6 +40,11 @@ describe('evidence selection helpers', () => {
     'utf8',
   );
   const blueprint = loadBlueprint(blueprintText);
+  const decisionText = readFileSync(
+    path.join(process.cwd(), 'data/scenarios/design/evidence-decision.json'),
+    'utf8',
+  );
+  const decision = loadEvidenceDecision(decisionText);
   const selectionContext: SelectionContext = {
     provenanceFiles: new Set(['SENSOR06.CSV', 'SENSOR07.CSV']),
     malformedRowsByFile: new Map([
@@ -126,7 +133,19 @@ describe('evidence selection helpers', () => {
       mendeleyUsedForExcursionCalculation: false,
       productProfileId: 'DEMO_2_8C',
       productProfileExcludedFromSelection: true,
+      timeSeriesSelectionStatus: 'RESOLVED_BY_EVIDENCE_DECISION',
+      evidenceDecisionRef: 'data/scenarios/design/evidence-decision.json',
     });
+  });
+
+  it('resolves blueprint selection through the authoritative evidence decision', () => {
+    expect(blueprint.observed_evidence.time_series).toMatchObject({
+      selection_status: 'RESOLVED_BY_EVIDENCE_DECISION',
+      evidence_decision_ref: 'data/scenarios/design/evidence-decision.json',
+    });
+    expect(blueprint.observed_evidence.time_series).not.toHaveProperty('exact_sensor_id');
+    expect(blueprint.observed_evidence.time_series).not.toHaveProperty('exact_window_start');
+    expect(blueprint.observed_evidence.time_series).not.toHaveProperty('exact_window_end');
   });
 
   it('fails fast for an empty or invalid blueprint', () => {
@@ -191,6 +210,102 @@ describe('evidence selection helpers', () => {
     const baseline = selectSensorWinners(candidates, blueprint, selectionContext, 2);
     const changed = selectSensorWinners(candidates, changedThresholds, selectionContext, 2);
     expect(changed).toEqual(baseline);
+  });
+
+  it('loads the approved decision and resolves it against the generated shortlist', () => {
+    const selected = decision.selected_time_series_evidence;
+    const candidate = {
+      candidate_id: selected.candidate_id,
+      sensor_id: selected.sensor_id,
+      source_file: selected.source_file,
+      start_timestamp: selected.start_timestamp,
+      end_timestamp: selected.end_timestamp,
+      duration_seconds: selected.duration_seconds,
+      observation_count: selected.observation_count,
+      selection_status: 'SHORTLISTED',
+    };
+
+    expect(resolveApprovedCandidate([candidate], decision, blueprint)).toBe(candidate);
+  });
+
+  it('fails when the approved candidate is absent from the generated shortlist', () => {
+    expect(() => resolveApprovedCandidate([], decision, blueprint)).toThrow(
+      'is missing from generated candidates',
+    );
+  });
+
+  it('fails when the approved sensor or window differs from the generated candidate', () => {
+    const selected = decision.selected_time_series_evidence;
+    const mismatched = {
+      candidate_id: selected.candidate_id,
+      sensor_id: 'SENSOR08',
+      source_file: selected.source_file,
+      start_timestamp: '2024-09-10T06:00:00',
+      end_timestamp: selected.end_timestamp,
+      duration_seconds: selected.duration_seconds,
+      observation_count: selected.observation_count,
+      selection_status: 'SHORTLISTED',
+    };
+
+    expect(() => resolveApprovedCandidate([mismatched], decision, blueprint)).toThrow(
+      'does not match generated candidate fields: sensor_id, start_timestamp',
+    );
+  });
+
+  it('fails explicitly for a malformed evidence decision', () => {
+    expect(() => loadEvidenceDecision('{not json')).toThrow(
+      'Evidence decision contains invalid JSON',
+    );
+    const incomplete = JSON.parse(decisionText) as Record<string, unknown>;
+    delete incomplete.selected_time_series_evidence;
+    expect(() => loadEvidenceDecision(JSON.stringify(incomplete))).toThrow(
+      'Evidence decision is missing required fields',
+    );
+  });
+
+  it('applies human approval as an overlay without changing generated ranking', () => {
+    const source = parseZenodoCsv(buildSyntheticSource(), 'SENSOR06.CSV');
+    const winners = selectSensorWinners(
+      generateCandidates(source.records, parseExperimentActions(eventCsv)),
+      blueprint,
+      selectionContext,
+      2,
+    );
+    const shortlisted = winners.find((candidate) => candidate.selectionStatus === 'SHORTLISTED');
+    expect(shortlisted).toBeDefined();
+    const overlayDecision = structuredClone(decision);
+    Object.assign(overlayDecision.selected_time_series_evidence, {
+      candidate_id: shortlisted?.candidateId,
+      sensor_id: shortlisted?.sensorId,
+      source_file: shortlisted?.sourceFile,
+      start_timestamp: shortlisted?.startTimestamp,
+      end_timestamp: shortlisted?.endTimestamp,
+      duration_seconds: shortlisted?.durationSeconds,
+      observation_count: shortlisted?.observationCount,
+    });
+    const before = structuredClone(winners);
+
+    resolveApprovedCandidate(winners, overlayDecision, blueprint);
+
+    expect(winners).toEqual(before);
+  });
+
+  it('keeps the committed candidate CSV machine-generated and approval-neutral', () => {
+    const candidateCsv = readFileSync(
+      path.join(process.cwd(), 'data/scenarios/design/candidate-zenodo-windows.csv'),
+      'utf8',
+    );
+    const [headerLine, ...lines] = candidateCsv.trim().split(/\r?\n/);
+    const headers = headerLine.split(',');
+    const rows = lines.map((line) =>
+      Object.fromEntries(headers.map((header, index) => [header, line.split(',')[index]])),
+    );
+    const sensor09 = rows.find((row) => row.candidate_id === decision.selected_time_series_evidence.candidate_id);
+
+    expect(rows.filter((row) => row.selection_status === 'SHORTLISTED')).toHaveLength(5);
+    expect(rows.some((row) => row.selection_status === 'SELECTED')).toBe(false);
+    expect(sensor09?.selection_status).toBe('SHORTLISTED');
+    expect(candidateCsv).not.toContain('contextcontinuity');
   });
 
   it('serializes the same candidate output on deterministic reruns', () => {

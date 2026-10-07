@@ -2,13 +2,13 @@
 
 ## Scope and decision status
 
-This review compares the five current `ELIGIBLE` and `FULL_PREFERRED_FIT` Zenodo candidates. It supports a human decision; it does not change `selection_status`, select a golden interval, materialize `CP-DEMO-001`, create synthetic boundaries, or evaluate an excursion/compliance result.
+This review compares the five current `ELIGIBLE` and `FULL_PREFERRED_FIT` Zenodo candidates. It produced a recommendation without changing machine-generated `selection_status`, materializing `CP-DEMO-001`, creating synthetic boundaries, or evaluating an excursion/compliance result. The recommendation was subsequently approved in `data/scenarios/design/evidence-decision.json`.
 
 All timestamps below are source-local and timezone-naive. All event labels are observed experimental source terms from `experiment_actions.csv`; they are not logistics handovers or shipment events.
 
 ## Review method
 
-`node scripts/review-evidence.mjs` reads the five `SHORTLISTED` rows from `candidate-zenodo-windows.csv`, reparses their frozen raw sensor files, and calculates the review metrics without changing source data or candidate ranking.
+`node scripts/review-evidence.mjs` reads the deterministic `SHORTLISTED` rows from `candidate-zenodo-windows.csv`, reparses their frozen raw sensor files, and calculates the review metrics without changing source data or candidate ranking. It separately loads the decision referenced by the blueprint, validates that the approved candidate matches the generated shortlist, and annotates that candidate as the human-approved choice.
 
 - Core metrics use all 2,161 observed records in each inclusive three-hour interval.
 - When a minimum or maximum occurs more than once, the review reports first occurrence, last occurrence, and count.
@@ -127,9 +127,9 @@ This section is a **DESIGN SUITABILITY REVIEW**, not a source fact, compliance e
 - SENSOR09 spans the 8°C upper threshold: 1,101 observations are at or below 8°C and 1,060 are above 8°C. The first observed upward transition is at 08:05:45 (8.1°C). There are 13 state transitions because values later oscillate around 8.0/8.1°C before the final upward transition at 10:01:00.
 - These counts describe observed values relative to a hypothetical later rule input. No duration, excursion flag, compliance status, or disposition is calculated here.
 
-## Recommended candidate for human approval
+## Approved human decision
 
-**Recommendation: SENSOR09, 2024-09-10T07:30:00–10:30:00**, subject to human approval. The CSV must remain `SHORTLISTED` until that approval is recorded separately.
+**Approved: SENSOR09, 2024-09-10T07:30:00–10:30:00.** The original recommendation was approved by `evidence-decision.json` v1.0.0. The candidate remains `SHORTLISTED` in the generated CSV because human approval is an authoritative overlay, not a candidate-generation result.
 
 Why it is preferred:
 
@@ -148,7 +148,7 @@ Why not the other four:
 
 ## Limitations requiring human acceptance
 
-- The recommendation is advisory and does not update `selection_status`.
+- Human approval is recorded only in `evidence-decision.json`; it does not update machine-generated candidate `selection_status` or ranking.
 - Zenodo is cold-storage-room evidence, not a pharmaceutical shipment or logistics journey.
 - Source timestamps have no declared timezone; no timezone was added.
 - Source event overlap is temporal evidence, not proof of causality and not a logistics mapping.
