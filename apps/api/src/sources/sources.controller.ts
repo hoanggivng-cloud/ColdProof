@@ -6,6 +6,8 @@ import { CreateSourceDto } from './create-source.dto';
 export class SourcesController {
   constructor(private readonly service: SourcesService) {}
   @Get('status') status() { return this.service.status(); }
+  @Get() @ApiOperation({ summary: 'List all registered source assets' })
+  findAll() { return this.service.findAll(); }
   @Post() @ApiOperation({ summary: 'Register immutable source metadata; content upload/verification TODO' })
   create(@Body() dto: CreateSourceDto) { return this.service.create(dto); }
   @Get(':id') findOne(@Param('id', ParseUUIDPipe) id: string) { return this.service.findOne(id); }
