@@ -1,0 +1,33 @@
+{
+  "scenario_id": "S04",
+  "version": 1,
+  "name": "Sensor conflict preservation",
+  "product_profile": {
+    "id": "DEMO_2_8C",
+    "lower_threshold": 2.0,
+    "upper_threshold": 8.0
+  },
+  "segments": [
+    {
+      "id": "LEG-01-A",
+      "source": "zenodo/SENSOR01",
+      "selector": "divergent_window",
+      "business_context_origin": "SYNTHETIC"
+    },
+    {
+      "id": "LEG-01-B",
+      "source": "zenodo/SENSOR02",
+      "selector": "divergent_window",
+      "business_context_origin": "SYNTHETIC"
+    }
+  ],
+  "expected": {
+    "exception_count": 0,
+    "missing_issue_count": 0,
+    "conflict_issue_count": 1
+  },
+  "constraints": {
+    "cross_source_duration": false
+  }
+}
+

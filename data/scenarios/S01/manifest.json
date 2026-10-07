@@ -1,0 +1,33 @@
+{
+  "scenario_id": "S01",
+  "version": 1,
+  "name": "Normal multi-leg chain",
+  "product_profile": {
+    "id": "DEMO_2_8C",
+    "lower_threshold": 2.0,
+    "upper_threshold": 8.0
+  },
+  "segments": [
+    {
+      "id": "LEG-01",
+      "source": "zenodo/SENSOR06",
+      "selector": "stable_window_A",
+      "business_context_origin": "SYNTHETIC"
+    },
+    {
+      "id": "LEG-02",
+      "source": "zenodo/SENSOR07",
+      "selector": "stable_window_B",
+      "handover_id": "HANDOVER-01",
+      "business_context_origin": "SYNTHETIC"
+    }
+  ],
+  "expected": {
+    "exception_count": 0,
+    "missing_issue_count": 0
+  },
+  "constraints": {
+    "cross_source_duration": false
+  }
+}
+

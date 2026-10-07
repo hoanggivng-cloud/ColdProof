@@ -1,0 +1,26 @@
+{
+  "scenario_id": "S06",
+  "version": 1,
+  "name": "Pre-existing bad condition snapshot",
+  "product_profile": {
+    "id": "DEMO_2_8C",
+    "lower_threshold": 2.0,
+    "upper_threshold": 8.0
+  },
+  "segments": [
+    {
+      "id": "LEG-ENTRY",
+      "source": "mendeley/conditions/C07",
+      "selector": "initial_condition",
+      "business_context_origin": "SYNTHETIC"
+    }
+  ],
+  "expected": {
+    "exception_count": 1,
+    "missing_issue_count": 0
+  },
+  "constraints": {
+    "cross_source_duration": false
+  }
+}
+

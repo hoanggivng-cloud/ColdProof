@@ -1,0 +1,40 @@
+{
+  "scenario_id": "S02",
+  "version": 1,
+  "name": "Handover heat excursion",
+  "product_profile": {
+    "id": "DEMO_2_8C",
+    "lower_threshold": 2.0,
+    "upper_threshold": 8.0
+  },
+  "segments": [
+    {
+      "id": "LEG-01",
+      "source": "zenodo/SENSOR06",
+      "selector": "stable_window_A",
+      "business_context_origin": "SYNTHETIC"
+    },
+    {
+      "id": "LEG-02",
+      "source": "zenodo/event_aligned_window",
+      "selector": "door_open_hot_window",
+      "handover_id": "HANDOVER-01",
+      "business_context_origin": "SYNTHETIC"
+    },
+    {
+      "id": "LEG-03",
+      "source": "zenodo/SENSOR06",
+      "selector": "stable_window_B",
+      "handover_id": "HANDOVER-02",
+      "business_context_origin": "SYNTHETIC"
+    }
+  ],
+  "expected": {
+    "exception_count": 1,
+    "missing_issue_count": 0
+  },
+  "constraints": {
+    "cross_source_duration": false
+  }
+}
+

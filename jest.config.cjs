@@ -7,6 +7,7 @@ module.exports = {
   moduleNameMapper: {
     '^@coldproof/(.*)$': '<rootDir>/packages/$1/src/index.ts',
     '^@nestjs/testing$': '<rootDir>/node_modules/@nestjs/testing',
+    '^@nestjs/mapped-types$': '<rootDir>/node_modules/.pnpm/node_modules/@nestjs/mapped-types',
     '^@nestjs/(.*)$': '<rootDir>/apps/api/node_modules/@nestjs/$1',
     '^@prisma/client$': '<rootDir>/apps/api/node_modules/@prisma/client',
     '^class-validator$': '<rootDir>/apps/api/node_modules/class-validator',
