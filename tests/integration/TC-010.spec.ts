@@ -23,6 +23,27 @@ describe('TC-010 • RBAC (Operator review forbidden, QA permitted)', () => {
 
     prisma = app.get(PrismaService);
 
+    // Ensure test users exist for authentication
+    await prisma.user.upsert({
+      where: { email: 'operator@coldproof.local' },
+      update: { role: 'DATA_ENGINEER' },
+      create: {
+        id: '00000000-0000-0000-0000-000000000002',
+        email: 'operator@coldproof.local',
+        role: 'DATA_ENGINEER',
+      },
+    });
+
+    await prisma.user.upsert({
+      where: { email: 'qa@coldproof.local' },
+      update: { role: 'QA_REVIEWER' },
+      create: {
+        id: '00000000-0000-0000-0000-000000000003',
+        email: 'qa@coldproof.local',
+        role: 'QA_REVIEWER',
+      },
+    });
+
     // Ensure exception exists
     await prisma.exception.upsert({
       where: { id: exceptionId },
