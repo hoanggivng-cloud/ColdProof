@@ -32,6 +32,22 @@ const REQUIRED_BLUEPRINT_PATHS = Object.freeze([
   'assumptions.product_profile',
 ]);
 
+const REQUIRED_EVIDENCE_DECISION_PATHS = Object.freeze([
+  'decision_version',
+  'blueprint_id',
+  'decision_status',
+  'selected_time_series_evidence',
+  'selected_time_series_evidence.candidate_id',
+  'selected_time_series_evidence.sensor_id',
+  'selected_time_series_evidence.source_file',
+  'selected_time_series_evidence.start_timestamp',
+  'selected_time_series_evidence.end_timestamp',
+  'selected_time_series_evidence.selection_origin',
+  'selected_time_series_evidence.timezone_status',
+  'selection_rationale',
+  'known_limitations',
+]);
+
 function getPath(value, dottedPath) {
   return dottedPath.split('.').reduce((current, key) => current?.[key], value);
 }
@@ -109,6 +125,17 @@ function loadBlueprint(text) {
   if (!isPresent(timeSeries.source_dataset) || !isPresent(timeSeries.role)) {
     throw new Error('Scenario blueprint time-series evidence must declare source_dataset and role.');
   }
+  if (!isPresent(timeSeries.selection_status)) {
+    throw new Error('Scenario blueprint time-series evidence must declare selection_status.');
+  }
+  if (
+    timeSeries.selection_status === 'RESOLVED_BY_EVIDENCE_DECISION' &&
+    !isPresent(timeSeries.evidence_decision_ref)
+  ) {
+    throw new Error(
+      'Scenario blueprint resolved time-series evidence must declare evidence_decision_ref.',
+    );
+  }
   if (!isPresent(spatial.role)) {
     throw new Error('Scenario blueprint spatial evidence must declare its role.');
   }
@@ -168,7 +195,123 @@ function getBlueprintMetadata(blueprint) {
       blueprint.evidence_selection_criteria.zenodo.not_required.some((criterion) =>
         criterion.includes(blueprint.assumptions.product_profile.profile_id),
       ),
+    timeSeriesSelectionStatus: blueprint.observed_evidence.time_series.selection_status,
+    evidenceDecisionRef: blueprint.observed_evidence.time_series.evidence_decision_ref,
   };
+}
+
+function loadEvidenceDecision(text) {
+  if (typeof text !== 'string' || text.trim() === '') {
+    throw new Error('Evidence decision is empty.');
+  }
+
+  let decision;
+  try {
+    decision = JSON.parse(text);
+  } catch (error) {
+    throw new Error(`Evidence decision contains invalid JSON: ${error.message}`);
+  }
+
+  if (!isObject(decision)) {
+    throw new Error('Evidence decision must be a JSON object.');
+  }
+
+  const missingPaths = REQUIRED_EVIDENCE_DECISION_PATHS.filter(
+    (requiredPath) => !isPresent(getPath(decision, requiredPath)),
+  );
+  if (missingPaths.length > 0) {
+    throw new Error(`Evidence decision is missing required fields: ${missingPaths.join(', ')}`);
+  }
+
+  const selected = decision.selected_time_series_evidence;
+  const invalidStringPaths = [
+    'decision_version',
+    'blueprint_id',
+    'decision_status',
+    'selected_time_series_evidence.candidate_id',
+    'selected_time_series_evidence.sensor_id',
+    'selected_time_series_evidence.source_file',
+    'selected_time_series_evidence.start_timestamp',
+    'selected_time_series_evidence.end_timestamp',
+    'selected_time_series_evidence.selection_origin',
+    'selected_time_series_evidence.timezone_status',
+  ].filter((requiredPath) => typeof getPath(decision, requiredPath) !== 'string');
+  if (invalidStringPaths.length > 0) {
+    throw new Error(`Evidence decision has invalid field types: ${invalidStringPaths.join(', ')}`);
+  }
+  if (!isObject(selected)) {
+    throw new Error('Evidence decision selected_time_series_evidence must be an object.');
+  }
+  if (
+    !Array.isArray(decision.selection_rationale) ||
+    decision.selection_rationale.some((value) => typeof value !== 'string') ||
+    !Array.isArray(decision.known_limitations) ||
+    decision.known_limitations.some((value) => typeof value !== 'string')
+  ) {
+    throw new Error('Evidence decision rationale and limitations must be string arrays.');
+  }
+  if (
+    !Number.isInteger(selected.duration_seconds) ||
+    selected.duration_seconds <= 0 ||
+    !Number.isInteger(selected.observation_count) ||
+    selected.observation_count <= 0
+  ) {
+    throw new Error('Evidence decision duration_seconds and observation_count must be positive integers.');
+  }
+
+  return decision;
+}
+
+function candidateValue(candidate, snakeCase, camelCase) {
+  return candidate[snakeCase] ?? candidate[camelCase];
+}
+
+function resolveApprovedCandidate(candidates, decision, blueprint) {
+  if (decision.decision_status !== 'APPROVED') {
+    throw new Error(`Evidence decision must be APPROVED; found ${decision.decision_status}.`);
+  }
+  if (blueprint && decision.blueprint_id !== blueprint.blueprint_id) {
+    throw new Error(
+      `Evidence decision blueprint_id ${decision.blueprint_id} does not match ${blueprint.blueprint_id}.`,
+    );
+  }
+
+  const selected = decision.selected_time_series_evidence;
+  const candidate = candidates.find(
+    (entry) => candidateValue(entry, 'candidate_id', 'candidateId') === selected.candidate_id,
+  );
+  if (!candidate) {
+    throw new Error(
+      `Approved evidence candidate ${selected.candidate_id} is missing from generated candidates.`,
+    );
+  }
+  if (candidateValue(candidate, 'selection_status', 'selectionStatus') !== 'SHORTLISTED') {
+    throw new Error(
+      `Approved evidence candidate ${selected.candidate_id} is not in the generated shortlist.`,
+    );
+  }
+
+  const comparisons = [
+    ['sensor_id', 'sensorId'],
+    ['source_file', 'sourceFile'],
+    ['start_timestamp', 'startTimestamp'],
+    ['end_timestamp', 'endTimestamp'],
+    ['duration_seconds', 'durationSeconds'],
+    ['observation_count', 'observationCount'],
+  ];
+  const mismatches = comparisons.filter(
+    ([snakeCase, camelCase]) =>
+      String(candidateValue(candidate, snakeCase, camelCase)) !== String(selected[snakeCase]),
+  );
+  if (mismatches.length > 0) {
+    throw new Error(
+      `Approved evidence candidate ${selected.candidate_id} does not match generated candidate fields: ${mismatches
+        .map(([snakeCase]) => snakeCase)
+        .join(', ')}.`,
+    );
+  }
+
+  return candidate;
 }
 
 function parseSourceDateTime(dateRaw, timeRaw) {
@@ -802,9 +945,11 @@ module.exports = {
   generateCandidates,
   getBlueprintMetadata,
   loadBlueprint,
+  loadEvidenceDecision,
   parseExperimentActions,
   parseSourceDateTime,
   parseZenodoCsv,
+  resolveApprovedCandidate,
   selectSensorWinners,
   serializeCandidates,
   splitContinuousRuns,

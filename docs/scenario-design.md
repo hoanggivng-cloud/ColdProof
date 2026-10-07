@@ -307,6 +307,14 @@ Không yêu cầu:
 - toàn interval nằm trong 2–8°C,
 - excursion duration định trước.
 
+Candidate generation và human approval có hai source of truth khác nhau:
+
+- `candidate-zenodo-windows.csv` là machine-generated shortlist và không lưu approval.
+- `evidence-decision.json` là authoritative human decision artifact cho exact sensor/window.
+
+Blueprint chỉ giữ `selection_status = RESOLVED_BY_EVIDENCE_DECISION`
+và reference đến decision artifact; nó không duplicate exact approved interval.
+
 ---
 
 # 7. Replay Model
@@ -521,10 +529,15 @@ Nguyên tắc:
 
 # 14. Pending Decisions
 
+Time-series evidence đã được resolve qua
+`data/scenarios/design/evidence-decision.json` v1.0.0:
+
+- SENSOR09,
+- `2024-09-10T07:30:00–10:30:00`,
+- decision status `APPROVED`.
+
 Blueprint hiện chưa quyết định:
 
-- Zenodo sensor nào được chọn,
-- exact start/end timestamp,
 - exact segment boundaries,
 - Mendeley conditions nào được chọn,
 - exact excursion duration semantics,
@@ -538,47 +551,23 @@ Các quyết định này thuộc Evidence Selection và Design Refinement.
 
 # 15. Next Phase
 
+Evidence Selection v1 đã hoàn thành machine shortlist và human approval.
+
 Phase tiếp theo:
 
-## Evidence Selection v1
+## Scenario Materialization
 
-Deliverables:
+Inputs đã freeze cho phase này:
 
-### `condition-crosswalk.csv`
+- `scenario-blueprint.json` — design contract,
+- `candidate-zenodo-windows.csv` — deterministic machine shortlist,
+- `evidence-decision.json` — authoritative approved sensor/window,
+- `condition-crosswalk.csv` — Mendeley condition evidence,
+- evidence selection và human-review reports.
 
-Đối chiếu:
-
-C01–C13
-→ workbook metadata
-→ experimental configuration
-→ external/document references
-→ verification status
-
-### `candidate-zenodo-windows.csv`
-
-Profiling các candidate intervals:
-
-- sensor
-- start
-- end
-- duration
-- count
-- min
-- max
-- mean
-- variation
-- gaps
-- relevant experiment events
-- selection rationale
-
-### `evidence-selection-report.md`
-
-Giải thích:
-
-- candidate nào được xem xét,
-- candidate nào bị loại,
-- vì sao,
-- liệu blueprint có cần refinement hay không.
+Scenario Materialization phải đọc exact Zenodo interval từ
+`evidence-decision.json`, không infer approval từ candidate CSV
+và không copy exact selection trở lại blueprint.
 
 ---
 
