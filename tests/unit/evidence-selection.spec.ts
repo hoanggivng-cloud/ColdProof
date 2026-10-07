@@ -1,3 +1,4 @@
+import { execFileSync } from 'node:child_process';
 import { readFileSync } from 'node:fs';
 import path from 'node:path';
 
@@ -306,6 +307,92 @@ describe('evidence selection helpers', () => {
     expect(rows.some((row) => row.selection_status === 'SELECTED')).toBe(false);
     expect(sensor09?.selection_status).toBe('SHORTLISTED');
     expect(candidateCsv).not.toContain('contextcontinuity');
+  });
+
+  it('keeps v1 authoritative while the traceable v2 scope change remains proposed', () => {
+    const draft = JSON.parse(
+      readFileSync(
+        path.join(
+          process.cwd(),
+          'data/scenarios/design/evidence-decision-v2.draft.json',
+        ),
+        'utf8',
+      ),
+    ) as {
+      decision_version: string;
+      decision_status: string;
+      prior_decision_ref: string;
+      prior_decision_commit: string;
+      supersedes_prior_decision: boolean;
+      proposed_time_series_evidence: {
+        sensor_id: string;
+        source_file: string;
+        start_timestamp: string;
+        end_timestamp: string;
+        interval_semantics: string;
+        observation_count: number;
+        timezone_status: string;
+      };
+      reference_only_rule_comparison: {
+        assumption_id: string;
+        used_for_evidence_ranking: boolean;
+      };
+    };
+
+    expect(decision).toMatchObject({
+      decision_version: '1.0.0',
+      decision_status: 'APPROVED',
+    });
+    expect(blueprint.observed_evidence.time_series.evidence_decision_ref).toBe(
+      'data/scenarios/design/evidence-decision.json',
+    );
+    expect(draft).toMatchObject({
+      decision_version: '2.0.0',
+      decision_status: 'PROPOSED_PENDING_TEAM_REVIEW',
+      prior_decision_ref: 'data/scenarios/design/evidence-decision.json',
+      supersedes_prior_decision: false,
+      proposed_time_series_evidence: {
+        sensor_id: 'SENSOR09',
+        source_file: 'SENSOR09.CSV',
+        start_timestamp: '2024-09-10T06:00:00',
+        end_timestamp: '2024-09-10T10:00:00',
+        interval_semantics: '[start,end)',
+        observation_count: 2880,
+        timezone_status: 'UNKNOWN_SOURCE_LOCAL',
+      },
+      reference_only_rule_comparison: {
+        assumption_id: 'DEMO_2_8C',
+        used_for_evidence_ranking: false,
+      },
+    });
+
+    expect(draft.prior_decision_commit).toMatch(/^[0-9a-f]{40}$/);
+    expect(() =>
+      execFileSync(
+        'git',
+        ['cat-file', '-e', `${draft.prior_decision_commit}^{commit}`],
+        { stdio: 'pipe' },
+      ),
+    ).not.toThrow();
+
+    const priorDecisionAtCommit = JSON.parse(
+      execFileSync(
+        'git',
+        [
+          'show',
+          `${draft.prior_decision_commit}:data/scenarios/design/evidence-decision.json`,
+        ],
+        { encoding: 'utf8' },
+      ),
+    );
+    expect(priorDecisionAtCommit).toEqual(decision);
+
+    const candidateCsv = readFileSync(
+      path.join(process.cwd(), 'data/scenarios/design/candidate-zenodo-windows.csv'),
+      'utf8',
+    );
+    expect(candidateCsv).not.toContain('2024-09-10T06:00:00');
+    expect(candidateCsv).not.toContain('PROPOSED_PENDING_TEAM_REVIEW');
   });
 
   it('serializes the same candidate output on deterministic reruns', () => {
