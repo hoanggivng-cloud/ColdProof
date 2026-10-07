@@ -1,3 +1,4 @@
+import { execFileSync } from 'node:child_process';
 import { readFileSync } from 'node:fs';
 import path from 'node:path';
 
@@ -13,6 +14,7 @@ import {
   resolveApprovedCandidate,
   selectSensorWinners,
   serializeCandidates,
+  validateApprovedSourceInterval,
   type EvidenceRecord,
   type SelectionContext,
 } from '../../scripts/evidence-selection-core.cjs';
@@ -40,8 +42,16 @@ describe('evidence selection helpers', () => {
     'utf8',
   );
   const blueprint = loadBlueprint(blueprintText);
-  const decisionText = readFileSync(
+  const historicalDecisionText = readFileSync(
     path.join(process.cwd(), 'data/scenarios/design/evidence-decision.json'),
+    'utf8',
+  );
+  const historicalDecision = loadEvidenceDecision(historicalDecisionText);
+  const decisionText = readFileSync(
+    path.join(
+      process.cwd(),
+      blueprint.observed_evidence.time_series.evidence_decision_ref,
+    ),
     'utf8',
   );
   const decision = loadEvidenceDecision(decisionText);
@@ -134,14 +144,14 @@ describe('evidence selection helpers', () => {
       productProfileId: 'DEMO_2_8C',
       productProfileExcludedFromSelection: true,
       timeSeriesSelectionStatus: 'RESOLVED_BY_EVIDENCE_DECISION',
-      evidenceDecisionRef: 'data/scenarios/design/evidence-decision.json',
+      evidenceDecisionRef: 'data/scenarios/design/evidence-decision-v2.json',
     });
   });
 
   it('resolves blueprint selection through the authoritative evidence decision', () => {
     expect(blueprint.observed_evidence.time_series).toMatchObject({
       selection_status: 'RESOLVED_BY_EVIDENCE_DECISION',
-      evidence_decision_ref: 'data/scenarios/design/evidence-decision.json',
+      evidence_decision_ref: 'data/scenarios/design/evidence-decision-v2.json',
     });
     expect(blueprint.observed_evidence.time_series).not.toHaveProperty('exact_sensor_id');
     expect(blueprint.observed_evidence.time_series).not.toHaveProperty('exact_window_start');
@@ -212,10 +222,10 @@ describe('evidence selection helpers', () => {
     expect(changed).toEqual(baseline);
   });
 
-  it('loads the approved decision and resolves it against the generated shortlist', () => {
-    const selected = decision.selected_time_series_evidence;
+  it('resolves historical v1 against the generated shortlist', () => {
+    const selected = historicalDecision.selected_time_series_evidence;
     const candidate = {
-      candidate_id: selected.candidate_id,
+      candidate_id: selected.candidate_id!,
       sensor_id: selected.sensor_id,
       source_file: selected.source_file,
       start_timestamp: selected.start_timestamp,
@@ -225,19 +235,19 @@ describe('evidence selection helpers', () => {
       selection_status: 'SHORTLISTED',
     };
 
-    expect(resolveApprovedCandidate([candidate], decision, blueprint)).toBe(candidate);
+    expect(resolveApprovedCandidate([candidate], historicalDecision, blueprint)).toBe(candidate);
   });
 
-  it('fails when the approved candidate is absent from the generated shortlist', () => {
-    expect(() => resolveApprovedCandidate([], decision, blueprint)).toThrow(
+  it('fails when the historical v1 candidate is absent from the generated shortlist', () => {
+    expect(() => resolveApprovedCandidate([], historicalDecision, blueprint)).toThrow(
       'is missing from generated candidates',
     );
   });
 
-  it('fails when the approved sensor or window differs from the generated candidate', () => {
-    const selected = decision.selected_time_series_evidence;
+  it('fails when the historical v1 sensor or window differs from its generated candidate', () => {
+    const selected = historicalDecision.selected_time_series_evidence;
     const mismatched = {
-      candidate_id: selected.candidate_id,
+      candidate_id: selected.candidate_id!,
       sensor_id: 'SENSOR08',
       source_file: selected.source_file,
       start_timestamp: '2024-09-10T06:00:00',
@@ -247,7 +257,7 @@ describe('evidence selection helpers', () => {
       selection_status: 'SHORTLISTED',
     };
 
-    expect(() => resolveApprovedCandidate([mismatched], decision, blueprint)).toThrow(
+    expect(() => resolveApprovedCandidate([mismatched], historicalDecision, blueprint)).toThrow(
       'does not match generated candidate fields: sensor_id, start_timestamp',
     );
   });
@@ -273,7 +283,7 @@ describe('evidence selection helpers', () => {
     );
     const shortlisted = winners.find((candidate) => candidate.selectionStatus === 'SHORTLISTED');
     expect(shortlisted).toBeDefined();
-    const overlayDecision = structuredClone(decision);
+    const overlayDecision = structuredClone(historicalDecision);
     Object.assign(overlayDecision.selected_time_series_evidence, {
       candidate_id: shortlisted?.candidateId,
       sensor_id: shortlisted?.sensorId,
@@ -300,12 +310,103 @@ describe('evidence selection helpers', () => {
     const rows = lines.map((line) =>
       Object.fromEntries(headers.map((header, index) => [header, line.split(',')[index]])),
     );
-    const sensor09 = rows.find((row) => row.candidate_id === decision.selected_time_series_evidence.candidate_id);
+    const sensor09 = rows.find(
+      (row) =>
+        row.candidate_id === historicalDecision.selected_time_series_evidence.candidate_id,
+    );
 
     expect(rows.filter((row) => row.selection_status === 'SHORTLISTED')).toHaveLength(5);
     expect(rows.some((row) => row.selection_status === 'SELECTED')).toBe(false);
     expect(sensor09?.selection_status).toBe('SHORTLISTED');
     expect(candidateCsv).not.toContain('contextcontinuity');
+  });
+
+  it('promotes v2 while preserving the exact v1 artifact as historical provenance', () => {
+    expect(historicalDecision).toMatchObject({
+      decision_version: '1.0.0',
+      decision_status: 'APPROVED',
+      selected_time_series_evidence: {
+        sensor_id: 'SENSOR09',
+        start_timestamp: '2024-09-10T07:30:00',
+        end_timestamp: '2024-09-10T10:30:00',
+        observation_count: 2161,
+      },
+    });
+    expect(blueprint.observed_evidence.time_series.evidence_decision_ref).toBe(
+      'data/scenarios/design/evidence-decision-v2.json',
+    );
+    expect(decision).toMatchObject({
+      decision_version: '2.0.0',
+      decision_status: 'APPROVED',
+      decision_origin: 'TEAM_APPROVED_DESIGN_REFINEMENT',
+      prior_decision_ref: 'data/scenarios/design/evidence-decision.json',
+      supersedes_prior_decision: true,
+      selected_time_series_evidence: {
+        sensor_id: 'SENSOR09',
+        source_file: 'SENSOR09.CSV',
+        start_timestamp: '2024-09-10T06:00:00',
+        end_timestamp: '2024-09-10T10:00:00',
+        interval_semantics: '[start,end)',
+        observation_count: 2880,
+        timezone_status: 'UNKNOWN_SOURCE_LOCAL',
+      },
+      reference_only_rule_comparison: {
+        assumption_id: 'DEMO_2_8C',
+        used_for_evidence_ranking: false,
+      },
+    });
+
+    expect(decision.prior_decision_commit).toMatch(/^[0-9a-f]{40}$/);
+    expect(() =>
+      execFileSync(
+        'git',
+        ['cat-file', '-e', `${decision.prior_decision_commit}^{commit}`],
+        { stdio: 'pipe' },
+      ),
+    ).not.toThrow();
+
+    const priorDecisionAtCommit = JSON.parse(
+      execFileSync(
+        'git',
+        [
+          'show',
+          `${decision.prior_decision_commit}:data/scenarios/design/evidence-decision.json`,
+        ],
+        { encoding: 'utf8' },
+      ),
+    );
+    expect(priorDecisionAtCommit).toEqual(historicalDecision);
+
+    const candidateCsv = readFileSync(
+      path.join(process.cwd(), 'data/scenarios/design/candidate-zenodo-windows.csv'),
+      'utf8',
+    );
+    expect(candidateCsv).not.toContain('2024-09-10T06:00:00');
+    expect(candidateCsv).not.toContain('TEAM_APPROVED_DESIGN_REFINEMENT');
+  });
+
+  it('validates an approved design-refinement interval against source evidence', () => {
+    const source = parseZenodoCsv(buildSyntheticSource(), 'SENSOR06.CSV');
+    const sourceDecision = structuredClone(decision);
+    Object.assign(sourceDecision.selected_time_series_evidence, {
+      sensor_id: 'SENSOR06',
+      source_file: 'SENSOR06.CSV',
+      start_timestamp: '2024-09-02T08:00:00',
+      end_timestamp: '2024-09-02T10:00:00',
+      duration_seconds: 7200,
+      observation_count: 1440,
+    });
+
+    const validated = validateApprovedSourceInterval(source, sourceDecision, blueprint);
+
+    expect(validated.records).toHaveLength(1440);
+    expect(validated.firstRecord.timestamp).toBe('2024-09-02T08:00:00');
+    expect(validated.lastRecord.timestamp).toBe('2024-09-02T09:59:55');
+    expect(validated.continuity).toMatchObject({
+      internalMissingIntervalCount: 0,
+      duplicateTimestampCount: 0,
+      outOfOrderCount: 0,
+    });
   });
 
   it('serializes the same candidate output on deterministic reruns', () => {

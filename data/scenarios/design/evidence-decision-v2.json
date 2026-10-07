@@ -1,0 +1,127 @@
+{
+  "decision_version": "2.0.0",
+  "blueprint_id": "CP-DEMO-BLUEPRINT-001",
+  "decision_status": "APPROVED",
+  "decision_origin": "TEAM_APPROVED_DESIGN_REFINEMENT",
+
+  "prior_decision_ref": "data/scenarios/design/evidence-decision.json",
+  "prior_decision_commit": "ef3a1cc7bc996600f3febda2154a5e5dc68cfa9e",
+  "supersedes_prior_decision": true,
+
+  "selected_time_series_evidence": {
+    "sensor_id": "SENSOR09",
+    "source_file": "SENSOR09.CSV",
+    "start_timestamp": "2024-09-10T06:00:00",
+    "end_timestamp": "2024-09-10T10:00:00",
+    "interval_semantics": "[start,end)",
+    "duration_seconds": 14400,
+    "observation_count": 2880,
+    "selection_origin": "TEAM_APPROVED_DESIGN_REFINEMENT",
+    "timezone_status": "UNKNOWN_SOURCE_LOCAL"
+  },
+
+  "source_verification": {
+    "source_id": "ZEN-RAW-S09",
+    "source_checksum_sha256": "c50253f87996f050a0bbda5eeb383775f077b1db8ccf1b38ea52e78498f2a2ed",
+    "expected_interval_seconds": 5,
+    "first_included_source_ref": "row:11522",
+    "last_included_source_ref": "row:14401",
+    "first_included_timestamp": "2024-09-10T06:00:00",
+    "last_included_timestamp": "2024-09-10T09:59:55",
+    "internal_missing_interval_count": 0,
+    "expected_missing_sample_count": 0,
+    "duplicate_timestamp_count": 0,
+    "out_of_order_count": 0,
+    "temperature_min_c": 5.6,
+    "temperature_max_c": 10.9
+  },
+
+  "reference_only_rule_comparison": {
+    "assumption_id": "DEMO_2_8C",
+    "rule": "temperature_c > 8",
+    "used_for_evidence_ranking": false,
+    "samples_above_upper_threshold": 711,
+    "samples_below_lower_threshold": 0,
+    "observed_high_run_count": 6,
+    "major_observed_high_run": {
+      "start_timestamp": "2024-09-10T08:05:45",
+      "end_timestamp": "2024-09-10T09:01:30",
+      "observation_count": 670,
+      "maximum_temperature_c": 10.9,
+      "temporal_context": "The run continues after the Door closed source annotation starts at 08:30; this is temporal overlap, not a causal claim."
+    },
+    "interpretation": "DESIGN_SUITABILITY_COMPARISON_ONLY_NOT_COMPLIANCE_EVALUATION"
+  },
+
+  "comparison_to_prior_decision": {
+    "historical_approved_representation": {
+      "start_timestamp": "2024-09-10T07:30:00",
+      "end_timestamp": "2024-09-10T10:30:00",
+      "interval_semantics": "[start,end]",
+      "observation_count": 2161
+    },
+    "scenario_materialization_interpretation": {
+      "start_timestamp": "2024-09-10T07:30:00",
+      "end_timestamp": "2024-09-10T10:30:00",
+      "interval_semantics": "[start,end)",
+      "observation_count": 2160,
+      "last_included_timestamp": "2024-09-10T10:29:55",
+      "end_boundary_source_record": {
+        "source_ref": "row:14762",
+        "timestamp": "2024-09-10T10:30:00",
+        "status": "PRESENT_IN_FROZEN_SOURCE_EXCLUDED_BY_HALF_OPEN_INTERVAL"
+      }
+    }
+  },
+
+  "observed_source_event_context": {
+    "semantics": "REAL_PUBLIC_DATA_EXPERIMENT_ANNOTATIONS_WITH_TEMPORAL_OVERLAP_ONLY",
+    "events_overlapping_selected_interval": [
+      {
+        "source_ref": "experiment_actions.csv:row:116",
+        "event_type": "Door opened",
+        "start_timestamp": "2024-09-10T08:00:00",
+        "end_timestamp": "2024-09-10T08:30:00"
+      },
+      {
+        "source_ref": "experiment_actions.csv:row:117",
+        "event_type": "Products in",
+        "start_timestamp": "2024-09-10T08:00:00",
+        "end_timestamp": "2024-09-10T08:00:00"
+      },
+      {
+        "source_ref": "experiment_actions.csv:row:118",
+        "event_type": "Door closed",
+        "start_timestamp": "2024-09-10T08:30:00",
+        "end_timestamp": "2024-09-10T10:00:00"
+      }
+    ],
+    "next_boundary_event": {
+      "source_ref": "experiment_actions.csv:row:119",
+      "event_type": "Door opened",
+      "start_timestamp": "2024-09-10T10:00:00",
+      "end_timestamp": "2024-09-10T10:30:00",
+      "included_in_selected_interval": false
+    }
+  },
+
+  "selection_rationale": [
+    "Provides a longer observed pre-variation baseline.",
+    "Uses one continuous interval from one sensor and one frozen source file.",
+    "Contains interpretable observed thermal variation without modifying measurements.",
+    "Includes observed post-variation behavior before a new source event begins at the excluded 10:00 boundary.",
+    "Addresses benchmark and demonstration design suitability only."
+  ],
+
+  "known_limitations": [
+    "The source environment is a cold storage room, not a pharmaceutical shipment.",
+    "Source timestamps do not have a verified timezone.",
+    "Observed experiment events are not logistics handovers or shipment events.",
+    "Temporal overlap does not establish a causal relationship between source events and temperature.",
+    "DEMO_2_8C is an assumption used only for reference comparison and did not affect candidate ranking.",
+    "This decision is not a compliance evaluation and does not define an excursion result."
+  ],
+
+  "secondary_case_note": "The superseded 07:30-10:30 interval may remain useful as a secondary right-censored regression case; no such case is implemented by this decision.",
+  "next_step": "SCENARIO_MATERIALIZATION"
+}
