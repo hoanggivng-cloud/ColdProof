@@ -23,6 +23,22 @@ export class SegmentDto {
   @ApiPropertyOptional() source_id?: string;
   @ApiProperty({ example: 'stable_window_A' }) selector!: string;
   @ApiPropertyOptional({ example: 'HANDOVER-01' }) handover_id?: string | null;
+  @ApiPropertyOptional({ example: 'SENSOR06' }) device_alias?: string;
+  @ApiProperty({ example: 'SYNTHETIC' }) business_context_origin!: string;
+}
+
+export class TimelineEventDto {
+  @ApiProperty({ example: 'TL-01' }) id!: string;
+  @ApiProperty({ example: '2026-10-01T08:00:00.000Z' }) timestamp!: string;
+  @ApiProperty({
+    enum: ['SEGMENT_START', 'HANDOVER', 'DOOR_OPEN', 'EXCURSION_START', 'EXCURSION_END', 'SEGMENT_END'],
+    example: 'HANDOVER',
+  })
+  event_type!: 'SEGMENT_START' | 'HANDOVER' | 'DOOR_OPEN' | 'EXCURSION_START' | 'EXCURSION_END' | 'SEGMENT_END';
+  @ApiPropertyOptional({ example: 'HANDOVER-01' }) handover_id?: string;
+  @ApiPropertyOptional({ example: 'LEG-02' }) segment_id?: string;
+  @ApiPropertyOptional({ example: 'SENSOR06' }) device_alias?: string;
+  @ApiProperty({ example: 'Handover transfer from storage room to transport vehicle' }) detail!: string;
   @ApiProperty({ example: 'SYNTHETIC' }) business_context_origin!: string;
 }
 
@@ -34,6 +50,8 @@ export class BatchDetailDto {
   @ApiPropertyOptional({ example: 2.0 }) lower_threshold?: number;
   @ApiPropertyOptional({ example: 8.0 }) upper_threshold?: number;
   @ApiProperty({ type: [SegmentDto] }) segments!: SegmentDto[];
+  @ApiProperty({ type: [TimelineEventDto] }) timeline!: TimelineEventDto[];
+  @ApiPropertyOptional({ type: [TimelineEventDto] }) operational_events?: TimelineEventDto[];
   @ApiProperty() created_at!: Date;
 }
 
@@ -66,4 +84,3 @@ export class BatchExceptionsDto {
   @ApiProperty() exceptions!: any[];
   @ApiProperty() quality_issues!: any[];
 }
-

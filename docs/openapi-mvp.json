@@ -1,0 +1,2118 @@
+{
+  "openapi": "3.0.0",
+  "paths": {
+    "/api/health": {
+      "get": {
+        "operationId": "HealthController_health",
+        "parameters": [],
+        "responses": {
+          "200": {
+            "description": ""
+          }
+        },
+        "tags": [
+          "Health"
+        ]
+      }
+    },
+    "/api/auth/status": {
+      "get": {
+        "operationId": "AuthController_status",
+        "parameters": [],
+        "responses": {
+          "200": {
+            "description": "",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/AuthStatusDto"
+                }
+              }
+            }
+          }
+        },
+        "summary": "Get auth module status",
+        "tags": [
+          "auth"
+        ]
+      }
+    },
+    "/api/auth/login": {
+      "post": {
+        "operationId": "AuthController_login",
+        "parameters": [],
+        "requestBody": {
+          "required": true,
+          "content": {
+            "application/json": {
+              "schema": {
+                "$ref": "#/components/schemas/LoginDto"
+              }
+            }
+          }
+        },
+        "responses": {
+          "200": {
+            "description": "",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/LoginResponseDto"
+                }
+              }
+            }
+          }
+        },
+        "summary": "Demo login with registered email (e.g. qa@coldproof.local, operator@coldproof.local)",
+        "tags": [
+          "auth"
+        ]
+      }
+    },
+    "/api/auth/me": {
+      "get": {
+        "operationId": "AuthController_me",
+        "parameters": [],
+        "responses": {
+          "200": {
+            "description": "",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/AuthUserDto"
+                }
+              }
+            }
+          }
+        },
+        "summary": "Get current authenticated user profile and active role",
+        "tags": [
+          "auth"
+        ]
+      }
+    },
+    "/api/users/status": {
+      "get": {
+        "operationId": "UsersController_status",
+        "parameters": [],
+        "responses": {
+          "200": {
+            "description": "",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/UsersStatusDto"
+                }
+              }
+            }
+          }
+        },
+        "summary": "Get users module status",
+        "tags": [
+          "users"
+        ]
+      }
+    },
+    "/api/users": {
+      "get": {
+        "operationId": "UsersController_findAll",
+        "parameters": [],
+        "responses": {
+          "200": {
+            "description": "",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "type": "array",
+                  "items": {
+                    "$ref": "#/components/schemas/UserDto"
+                  }
+                }
+              }
+            }
+          }
+        },
+        "summary": "List all registered users and RBAC roles",
+        "tags": [
+          "users"
+        ]
+      }
+    },
+    "/api/users/{id}": {
+      "get": {
+        "operationId": "UsersController_findOne",
+        "parameters": [
+          {
+            "name": "id",
+            "required": true,
+            "in": "path",
+            "description": "User UUID",
+            "schema": {
+              "example": "00000000-0000-0000-0000-000000000001",
+              "type": "string"
+            }
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": ""
+          }
+        },
+        "summary": "Get user details by ID",
+        "tags": [
+          "users"
+        ]
+      }
+    },
+    "/api/sources/status": {
+      "get": {
+        "operationId": "SourcesController_status",
+        "parameters": [],
+        "responses": {
+          "200": {
+            "description": ""
+          }
+        },
+        "tags": [
+          "sources"
+        ]
+      }
+    },
+    "/api/sources": {
+      "get": {
+        "operationId": "SourcesController_findAll",
+        "parameters": [],
+        "responses": {
+          "200": {
+            "description": ""
+          }
+        },
+        "summary": "List all registered source assets",
+        "tags": [
+          "sources"
+        ]
+      },
+      "post": {
+        "operationId": "SourcesController_create",
+        "parameters": [],
+        "requestBody": {
+          "required": true,
+          "content": {
+            "application/json": {
+              "schema": {
+                "$ref": "#/components/schemas/CreateSourceDto"
+              }
+            }
+          }
+        },
+        "responses": {
+          "201": {
+            "description": ""
+          }
+        },
+        "summary": "Register immutable source metadata; content upload/verification TODO",
+        "tags": [
+          "sources"
+        ]
+      }
+    },
+    "/api/sources/{id}": {
+      "get": {
+        "operationId": "SourcesController_findOne",
+        "parameters": [
+          {
+            "name": "id",
+            "required": true,
+            "in": "path",
+            "schema": {
+              "type": "string"
+            }
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": ""
+          }
+        },
+        "tags": [
+          "sources"
+        ]
+      }
+    },
+    "/api/imports/status": {
+      "get": {
+        "operationId": "ImportsController_status",
+        "parameters": [],
+        "responses": {
+          "200": {
+            "description": ""
+          }
+        },
+        "tags": [
+          "imports"
+        ]
+      }
+    },
+    "/api/imports": {
+      "post": {
+        "operationId": "ImportsController_create",
+        "parameters": [],
+        "requestBody": {
+          "required": true,
+          "content": {
+            "application/json": {
+              "schema": {
+                "$ref": "#/components/schemas/CreateImportDto"
+              }
+            }
+          }
+        },
+        "responses": {
+          "201": {
+            "description": ""
+          }
+        },
+        "summary": "Create queued metadata only; worker is TODO",
+        "tags": [
+          "imports"
+        ]
+      }
+    },
+    "/api/imports/{id}": {
+      "get": {
+        "operationId": "ImportsController_findOne",
+        "parameters": [
+          {
+            "name": "id",
+            "required": true,
+            "in": "path",
+            "schema": {
+              "type": "string"
+            }
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": ""
+          }
+        },
+        "tags": [
+          "imports"
+        ]
+      }
+    },
+    "/api/adapters/status": {
+      "get": {
+        "operationId": "AdaptersController_status",
+        "parameters": [],
+        "responses": {
+          "200": {
+            "description": "",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/AdaptersStatusDto"
+                }
+              }
+            }
+          }
+        },
+        "tags": [
+          "adapters"
+        ]
+      }
+    },
+    "/api/parsers/status": {
+      "get": {
+        "operationId": "ParsersController_status",
+        "parameters": [],
+        "responses": {
+          "200": {
+            "description": "",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/ParsersStatusDto"
+                }
+              }
+            }
+          }
+        },
+        "tags": [
+          "parsers"
+        ]
+      }
+    },
+    "/api/normalization/status": {
+      "get": {
+        "operationId": "NormalizationController_status",
+        "parameters": [],
+        "responses": {
+          "200": {
+            "description": "",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/NormalizationStatusDto"
+                }
+              }
+            }
+          }
+        },
+        "tags": [
+          "normalization"
+        ]
+      }
+    },
+    "/api/data-quality/status": {
+      "get": {
+        "operationId": "DataQualityController_status",
+        "parameters": [],
+        "responses": {
+          "200": {
+            "description": "",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/DataQualityStatusDto"
+                }
+              }
+            }
+          }
+        },
+        "tags": [
+          "data-quality"
+        ]
+      }
+    },
+    "/api/scenarios/status": {
+      "get": {
+        "operationId": "ScenariosController_status",
+        "parameters": [],
+        "responses": {
+          "200": {
+            "description": "",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/ScenariosStatusDto"
+                }
+              }
+            }
+          }
+        },
+        "summary": "Get scenarios module status",
+        "tags": [
+          "scenarios"
+        ]
+      }
+    },
+    "/api/scenarios": {
+      "get": {
+        "operationId": "ScenariosController_findAll",
+        "parameters": [],
+        "responses": {
+          "200": {
+            "description": "",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "type": "array",
+                  "items": {
+                    "$ref": "#/components/schemas/ScenarioResponseDto"
+                  }
+                }
+              }
+            }
+          }
+        },
+        "summary": "List all available test scenarios (S01-S06)",
+        "tags": [
+          "scenarios"
+        ]
+      }
+    },
+    "/api/scenarios/{id}": {
+      "get": {
+        "operationId": "ScenariosController_findOne",
+        "parameters": [
+          {
+            "name": "id",
+            "required": true,
+            "in": "path",
+            "description": "Scenario ID",
+            "schema": {
+              "example": "S02",
+              "type": "string"
+            }
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/ScenarioResponseDto"
+                }
+              }
+            }
+          }
+        },
+        "summary": "Get scenario manifest and expected outputs by ID",
+        "tags": [
+          "scenarios"
+        ]
+      }
+    },
+    "/api/scenarios/{id}/build": {
+      "post": {
+        "operationId": "ScenariosController_build",
+        "parameters": [
+          {
+            "name": "id",
+            "required": true,
+            "in": "path",
+            "description": "Scenario ID to build",
+            "schema": {
+              "example": "S02",
+              "type": "string"
+            }
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/ScenarioBuildResultDto"
+                }
+              }
+            }
+          }
+        },
+        "summary": "Build scenario from manifest (creates batch, legs, and mapping)",
+        "tags": [
+          "scenarios"
+        ]
+      }
+    },
+    "/api/exceptions/status": {
+      "get": {
+        "operationId": "ExceptionsController_status",
+        "parameters": [],
+        "responses": {
+          "200": {
+            "description": "",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/ExceptionsStatusDto"
+                }
+              }
+            }
+          }
+        },
+        "summary": "Get exceptions module status",
+        "tags": [
+          "exceptions"
+        ]
+      }
+    },
+    "/api/exceptions": {
+      "get": {
+        "operationId": "ExceptionsController_findAll",
+        "parameters": [],
+        "responses": {
+          "200": {
+            "description": "",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "type": "array",
+                  "items": {
+                    "$ref": "#/components/schemas/ExceptionResponseDto"
+                  }
+                }
+              }
+            }
+          }
+        },
+        "summary": "List all detected exceptions across batches",
+        "tags": [
+          "exceptions"
+        ]
+      }
+    },
+    "/api/exceptions/{id}": {
+      "get": {
+        "operationId": "ExceptionsController_findOne",
+        "parameters": [
+          {
+            "name": "id",
+            "required": true,
+            "in": "path",
+            "description": "Exception UUID",
+            "schema": {
+              "example": "e1111111-1111-1111-1111-111111111111",
+              "type": "string"
+            }
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": ""
+          }
+        },
+        "summary": "Get exception details and review history",
+        "tags": [
+          "exceptions"
+        ]
+      }
+    },
+    "/api/exceptions/{id}/review": {
+      "post": {
+        "operationId": "ExceptionsController_review",
+        "parameters": [
+          {
+            "name": "id",
+            "required": true,
+            "in": "path",
+            "description": "Exception UUID",
+            "schema": {
+              "example": "e1111111-1111-1111-1111-111111111111",
+              "type": "string"
+            }
+          }
+        ],
+        "requestBody": {
+          "required": true,
+          "content": {
+            "application/json": {
+              "schema": {
+                "$ref": "#/components/schemas/ReviewActionDto"
+              }
+            }
+          }
+        },
+        "responses": {
+          "200": {
+            "description": "",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/ReviewResponseDto"
+                }
+              }
+            }
+          },
+          "401": {
+            "description": "Missing or invalid authentication token"
+          },
+          "403": {
+            "description": "Insufficient permissions (Operator cannot review)"
+          }
+        },
+        "security": [
+          {
+            "bearer": []
+          }
+        ],
+        "summary": "Submit QA review action, notes, and corrective action (Restricted to QA_REVIEWER & ADMIN)",
+        "tags": [
+          "exceptions"
+        ]
+      }
+    },
+    "/api/batches/status": {
+      "get": {
+        "operationId": "BatchesController_status",
+        "parameters": [],
+        "responses": {
+          "200": {
+            "description": "",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/BatchesStatusDto"
+                }
+              }
+            }
+          }
+        },
+        "summary": "Get batches module status",
+        "tags": [
+          "batches"
+        ]
+      }
+    },
+    "/api/batches": {
+      "get": {
+        "operationId": "BatchesController_findAll",
+        "parameters": [],
+        "responses": {
+          "200": {
+            "description": "",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "type": "array",
+                  "items": {
+                    "$ref": "#/components/schemas/BatchSummaryDto"
+                  }
+                }
+              }
+            }
+          }
+        },
+        "summary": "List all demo batches with health indicators",
+        "tags": [
+          "batches"
+        ]
+      }
+    },
+    "/api/batches/{id}": {
+      "get": {
+        "operationId": "BatchesController_findOne",
+        "parameters": [
+          {
+            "name": "id",
+            "required": true,
+            "in": "path",
+            "description": "Batch ID",
+            "schema": {
+              "example": "CP-DEMO-001",
+              "type": "string"
+            }
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/BatchDetailDto"
+                }
+              }
+            }
+          }
+        },
+        "summary": "Get batch evidence view including segments and timeline",
+        "tags": [
+          "batches"
+        ]
+      }
+    },
+    "/api/batches/{id}/measurements": {
+      "get": {
+        "operationId": "BatchesController_findMeasurements",
+        "parameters": [
+          {
+            "name": "id",
+            "required": true,
+            "in": "path",
+            "description": "Batch ID",
+            "schema": {
+              "example": "CP-DEMO-001",
+              "type": "string"
+            }
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "type": "array",
+                  "items": {
+                    "$ref": "#/components/schemas/CanonicalMeasurementDto"
+                  }
+                }
+              }
+            }
+          }
+        },
+        "summary": "Get canonical measurement stream for a batch",
+        "tags": [
+          "batches"
+        ]
+      }
+    },
+    "/api/batches/{id}/exceptions": {
+      "get": {
+        "operationId": "BatchesController_findExceptions",
+        "parameters": [
+          {
+            "name": "id",
+            "required": true,
+            "in": "path",
+            "description": "Batch ID",
+            "schema": {
+              "example": "CP-DEMO-001",
+              "type": "string"
+            }
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/BatchExceptionsDto"
+                }
+              }
+            }
+          }
+        },
+        "summary": "Get exceptions and quality issues for a batch",
+        "tags": [
+          "batches"
+        ]
+      }
+    },
+    "/api/batches/{id}/reports": {
+      "post": {
+        "operationId": "BatchesController_generateReport",
+        "parameters": [
+          {
+            "name": "id",
+            "required": true,
+            "in": "path",
+            "description": "Batch ID",
+            "schema": {
+              "example": "CP-DEMO-001",
+              "type": "string"
+            }
+          }
+        ],
+        "responses": {
+          "201": {
+            "description": ""
+          }
+        },
+        "summary": "Generate evidence report package for a batch",
+        "tags": [
+          "batches"
+        ]
+      }
+    },
+    "/api/qa-reviews/status": {
+      "get": {
+        "operationId": "QAReviewsController_status",
+        "parameters": [],
+        "responses": {
+          "200": {
+            "description": "",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/QAReviewsStatusDto"
+                }
+              }
+            }
+          }
+        },
+        "summary": "Get QA reviews module status",
+        "tags": [
+          "qa-reviews"
+        ]
+      }
+    },
+    "/api/qa-reviews": {
+      "get": {
+        "operationId": "QAReviewsController_findAll",
+        "parameters": [],
+        "responses": {
+          "200": {
+            "description": "",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "type": "array",
+                  "items": {
+                    "$ref": "#/components/schemas/QAReviewItemDto"
+                  }
+                }
+              }
+            }
+          }
+        },
+        "summary": "List all QA review decisions",
+        "tags": [
+          "qa-reviews"
+        ]
+      }
+    },
+    "/api/qa-reviews/{id}": {
+      "get": {
+        "operationId": "QAReviewsController_findOne",
+        "parameters": [
+          {
+            "name": "id",
+            "required": true,
+            "in": "path",
+            "description": "Review UUID",
+            "schema": {
+              "example": "88888888-8888-8888-8888-888888888881",
+              "type": "string"
+            }
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": ""
+          }
+        },
+        "summary": "Get QA review details by ID",
+        "tags": [
+          "qa-reviews"
+        ]
+      }
+    },
+    "/api/reports/status": {
+      "get": {
+        "operationId": "ReportsController_status",
+        "parameters": [],
+        "responses": {
+          "200": {
+            "description": "",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/ReportsStatusDto"
+                }
+              }
+            }
+          }
+        },
+        "summary": "Get reports module status",
+        "tags": [
+          "reports"
+        ]
+      }
+    },
+    "/api/reports": {
+      "get": {
+        "operationId": "ReportsController_findAll",
+        "parameters": [],
+        "responses": {
+          "200": {
+            "description": "",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "type": "array",
+                  "items": {
+                    "$ref": "#/components/schemas/ReportSummaryDto"
+                  }
+                }
+              }
+            }
+          }
+        },
+        "summary": "List all generated evidence reports",
+        "tags": [
+          "reports"
+        ]
+      }
+    },
+    "/api/reports/{id}": {
+      "get": {
+        "operationId": "ReportsController_findOne",
+        "parameters": [
+          {
+            "name": "id",
+            "required": true,
+            "in": "path",
+            "description": "Report UUID",
+            "schema": {
+              "example": "77777777-7777-7777-7777-777777777771",
+              "type": "string"
+            }
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": ""
+          }
+        },
+        "summary": "Get report metadata and provenance hash",
+        "tags": [
+          "reports"
+        ]
+      }
+    },
+    "/api/reports/{id}/download": {
+      "get": {
+        "operationId": "ReportsController_download",
+        "parameters": [
+          {
+            "name": "id",
+            "required": true,
+            "in": "path",
+            "description": "Report UUID",
+            "schema": {
+              "example": "77777777-7777-7777-7777-777777777771",
+              "type": "string"
+            }
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": ""
+          }
+        },
+        "summary": "Download JSON evidence package",
+        "tags": [
+          "reports"
+        ]
+      }
+    },
+    "/api/audit/status": {
+      "get": {
+        "operationId": "AuditController_status",
+        "parameters": [],
+        "responses": {
+          "200": {
+            "description": "",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/AuditStatusDto"
+                }
+              }
+            }
+          }
+        },
+        "summary": "Get audit module status",
+        "tags": [
+          "audit"
+        ]
+      }
+    },
+    "/api/audit": {
+      "get": {
+        "operationId": "AuditController_findAll",
+        "parameters": [],
+        "responses": {
+          "200": {
+            "description": "",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "type": "array",
+                  "items": {
+                    "$ref": "#/components/schemas/AuditEventDto"
+                  }
+                }
+              }
+            }
+          }
+        },
+        "summary": "List immutable audit trail events",
+        "tags": [
+          "audit"
+        ]
+      }
+    }
+  },
+  "info": {
+    "title": "ColdProof API • Cold Chain Evidence Platform",
+    "description": "APEX • GenD Arena 2026 • Technical Validation Specification v3.2.\n\nEvidence workflow for pharma cold chain:\n- Ingestion & adapters (Zenodo, Mendeley, Vendor-inspired formats)\n- Canonical normalization with immutable provenance\n- Batch-centric timeline & segment mapping (CP-DEMO-001)\n- Exception engine (DEMO_2_8C product profile)\n- QA human-in-the-loop review actions\n- Evidence package reports with SHA-256 integrity hash\n- Immutable audit trail",
+    "version": "3.2.0",
+    "contact": {}
+  },
+  "tags": [
+    {
+      "name": "sources",
+      "description": "Source asset registry and immutable provenance metadata"
+    },
+    {
+      "name": "imports",
+      "description": "Ingestion orchestration and parser outcome summaries"
+    },
+    {
+      "name": "scenarios",
+      "description": "Scenario manifests (S01-S06) and scenario builder"
+    },
+    {
+      "name": "batches",
+      "description": "Batch-centric evidence view, canonical streams, and exceptions"
+    },
+    {
+      "name": "exceptions",
+      "description": "Threshold excursions, missing evidence, and QA review"
+    },
+    {
+      "name": "qa-reviews",
+      "description": "QA human-in-the-loop review records"
+    },
+    {
+      "name": "reports",
+      "description": "Verifiable evidence package reports and integrity hashes"
+    },
+    {
+      "name": "audit",
+      "description": "Immutable append-only audit trail"
+    },
+    {
+      "name": "users",
+      "description": "User directory and RBAC assignments"
+    },
+    {
+      "name": "auth",
+      "description": "Demo authentication and role management"
+    },
+    {
+      "name": "health",
+      "description": "System health check and database connectivity"
+    }
+  ],
+  "servers": [],
+  "components": {
+    "securitySchemes": {
+      "bearer": {
+        "scheme": "bearer",
+        "bearerFormat": "JWT",
+        "type": "http"
+      }
+    },
+    "schemas": {
+      "AuthStatusDto": {
+        "type": "object",
+        "properties": {
+          "module": {
+            "type": "string",
+            "example": "auth"
+          },
+          "status": {
+            "type": "string",
+            "enum": [
+              "READY",
+              "TODO"
+            ]
+          },
+          "message": {
+            "type": "string"
+          }
+        },
+        "required": [
+          "module",
+          "status",
+          "message"
+        ]
+      },
+      "LoginDto": {
+        "type": "object",
+        "properties": {
+          "email": {
+            "type": "string",
+            "example": "qa@coldproof.local"
+          },
+          "password": {
+            "type": "string",
+            "example": "demo123"
+          }
+        },
+        "required": [
+          "email"
+        ]
+      },
+      "AuthUserDto": {
+        "type": "object",
+        "properties": {
+          "id": {
+            "type": "string"
+          },
+          "email": {
+            "type": "string"
+          },
+          "role": {
+            "type": "string"
+          }
+        },
+        "required": [
+          "id",
+          "email",
+          "role"
+        ]
+      },
+      "LoginResponseDto": {
+        "type": "object",
+        "properties": {
+          "access_token": {
+            "type": "string",
+            "example": "mock-jwt-token-demo"
+          },
+          "user": {
+            "$ref": "#/components/schemas/AuthUserDto"
+          }
+        },
+        "required": [
+          "access_token",
+          "user"
+        ]
+      },
+      "UsersStatusDto": {
+        "type": "object",
+        "properties": {
+          "module": {
+            "type": "string",
+            "example": "users"
+          },
+          "status": {
+            "type": "string",
+            "enum": [
+              "READY",
+              "TODO"
+            ]
+          },
+          "message": {
+            "type": "string"
+          }
+        },
+        "required": [
+          "module",
+          "status",
+          "message"
+        ]
+      },
+      "UserDto": {
+        "type": "object",
+        "properties": {
+          "id": {
+            "type": "string",
+            "example": "00000000-0000-0000-0000-000000000001"
+          },
+          "email": {
+            "type": "string",
+            "example": "admin@coldproof.local"
+          },
+          "role": {
+            "type": "string",
+            "example": "ADMIN",
+            "enum": [
+              "ADMIN",
+              "DATA_ENGINEER",
+              "QA_REVIEWER",
+              "VIEWER"
+            ]
+          },
+          "created_at": {
+            "format": "date-time",
+            "type": "string"
+          }
+        },
+        "required": [
+          "id",
+          "email",
+          "role",
+          "created_at"
+        ]
+      },
+      "CreateSourceDto": {
+        "type": "object",
+        "properties": {
+          "dataset": {
+            "type": "string"
+          },
+          "file_name": {
+            "type": "string"
+          },
+          "checksum_sha256": {
+            "type": "string",
+            "description": "SHA-256 supplied by caller; content verification is TODO"
+          },
+          "version": {
+            "type": "string"
+          },
+          "origin": {
+            "type": "string",
+            "enum": [
+              "REAL_PUBLIC_DATA",
+              "DERIVED",
+              "SYNTHETIC"
+            ]
+          },
+          "uri": {
+            "type": "string"
+          },
+          "license_ref": {
+            "type": "string"
+          }
+        },
+        "required": [
+          "dataset",
+          "file_name",
+          "checksum_sha256",
+          "version",
+          "origin"
+        ]
+      },
+      "CreateImportDto": {
+        "type": "object",
+        "properties": {
+          "source_id": {
+            "type": "string"
+          },
+          "parser_id": {
+            "type": "string",
+            "enum": [
+              "format-a",
+              "format-b",
+              "format-c"
+            ]
+          },
+          "parser_version": {
+            "type": "string",
+            "enum": [
+              "0.1.0"
+            ]
+          }
+        },
+        "required": [
+          "source_id",
+          "parser_id",
+          "parser_version"
+        ]
+      },
+      "AdaptersStatusDto": {
+        "type": "object",
+        "properties": {
+          "module": {
+            "type": "string",
+            "example": "adapters"
+          },
+          "status": {
+            "type": "string",
+            "enum": [
+              "TODO"
+            ]
+          },
+          "message": {
+            "type": "string"
+          }
+        },
+        "required": [
+          "module",
+          "status",
+          "message"
+        ]
+      },
+      "ParsersStatusDto": {
+        "type": "object",
+        "properties": {
+          "module": {
+            "type": "string",
+            "example": "parsers"
+          },
+          "status": {
+            "type": "string",
+            "enum": [
+              "TODO"
+            ]
+          },
+          "message": {
+            "type": "string"
+          }
+        },
+        "required": [
+          "module",
+          "status",
+          "message"
+        ]
+      },
+      "NormalizationStatusDto": {
+        "type": "object",
+        "properties": {
+          "module": {
+            "type": "string",
+            "example": "normalization"
+          },
+          "status": {
+            "type": "string",
+            "enum": [
+              "TODO"
+            ]
+          },
+          "message": {
+            "type": "string"
+          }
+        },
+        "required": [
+          "module",
+          "status",
+          "message"
+        ]
+      },
+      "DataQualityStatusDto": {
+        "type": "object",
+        "properties": {
+          "module": {
+            "type": "string",
+            "example": "data-quality"
+          },
+          "status": {
+            "type": "string",
+            "enum": [
+              "TODO"
+            ]
+          },
+          "message": {
+            "type": "string"
+          }
+        },
+        "required": [
+          "module",
+          "status",
+          "message"
+        ]
+      },
+      "ScenariosStatusDto": {
+        "type": "object",
+        "properties": {
+          "module": {
+            "type": "string",
+            "example": "scenarios"
+          },
+          "status": {
+            "type": "string",
+            "enum": [
+              "TODO",
+              "READY"
+            ]
+          },
+          "message": {
+            "type": "string"
+          }
+        },
+        "required": [
+          "module",
+          "status",
+          "message"
+        ]
+      },
+      "ScenarioResponseDto": {
+        "type": "object",
+        "properties": {
+          "id": {
+            "type": "string",
+            "example": "S02"
+          },
+          "version": {
+            "type": "number",
+            "example": 1
+          },
+          "name": {
+            "type": "string",
+            "example": "Handover heat excursion"
+          },
+          "manifest": {
+            "type": "object"
+          },
+          "created_at": {
+            "format": "date-time",
+            "type": "string"
+          }
+        },
+        "required": [
+          "id",
+          "version",
+          "name",
+          "manifest",
+          "created_at"
+        ]
+      },
+      "ScenarioBuildResultDto": {
+        "type": "object",
+        "properties": {
+          "scenario_id": {
+            "type": "string",
+            "example": "S02"
+          },
+          "batch_id": {
+            "type": "string",
+            "example": "CP-DEMO-001"
+          },
+          "segments_created": {
+            "type": "number",
+            "example": 3
+          },
+          "status": {
+            "type": "string",
+            "example": "COMPLETE"
+          },
+          "expected": {
+            "type": "object"
+          }
+        },
+        "required": [
+          "scenario_id",
+          "batch_id",
+          "segments_created",
+          "status"
+        ]
+      },
+      "ExceptionsStatusDto": {
+        "type": "object",
+        "properties": {
+          "module": {
+            "type": "string",
+            "example": "exceptions"
+          },
+          "status": {
+            "type": "string",
+            "enum": [
+              "READY",
+              "TODO"
+            ]
+          },
+          "message": {
+            "type": "string"
+          }
+        },
+        "required": [
+          "module",
+          "status",
+          "message"
+        ]
+      },
+      "ExceptionResponseDto": {
+        "type": "object",
+        "properties": {
+          "id": {
+            "type": "string",
+            "example": "e1111111-1111-1111-1111-111111111111"
+          },
+          "batch_id": {
+            "type": "string",
+            "example": "CP-DEMO-001"
+          },
+          "record_ids": {
+            "example": [
+              "M-07",
+              "M-08",
+              "M-09"
+            ],
+            "type": "array",
+            "items": {
+              "type": "string"
+            }
+          },
+          "profile_id": {
+            "type": "string",
+            "example": "DEMO_2_8C"
+          },
+          "status": {
+            "type": "string",
+            "example": "PENDING_REVIEW"
+          },
+          "created_at": {
+            "format": "date-time",
+            "type": "string"
+          }
+        },
+        "required": [
+          "id",
+          "batch_id",
+          "record_ids",
+          "profile_id",
+          "status",
+          "created_at"
+        ]
+      },
+      "ReviewActionDto": {
+        "type": "object",
+        "properties": {
+          "status": {
+            "type": "string",
+            "enum": [
+              "REVIEWED",
+              "NEEDS_EVIDENCE",
+              "REJECTED"
+            ],
+            "example": "REVIEWED"
+          },
+          "reviewer_id": {
+            "type": "string",
+            "example": "00000000-0000-0000-0000-000000000003"
+          },
+          "notes": {
+            "type": "string",
+            "example": "Reviewed temperature excursion during handover."
+          },
+          "corrective_action": {
+            "type": "string",
+            "example": "Quarantine batch and verify secondary logger."
+          }
+        },
+        "required": [
+          "status"
+        ]
+      },
+      "ReviewResponseDto": {
+        "type": "object",
+        "properties": {
+          "id": {
+            "type": "string"
+          },
+          "exception_id": {
+            "type": "string"
+          },
+          "reviewer_id": {
+            "type": "string"
+          },
+          "status": {
+            "type": "string"
+          },
+          "notes": {
+            "type": "string"
+          },
+          "created_at": {
+            "format": "date-time",
+            "type": "string"
+          }
+        },
+        "required": [
+          "id",
+          "exception_id",
+          "reviewer_id",
+          "status",
+          "created_at"
+        ]
+      },
+      "BatchesStatusDto": {
+        "type": "object",
+        "properties": {
+          "module": {
+            "type": "string",
+            "example": "batches"
+          },
+          "status": {
+            "type": "string",
+            "enum": [
+              "READY",
+              "TODO"
+            ]
+          },
+          "message": {
+            "type": "string"
+          }
+        },
+        "required": [
+          "module",
+          "status",
+          "message"
+        ]
+      },
+      "BatchSummaryDto": {
+        "type": "object",
+        "properties": {
+          "id": {
+            "type": "string",
+            "example": "CP-DEMO-001"
+          },
+          "scenario_id": {
+            "type": "string",
+            "example": "S02"
+          },
+          "status": {
+            "type": "string",
+            "example": "EXCEPTION"
+          },
+          "segments_count": {
+            "type": "number",
+            "example": 3
+          },
+          "profile_id": {
+            "type": "string",
+            "example": "DEMO_2_8C"
+          },
+          "lower_threshold": {
+            "type": "number",
+            "example": 2
+          },
+          "upper_threshold": {
+            "type": "number",
+            "example": 8
+          },
+          "created_at": {
+            "format": "date-time",
+            "type": "string"
+          }
+        },
+        "required": [
+          "id",
+          "status",
+          "segments_count",
+          "created_at"
+        ]
+      },
+      "SegmentDto": {
+        "type": "object",
+        "properties": {
+          "id": {
+            "type": "string",
+            "example": "LEG-01"
+          },
+          "batch_id": {
+            "type": "string",
+            "example": "CP-DEMO-001"
+          },
+          "source_id": {
+            "type": "string"
+          },
+          "selector": {
+            "type": "string",
+            "example": "stable_window_A"
+          },
+          "handover_id": {
+            "type": "object",
+            "example": "HANDOVER-01"
+          },
+          "device_alias": {
+            "type": "string",
+            "example": "SENSOR06"
+          },
+          "business_context_origin": {
+            "type": "string",
+            "example": "SYNTHETIC"
+          }
+        },
+        "required": [
+          "id",
+          "batch_id",
+          "selector",
+          "business_context_origin"
+        ]
+      },
+      "TimelineEventDto": {
+        "type": "object",
+        "properties": {
+          "id": {
+            "type": "string",
+            "example": "TL-01"
+          },
+          "timestamp": {
+            "type": "string",
+            "example": "2026-10-01T08:00:00.000Z"
+          },
+          "event_type": {
+            "type": "string",
+            "enum": [
+              "SEGMENT_START",
+              "HANDOVER",
+              "DOOR_OPEN",
+              "EXCURSION_START",
+              "EXCURSION_END",
+              "SEGMENT_END"
+            ],
+            "example": "HANDOVER"
+          },
+          "handover_id": {
+            "type": "string",
+            "example": "HANDOVER-01"
+          },
+          "segment_id": {
+            "type": "string",
+            "example": "LEG-02"
+          },
+          "device_alias": {
+            "type": "string",
+            "example": "SENSOR06"
+          },
+          "detail": {
+            "type": "string",
+            "example": "Handover transfer from storage room to transport vehicle"
+          },
+          "business_context_origin": {
+            "type": "string",
+            "example": "SYNTHETIC"
+          }
+        },
+        "required": [
+          "id",
+          "timestamp",
+          "event_type",
+          "detail",
+          "business_context_origin"
+        ]
+      },
+      "BatchDetailDto": {
+        "type": "object",
+        "properties": {
+          "id": {
+            "type": "string",
+            "example": "CP-DEMO-001"
+          },
+          "scenario_id": {
+            "type": "string",
+            "example": "S02"
+          },
+          "business_context_origin": {
+            "type": "string",
+            "example": "SYNTHETIC"
+          },
+          "profile_id": {
+            "type": "string",
+            "example": "DEMO_2_8C"
+          },
+          "lower_threshold": {
+            "type": "number",
+            "example": 2
+          },
+          "upper_threshold": {
+            "type": "number",
+            "example": 8
+          },
+          "segments": {
+            "type": "array",
+            "items": {
+              "$ref": "#/components/schemas/SegmentDto"
+            }
+          },
+          "timeline": {
+            "type": "array",
+            "items": {
+              "$ref": "#/components/schemas/TimelineEventDto"
+            }
+          },
+          "operational_events": {
+            "type": "array",
+            "items": {
+              "$ref": "#/components/schemas/TimelineEventDto"
+            }
+          },
+          "created_at": {
+            "format": "date-time",
+            "type": "string"
+          }
+        },
+        "required": [
+          "id",
+          "business_context_origin",
+          "segments",
+          "timeline",
+          "created_at"
+        ]
+      },
+      "CanonicalMeasurementDto": {
+        "type": "object",
+        "properties": {
+          "record_id": {
+            "type": "string",
+            "example": "M-01"
+          },
+          "scenario_id": {
+            "type": "string",
+            "example": "S02"
+          },
+          "batch_id": {
+            "type": "string",
+            "example": "CP-DEMO-001"
+          },
+          "segment_id": {
+            "type": "string",
+            "example": "LEG-01"
+          },
+          "timestamp": {
+            "format": "date-time",
+            "type": "string"
+          },
+          "temperature_c": {
+            "type": "number",
+            "example": 4.8
+          },
+          "humidity_pct": {
+            "type": "number",
+            "example": 45.2
+          },
+          "source_dataset": {
+            "type": "string",
+            "example": "Zenodo - Cold Storage Room Monitoring (2025)"
+          },
+          "source_file": {
+            "type": "string",
+            "example": "SENSOR06_raw.csv"
+          },
+          "source_sensor_id": {
+            "type": "string",
+            "example": "SENSOR06"
+          },
+          "source_row_or_ref": {
+            "type": "string",
+            "example": "row_1"
+          },
+          "source_format": {
+            "type": "string",
+            "example": "FORMAT-A"
+          },
+          "parser_id": {
+            "type": "string",
+            "example": "zenodo-timeseries-adapter"
+          },
+          "parser_version": {
+            "type": "string",
+            "example": "1.0.0"
+          },
+          "measurement_origin": {
+            "type": "string",
+            "example": "REAL_PUBLIC_DATA"
+          },
+          "business_context_origin": {
+            "type": "string",
+            "example": "SYNTHETIC"
+          },
+          "missing_flag": {
+            "type": "boolean",
+            "example": false
+          },
+          "duplicate_flag": {
+            "type": "boolean",
+            "example": false
+          },
+          "conflict_flag": {
+            "type": "boolean",
+            "example": false
+          },
+          "excursion_flag": {
+            "type": "boolean",
+            "example": false
+          },
+          "exception_id": {
+            "type": "string"
+          },
+          "review_status": {
+            "type": "string"
+          }
+        },
+        "required": [
+          "record_id",
+          "source_dataset",
+          "source_file",
+          "source_row_or_ref",
+          "source_format",
+          "parser_id",
+          "parser_version",
+          "measurement_origin",
+          "business_context_origin",
+          "missing_flag",
+          "duplicate_flag",
+          "conflict_flag"
+        ]
+      },
+      "BatchExceptionsDto": {
+        "type": "object",
+        "properties": {
+          "exceptions": {
+            "type": "array",
+            "items": {
+              "type": "string"
+            }
+          },
+          "quality_issues": {
+            "type": "array",
+            "items": {
+              "type": "string"
+            }
+          }
+        },
+        "required": [
+          "exceptions",
+          "quality_issues"
+        ]
+      },
+      "QAReviewsStatusDto": {
+        "type": "object",
+        "properties": {
+          "module": {
+            "type": "string",
+            "example": "qa-reviews"
+          },
+          "status": {
+            "type": "string",
+            "enum": [
+              "READY",
+              "TODO"
+            ]
+          },
+          "message": {
+            "type": "string"
+          }
+        },
+        "required": [
+          "module",
+          "status",
+          "message"
+        ]
+      },
+      "QAReviewItemDto": {
+        "type": "object",
+        "properties": {
+          "id": {
+            "type": "string",
+            "example": "88888888-8888-8888-8888-888888888881"
+          },
+          "exception_id": {
+            "type": "string",
+            "example": "e1111111-1111-1111-1111-111111111111"
+          },
+          "reviewer_id": {
+            "type": "string",
+            "example": "00000000-0000-0000-0000-000000000003"
+          },
+          "status": {
+            "type": "string",
+            "example": "REVIEWED"
+          },
+          "notes": {
+            "type": "object",
+            "example": "Reviewed by QA"
+          },
+          "created_at": {
+            "format": "date-time",
+            "type": "string"
+          }
+        },
+        "required": [
+          "id",
+          "exception_id",
+          "reviewer_id",
+          "status",
+          "created_at"
+        ]
+      },
+      "ReportsStatusDto": {
+        "type": "object",
+        "properties": {
+          "module": {
+            "type": "string",
+            "example": "reports"
+          },
+          "status": {
+            "type": "string",
+            "enum": [
+              "READY",
+              "TODO"
+            ]
+          },
+          "message": {
+            "type": "string"
+          }
+        },
+        "required": [
+          "module",
+          "status",
+          "message"
+        ]
+      },
+      "ReportSummaryDto": {
+        "type": "object",
+        "properties": {
+          "id": {
+            "type": "string",
+            "example": "77777777-7777-7777-7777-777777777771"
+          },
+          "batch_id": {
+            "type": "string",
+            "example": "CP-DEMO-001"
+          },
+          "version": {
+            "type": "number",
+            "example": 1
+          },
+          "uri": {
+            "type": "object",
+            "example": "/api/reports/77777777-7777-7777-7777-777777777771/download"
+          },
+          "checksum_sha256": {
+            "type": "object",
+            "example": "a94a8fe5ccb19ba61c4c0873d391e987982fbbd3000000000000000000000000"
+          },
+          "provenance": {
+            "type": "object"
+          },
+          "created_at": {
+            "format": "date-time",
+            "type": "string"
+          }
+        },
+        "required": [
+          "id",
+          "batch_id",
+          "version",
+          "provenance",
+          "created_at"
+        ]
+      },
+      "AuditStatusDto": {
+        "type": "object",
+        "properties": {
+          "module": {
+            "type": "string",
+            "example": "audit"
+          },
+          "status": {
+            "type": "string",
+            "enum": [
+              "READY",
+              "TODO"
+            ]
+          },
+          "message": {
+            "type": "string"
+          }
+        },
+        "required": [
+          "module",
+          "status",
+          "message"
+        ]
+      },
+      "AuditEventDto": {
+        "type": "object",
+        "properties": {
+          "id": {
+            "type": "string",
+            "example": "66666666-6666-6666-6666-666666666661"
+          },
+          "actor_id": {
+            "type": "object",
+            "example": "00000000-0000-0000-0000-000000000002"
+          },
+          "action": {
+            "type": "string",
+            "example": "IMPORT_COMPLETED"
+          },
+          "entity_type": {
+            "type": "string",
+            "example": "source_assets"
+          },
+          "entity_id": {
+            "type": "string",
+            "example": "11111111-1111-1111-1111-111111111111"
+          },
+          "payload": {
+            "type": "object"
+          },
+          "created_at": {
+            "format": "date-time",
+            "type": "string"
+          }
+        },
+        "required": [
+          "id",
+          "action",
+          "entity_type",
+          "entity_id",
+          "payload",
+          "created_at"
+        ]
+      }
+    }
+  }
+}

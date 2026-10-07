@@ -7,17 +7,21 @@
     "node": ">=22.12.0 <25"
   },
   "scripts": {
+    "clean:ports": "node scripts/clean-ports.mjs",
+    "predev": "node scripts/clean-ports.mjs",
     "dev": "pnpm --filter \"./packages/**\" build && dotenv -e .env -- pnpm -r --parallel --filter \"./apps/**\" dev",
     "build": "pnpm -r build",
     "lint": "eslint .",
     "typecheck": "pnpm --filter \"./packages/**\" build && pnpm -r typecheck",
     "test": "pnpm --filter \"./packages/**\" build && jest --runInBand",
-    "test:unit": "pnpm test -- --testPathPatterns=\"tests/unit|tests/parser-contract|tests/scenario-regression|src/.*spec\"",
-    "test:integration": "pnpm test -- --testPathPatterns=tests/integration",
+    "test:unit": "pnpm test -- \"tests/unit|tests/parser-contract|tests/scenario-regression|src/.*spec\"",
+    "test:integration": "pnpm test -- tests/integration",
     "test:e2e": "playwright test",
+    "openapi:generate": "node apps/api/scripts/export-openapi.mjs",
     "db:generate": "pnpm --filter @coldproof/api db:generate",
     "db:migrate": "dotenv -e .env -- pnpm --filter @coldproof/api db:migrate",
     "db:validate": "dotenv -e .env.example -- pnpm --filter @coldproof/api db:validate",
+    "db:seed": "dotenv -e .env -- pnpm --filter @coldproof/api db:seed",
     "infra:up": "docker compose up -d --wait",
     "infra:down": "docker compose down"
   },
