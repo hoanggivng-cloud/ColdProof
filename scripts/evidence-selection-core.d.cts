@@ -59,7 +59,13 @@ export interface EvidenceBlueprint {
   blueprint_version: string;
   status: string;
   observed_evidence: {
-    time_series: { source_dataset: string; role: string; [key: string]: unknown };
+    time_series: {
+      source_dataset: string;
+      role: string;
+      selection_status: string;
+      evidence_decision_ref: string;
+      [key: string]: unknown;
+    };
     spatial: { role: string; [key: string]: unknown };
   };
   synthetic_context: { segments: Array<Record<string, unknown>>; [key: string]: unknown };
@@ -94,8 +100,12 @@ export interface EvidenceDecision {
   decision_version: string;
   blueprint_id: string;
   decision_status: string;
+  decision_origin?: string;
+  prior_decision_ref?: string;
+  prior_decision_commit?: string;
+  supersedes_prior_decision?: boolean;
   selected_time_series_evidence: {
-    candidate_id: string;
+    candidate_id?: string;
     sensor_id: string;
     source_file: string;
     start_timestamp: string;
@@ -103,6 +113,7 @@ export interface EvidenceDecision {
     duration_seconds: number;
     observation_count: number;
     selection_origin: string;
+    interval_semantics?: string;
     timezone_status: string;
   };
   selection_rationale: string[];
@@ -159,6 +170,17 @@ export function getBlueprintMetadata(blueprint: EvidenceBlueprint): {
 export function resolveApprovedCandidate<
   T extends EvidenceCandidate | SerializedEvidenceCandidate,
 >(candidates: T[], decision: EvidenceDecision, blueprint?: EvidenceBlueprint): T;
+export function validateApprovedSourceInterval(
+  source: ParsedSource,
+  decision: EvidenceDecision,
+  blueprint?: EvidenceBlueprint,
+  expectedIntervalSeconds?: number,
+): {
+  records: EvidenceRecord[];
+  continuity: ReturnType<typeof evaluateContinuity>;
+  firstRecord: EvidenceRecord;
+  lastRecord: EvidenceRecord;
+};
 export function evaluateContinuity(
   records: EvidenceRecord[],
   expectedIntervalSeconds?: number,

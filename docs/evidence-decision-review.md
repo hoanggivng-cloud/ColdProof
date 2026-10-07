@@ -2,13 +2,13 @@
 
 ## Scope and decision status
 
-This review compares the five current `ELIGIBLE` and `FULL_PREFERRED_FIT` Zenodo candidates. It produced a recommendation without changing machine-generated `selection_status`, materializing `CP-DEMO-001`, creating synthetic boundaries, or evaluating an excursion/compliance result. The recommendation was subsequently approved in `data/scenarios/design/evidence-decision.json`.
+This historical review compares the five `ELIGIBLE` and `FULL_PREFERRED_FIT` Zenodo candidates. It produced the v1 recommendation without changing machine-generated `selection_status`, materializing `CP-DEMO-001`, creating synthetic boundaries, or evaluating an excursion/compliance result. V1 was approved in `data/scenarios/design/evidence-decision.json` and was later superseded for the main scenario by Evidence Decision v2. The v1 artifact remains historical provenance.
 
 All timestamps below are source-local and timezone-naive. All event labels are observed experimental source terms from `experiment_actions.csv`; they are not logistics handovers or shipment events.
 
 ## Review method
 
-`node scripts/review-evidence.mjs` reads the deterministic `SHORTLISTED` rows from `candidate-zenodo-windows.csv`, reparses their frozen raw sensor files, and calculates the review metrics without changing source data or candidate ranking. It separately loads the decision referenced by the blueprint, validates that the approved candidate matches the generated shortlist, and annotates that candidate as the human-approved choice.
+`node scripts/review-evidence.mjs` reads the deterministic `SHORTLISTED` rows from `candidate-zenodo-windows.csv`, reparses their frozen raw sensor files, and calculates the review metrics without changing source data or candidate ranking. It validates the authoritative v2 interval directly against frozen source evidence and retains the v1 shortlist candidate as superseded historical context.
 
 - Core metrics use all 2,161 observed records in each inclusive three-hour interval.
 - When a minimum or maximum occurs more than once, the review reports first occurrence, last occurrence, and count.
@@ -127,9 +127,9 @@ This section is a **DESIGN SUITABILITY REVIEW**, not a source fact, compliance e
 - SENSOR09 spans the 8°C upper threshold: 1,101 observations are at or below 8°C and 1,060 are above 8°C. The first observed upward transition is at 08:05:45 (8.1°C). There are 13 state transitions because values later oscillate around 8.0/8.1°C before the final upward transition at 10:01:00.
 - These counts describe observed values relative to a hypothetical later rule input. No duration, excursion flag, compliance status, or disposition is calculated here.
 
-## Approved human decision
+## Historical v1 human decision
 
-**Approved: SENSOR09, 2024-09-10T07:30:00–10:30:00.** The original recommendation was approved by `evidence-decision.json` v1.0.0. The candidate remains `SHORTLISTED` in the generated CSV because human approval is an authoritative overlay, not a candidate-generation result.
+**Historically approved, now superseded for the main scenario: SENSOR09, 2024-09-10T07:30:00–10:30:00.** The original recommendation is preserved in `evidence-decision.json` v1.0.0. The candidate remains `SHORTLISTED` in the generated CSV because human decisions are overlays, not candidate-generation results. Current authority is Evidence Decision v2 `[06:00,10:00)`.
 
 Why it is preferred:
 
@@ -148,7 +148,7 @@ Why not the other four:
 
 ## Limitations requiring human acceptance
 
-- Human approval is recorded only in `evidence-decision.json`; it does not update machine-generated candidate `selection_status` or ranking.
+- Human decisions are recorded outside the candidate CSV; neither historical v1 nor authoritative v2 updates machine-generated `selection_status` or ranking.
 - Zenodo is cold-storage-room evidence, not a pharmaceutical shipment or logistics journey.
 - Source timestamps have no declared timezone; no timezone was added.
 - Source event overlap is temporal evidence, not proof of causality and not a logistics mapping.

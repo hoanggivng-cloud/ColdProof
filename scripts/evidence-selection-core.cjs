@@ -37,7 +37,6 @@ const REQUIRED_EVIDENCE_DECISION_PATHS = Object.freeze([
   'blueprint_id',
   'decision_status',
   'selected_time_series_evidence',
-  'selected_time_series_evidence.candidate_id',
   'selected_time_series_evidence.sensor_id',
   'selected_time_series_evidence.source_file',
   'selected_time_series_evidence.start_timestamp',
@@ -228,7 +227,6 @@ function loadEvidenceDecision(text) {
     'decision_version',
     'blueprint_id',
     'decision_status',
-    'selected_time_series_evidence.candidate_id',
     'selected_time_series_evidence.sensor_id',
     'selected_time_series_evidence.source_file',
     'selected_time_series_evidence.start_timestamp',
@@ -258,6 +256,25 @@ function loadEvidenceDecision(text) {
   ) {
     throw new Error('Evidence decision duration_seconds and observation_count must be positive integers.');
   }
+  if (
+    decision.decision_origin === 'TEAM_APPROVED_DESIGN_REFINEMENT' &&
+    (
+      selected.interval_semantics !== '[start,end)' ||
+      decision.supersedes_prior_decision !== true ||
+      !isPresent(decision.prior_decision_ref) ||
+      !isPresent(decision.prior_decision_commit)
+    )
+  ) {
+    throw new Error(
+      'Approved design refinement must declare half-open semantics and its superseded prior decision.',
+    );
+  }
+  if (
+    decision.decision_origin !== 'TEAM_APPROVED_DESIGN_REFINEMENT' &&
+    !isPresent(selected.candidate_id)
+  ) {
+    throw new Error('Shortlist-based evidence decision must declare candidate_id.');
+  }
 
   return decision;
 }
@@ -277,6 +294,9 @@ function resolveApprovedCandidate(candidates, decision, blueprint) {
   }
 
   const selected = decision.selected_time_series_evidence;
+  if (!isPresent(selected.candidate_id)) {
+    throw new Error('Approved evidence decision does not reference a generated candidate.');
+  }
   const candidate = candidates.find(
     (entry) => candidateValue(entry, 'candidate_id', 'candidateId') === selected.candidate_id,
   );
@@ -312,6 +332,87 @@ function resolveApprovedCandidate(candidates, decision, blueprint) {
   }
 
   return candidate;
+}
+
+function validateApprovedSourceInterval(
+  source,
+  decision,
+  blueprint,
+  expectedIntervalSeconds = 5,
+) {
+  if (decision.decision_status !== 'APPROVED') {
+    throw new Error(`Evidence decision must be APPROVED; found ${decision.decision_status}.`);
+  }
+  if (decision.decision_origin !== 'TEAM_APPROVED_DESIGN_REFINEMENT') {
+    throw new Error('Source interval validation requires a team-approved design refinement.');
+  }
+  if (blueprint && decision.blueprint_id !== blueprint.blueprint_id) {
+    throw new Error(
+      `Evidence decision blueprint_id ${decision.blueprint_id} does not match ${blueprint.blueprint_id}.`,
+    );
+  }
+
+  const selected = decision.selected_time_series_evidence;
+  if (selected.interval_semantics !== '[start,end)') {
+    throw new Error('Approved source interval must use [start,end) semantics.');
+  }
+  if (source.sensorId !== selected.sensor_id || source.fileName !== selected.source_file) {
+    throw new Error('Approved source interval sensor/file does not match parsed source evidence.');
+  }
+  if (source.malformedRows.length > 0) {
+    throw new Error('Approved source file contains unresolved malformed rows.');
+  }
+
+  const parseDecisionTimestamp = (timestamp) => {
+    if (typeof timestamp !== 'string') return null;
+    const [dateRaw, timeRaw, extra] = timestamp.split('T');
+    if (!dateRaw || !timeRaw || extra !== undefined) return null;
+    return parseSourceDateTime(dateRaw, timeRaw);
+  };
+  const start = parseDecisionTimestamp(selected.start_timestamp);
+  const end = parseDecisionTimestamp(selected.end_timestamp);
+  if (!start || !end || end.arithmeticTimeMs <= start.arithmeticTimeMs) {
+    throw new Error('Approved source interval has invalid source-local boundaries.');
+  }
+
+  const durationSeconds = (end.arithmeticTimeMs - start.arithmeticTimeMs) / 1000;
+  if (durationSeconds !== selected.duration_seconds) {
+    throw new Error('Approved source interval duration does not match its boundaries.');
+  }
+
+  const records = source.records.filter(
+    (record) =>
+      record.arithmeticTimeMs >= start.arithmeticTimeMs &&
+      record.arithmeticTimeMs < end.arithmeticTimeMs,
+  );
+  if (records.length !== selected.observation_count) {
+    throw new Error(
+      `Approved source interval expected ${selected.observation_count} observations; found ${records.length}.`,
+    );
+  }
+  if (
+    records.length === 0 ||
+    records[0].arithmeticTimeMs !== start.arithmeticTimeMs ||
+    records.at(-1).arithmeticTimeMs !== end.arithmeticTimeMs - expectedIntervalSeconds * 1000
+  ) {
+    throw new Error('Approved source interval does not cover its half-open boundaries continuously.');
+  }
+
+  const continuity = evaluateContinuity(records, expectedIntervalSeconds);
+  if (
+    continuity.internalMissingIntervalCount !== 0 ||
+    continuity.duplicateTimestampCount !== 0 ||
+    continuity.outOfOrderCount !== 0
+  ) {
+    throw new Error('Approved source interval is not continuous source evidence.');
+  }
+
+  return {
+    records,
+    continuity,
+    firstRecord: records[0],
+    lastRecord: records.at(-1),
+  };
 }
 
 function parseSourceDateTime(dateRaw, timeRaw) {
@@ -950,6 +1051,7 @@ module.exports = {
   parseSourceDateTime,
   parseZenodoCsv,
   resolveApprovedCandidate,
+  validateApprovedSourceInterval,
   selectSensorWinners,
   serializeCandidates,
   splitContinuousRuns,

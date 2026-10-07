@@ -1,14 +1,14 @@
 {
   "decision_version": "2.0.0",
   "blueprint_id": "CP-DEMO-BLUEPRINT-001",
-  "decision_status": "PROPOSED_PENDING_TEAM_REVIEW",
-  "proposal_origin": "DESIGN_REFINEMENT",
+  "decision_status": "APPROVED",
+  "decision_origin": "TEAM_APPROVED_DESIGN_REFINEMENT",
 
   "prior_decision_ref": "data/scenarios/design/evidence-decision.json",
   "prior_decision_commit": "ef3a1cc7bc996600f3febda2154a5e5dc68cfa9e",
-  "supersedes_prior_decision": false,
+  "supersedes_prior_decision": true,
 
-  "proposed_time_series_evidence": {
+  "selected_time_series_evidence": {
     "sensor_id": "SENSOR09",
     "source_file": "SENSOR09.CSV",
     "start_timestamp": "2024-09-10T06:00:00",
@@ -16,6 +16,7 @@
     "interval_semantics": "[start,end)",
     "duration_seconds": 14400,
     "observation_count": 2880,
+    "selection_origin": "TEAM_APPROVED_DESIGN_REFINEMENT",
     "timezone_status": "UNKNOWN_SOURCE_LOCAL"
   },
 
@@ -75,7 +76,7 @@
 
   "observed_source_event_context": {
     "semantics": "REAL_PUBLIC_DATA_EXPERIMENT_ANNOTATIONS_WITH_TEMPORAL_OVERLAP_ONLY",
-    "events_overlapping_proposed_interval": [
+    "events_overlapping_selected_interval": [
       {
         "source_ref": "experiment_actions.csv:row:116",
         "event_type": "Door opened",
@@ -100,11 +101,11 @@
       "event_type": "Door opened",
       "start_timestamp": "2024-09-10T10:00:00",
       "end_timestamp": "2024-09-10T10:30:00",
-      "included_in_proposed_interval": false
+      "included_in_selected_interval": false
     }
   },
 
-  "proposal_rationale": [
+  "selection_rationale": [
     "Provides a longer observed pre-variation baseline.",
     "Uses one continuous interval from one sensor and one frozen source file.",
     "Contains interpretable observed thermal variation without modifying measurements.",
@@ -112,16 +113,15 @@
     "Addresses benchmark and demonstration design suitability only."
   ],
 
-  "scientific_and_provenance_limitations": [
+  "known_limitations": [
     "The source environment is a cold storage room, not a pharmaceutical shipment.",
     "Source timestamps do not have a verified timezone.",
     "Observed experiment events are not logistics handovers or shipment events.",
     "Temporal overlap does not establish a causal relationship between source events and temperature.",
     "DEMO_2_8C is an assumption used only for reference comparison and did not affect candidate ranking.",
-    "This proposal is not a compliance evaluation and does not define an excursion result."
+    "This decision is not a compliance evaluation and does not define an excursion result."
   ],
 
-  "secondary_case_note": "If this proposal is later approved, the prior 07:30-10:30 interval may remain useful as a secondary right-censored regression case; no such case is implemented by this proposal.",
-  "approval_required": "TEAM_REVIEW",
-  "next_step_if_approved": "CREATE_A_SEPARATE_APPROVAL_CHANGE_BEFORE_SCENARIO_MATERIALIZATION"
+  "secondary_case_note": "The superseded 07:30-10:30 interval may remain useful as a secondary right-censored regression case; no such case is implemented by this decision.",
+  "next_step": "SCENARIO_MATERIALIZATION"
 }

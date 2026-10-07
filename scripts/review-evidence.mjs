@@ -10,6 +10,7 @@ const {
   parseExperimentActions,
   parseZenodoCsv,
   resolveApprovedCandidate,
+  validateApprovedSourceInterval,
 } = core;
 
 const MOVEMENT_THRESHOLD_C = 0.25;
@@ -204,7 +205,26 @@ if (!decisionPath.startsWith(`${repoRoot}${path.sep}`)) {
   throw new Error(`Evidence decision reference escapes the repository: ${decisionRef}`);
 }
 const decision = loadEvidenceDecision(await readFile(decisionPath, 'utf8'));
-const approvedCandidate = resolveApprovedCandidate(allCandidates, decision, blueprint);
+const selectedEvidence = decision.selected_time_series_evidence;
+const expectedIntervalSeconds =
+  blueprint.assumptions.data_quality_policy.expected_interval_seconds;
+const authoritativeSource = parseZenodoCsv(
+  await readFile(path.join(rawDirectory, selectedEvidence.source_file), 'utf8'),
+  selectedEvidence.source_file,
+);
+const approvedSourceInterval = validateApprovedSourceInterval(
+  authoritativeSource,
+  decision,
+  blueprint,
+  expectedIntervalSeconds,
+);
+
+const priorDecisionPath = path.resolve(repoRoot, decision.prior_decision_ref);
+if (!priorDecisionPath.startsWith(`${repoRoot}${path.sep}`)) {
+  throw new Error(`Prior evidence decision reference escapes the repository: ${decision.prior_decision_ref}`);
+}
+const priorDecision = loadEvidenceDecision(await readFile(priorDecisionPath, 'utf8'));
+const historicalCandidate = resolveApprovedCandidate(allCandidates, priorDecision, blueprint);
 const demoUpperThresholdC = blueprint.assumptions.product_profile.upper_threshold_c;
 const reviews = [];
 for (const candidate of candidates) {
@@ -248,57 +268,68 @@ for (const candidate of candidates) {
     eventCount: overlappingEvents.length,
     events: overlappingEvents,
     humanDecisionStatus:
-      candidate.candidate_id === approvedCandidate.candidate_id ? 'APPROVED' : 'NOT_SELECTED',
+      candidate.candidate_id === historicalCandidate.candidate_id
+        ? 'SUPERSEDED_HISTORICAL_DECISION'
+        : 'NOT_SELECTED',
     designSuitabilityOnly: thresholdSuitability(records, demoUpperThresholdC),
   };
   review.thermalShape = classifyShape(review, movements, baseline, postVariation);
   reviews.push(review);
 }
 
-const approvedReview = reviews.find(
-  (review) => review.candidateId === approvedCandidate.candidate_id,
+const approvedRecords = approvedSourceInterval.records;
+const approvedStartTimeMs = approvedRecords[0].arithmeticTimeMs;
+const approvedEndTimeMs =
+  approvedRecords.at(-1).arithmeticTimeMs + expectedIntervalSeconds * 1000;
+const approvedEvents = events.filter(
+  (event) => event.startTimeMs < approvedEndTimeMs && event.endTimeMs >= approvedStartTimeMs,
 );
-if (!approvedReview) throw new Error('Approved candidate review is missing.');
-const approvedRecords = parseZenodoCsv(
-  await readFile(path.join(rawDirectory, approvedReview.sourceFile), 'utf8'),
-  approvedReview.sourceFile,
-).records.filter(
-  (record) =>
-    record.timestamp >= approvedReview.startTimestamp && record.timestamp <= approvedReview.endTimestamp,
-);
-const sensor09StartMs = approvedRecords[0].arithmeticTimeMs;
-const at0800 = sensor09StartMs + 30 * 60 * 1000;
-const at0830 = sensor09StartMs + 60 * 60 * 1000;
-approvedReview.periodReview = {
-  before0800: summarizePeriod(approvedRecords, sensor09StartMs, at0800),
-  from0800To0830: summarizePeriod(approvedRecords, at0800, at0830),
-  after0830: summarizePeriod(
-    approvedRecords,
-    at0830,
-    approvedRecords.at(-1).arithmeticTimeMs,
-    true,
-  ),
+const authoritativeEvidenceReview = {
+  sourceValidationStatus: 'PASS',
+  sensorId: selectedEvidence.sensor_id,
+  sourceFile: selectedEvidence.source_file,
+  startTimestamp: selectedEvidence.start_timestamp,
+  endTimestamp: selectedEvidence.end_timestamp,
+  intervalSemantics: selectedEvidence.interval_semantics,
+  ...summarize(approvedRecords),
+  firstSourceRef: approvedSourceInterval.firstRecord.rawRef,
+  lastSourceRef: approvedSourceInterval.lastRecord.rawRef,
+  continuity: approvedSourceInterval.continuity,
+  eventCount: approvedEvents.length,
+  events: approvedEvents,
+  designSuitabilityOnly: thresholdSuitability(approvedRecords, demoUpperThresholdC),
 };
 
 console.log(JSON.stringify({
   approvedDecision: {
     decisionVersion: decision.decision_version,
     decisionStatus: decision.decision_status,
-    selectionOrigin: decision.selected_time_series_evidence.selection_origin,
-    candidateId: decision.selected_time_series_evidence.candidate_id,
-    sensorId: decision.selected_time_series_evidence.sensor_id,
-    sourceFile: decision.selected_time_series_evidence.source_file,
-    startTimestamp: decision.selected_time_series_evidence.start_timestamp,
-    endTimestamp: decision.selected_time_series_evidence.end_timestamp,
-    timezoneStatus: decision.selected_time_series_evidence.timezone_status,
+    decisionOrigin: decision.decision_origin,
+    sensorId: selectedEvidence.sensor_id,
+    sourceFile: selectedEvidence.source_file,
+    startTimestamp: selectedEvidence.start_timestamp,
+    endTimestamp: selectedEvidence.end_timestamp,
+    intervalSemantics: selectedEvidence.interval_semantics,
+    observationCount: selectedEvidence.observation_count,
+    timezoneStatus: selectedEvidence.timezone_status,
     knownLimitations: decision.known_limitations,
+  },
+  historicalDecision: {
+    decisionVersion: priorDecision.decision_version,
+    decisionStatus: 'SUPERSEDED_HISTORICAL_PROVENANCE',
+    candidateId: priorDecision.selected_time_series_evidence.candidate_id,
+    sensorId: priorDecision.selected_time_series_evidence.sensor_id,
+    startTimestamp: priorDecision.selected_time_series_evidence.start_timestamp,
+    endTimestamp: priorDecision.selected_time_series_evidence.end_timestamp,
   },
   method: {
     binSeconds: BIN_SECONDS,
     movementThresholdC: MOVEMENT_THRESHOLD_C,
     baselineSeconds: BASELINE_SECONDS,
+    expectedIntervalSeconds,
     demoUpperThresholdC,
     demoThresholdAffectsCandidateRanking: false,
   },
+  authoritativeEvidenceReview,
   reviews,
 }, null, 2));

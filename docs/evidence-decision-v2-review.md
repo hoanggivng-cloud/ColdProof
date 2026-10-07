@@ -1,14 +1,14 @@
-# Evidence Decision v2 Proposal Review
+# Evidence Decision v2 Approval Review
 
 ## Decision state
 
-**CURRENT APPROVED:** SENSOR09, `2024-09-10T07:30:00–10:30:00`, Evidence Decision v1.0.0.
+**CURRENT AUTHORITATIVE DECISION:** Evidence Decision v2.0.0, SENSOR09, `[2024-09-10T06:00:00, 2024-09-10T10:00:00)`.
 
-**PROPOSED:** SENSOR09, `2024-09-10T06:00:00–10:00:00`, Evidence Decision v2.0.0 draft.
+**SUPERSEDED HISTORICAL DECISION:** Evidence Decision v1.0.0, SENSOR09, `[2024-09-10T07:30:00, 2024-09-10T10:30:00]` in its historical evidence-selection representation.
 
-The proposal has status `PROPOSED_PENDING_TEAM_REVIEW`. It does not supersede or modify the approved v1 artifact. `data/scenarios/design/evidence-decision.json` remains authoritative, and the scenario blueprint continues to reference it. The proposal is recorded separately in `data/scenarios/design/evidence-decision-v2.draft.json` and requires an explicit team decision before it can affect materialization.
+The team approved v2 with status `APPROVED` and origin `TEAM_APPROVED_DESIGN_REFINEMENT`. It supersedes v1 for the main `CP-DEMO-001` scenario. Superseded does not mean deleted or invalid: `data/scenarios/design/evidence-decision.json` remains unchanged as historical provenance. The blueprint now resolves authoritative evidence through `data/scenarios/design/evidence-decision-v2.json`.
 
-The approved v1 decision was introduced by Git commit `ef3a1cc7bc996600f3febda2154a5e5dc68cfa9e`. The draft records both that commit and the path of the prior authoritative artifact.
+The historical v1 decision was introduced by Git commit `ef3a1cc7bc996600f3febda2154a5e5dc68cfa9e`. The final v2 artifact records both that commit and the path of the preserved prior artifact.
 
 ## Exact interval comparison
 
@@ -16,9 +16,9 @@ All timestamps are source-local with `UNKNOWN_SOURCE_LOCAL` timezone status. No 
 
 | Representation | Interval semantics | Observations | First included | Last included | Min / max | Reference `T > 8°C` |
 | --- | --- | ---: | --- | --- | --- | ---: |
-| Approved v1 evidence-selection representation | `[07:30,10:30]` | 2,161 | 07:30:00 | 10:30:00 | 5.6 / 11.1°C | 1,060 |
+| Historical v1 evidence-selection representation | `[07:30,10:30]` | 2,161 | 07:30:00 | 10:30:00 | 5.6 / 11.1°C | 1,060 |
 | v1 scenario-materialization interpretation | `[07:30,10:30)` | 2,160 | 07:30:00 | 10:29:55 | 5.6 / 11.1°C | 1,059 |
-| Proposed v2 | `[06:00,10:00)` | 2,880 | 06:00:00 | 09:59:55 | 5.6 / 10.9°C | 711 |
+| Approved v2 | `[06:00,10:00)` | 2,880 | 06:00:00 | 09:59:55 | 5.6 / 10.9°C | 711 |
 
 The historical Evidence Selection artifact counted both endpoints and therefore recorded 2,161 observations. Scenario materialization uses the blueprint's half-open `[start,end)` convention, so the same v1 clock bounds yield 2,160 included observations. The exact `2024-09-10T10:30:00` observation at `SENSOR09.CSV` `row:14762` has not been deleted or changed; it remains in the frozen source and is excluded only by half-open interval semantics.
 
@@ -26,7 +26,7 @@ This is a real evidence-scope change, not a presentation edit: v2 begins 90 minu
 
 ## Frozen-source verification
 
-The proposed interval was recomputed directly from frozen asset `ZEN-RAW-S09`, SHA-256 `c50253f87996f050a0bbda5eeb383775f077b1db8ccf1b38ea52e78498f2a2ed`:
+The approved interval was recomputed directly from frozen asset `ZEN-RAW-S09`, SHA-256 `c50253f87996f050a0bbda5eeb383775f077b1db8ccf1b38ea52e78498f2a2ed`:
 
 - 2,880 observations satisfy `06:00:00 <= timestamp < 10:00:00`.
 - Cadence is consistently 5 seconds.
@@ -46,14 +46,14 @@ These are `REAL_PUBLIC_DATA` experiment annotations from `experiment_actions.csv
 
 | Source-local time | Source event type | Source reference | Relationship to v2 |
 | --- | --- | --- | --- |
-| 08:00–08:30 | Door opened | `experiment_actions.csv:row:116` | Overlaps proposed interval |
-| 08:00 | Products in | `experiment_actions.csv:row:117` | Overlaps proposed interval |
-| 08:30–10:00 | Door closed | `experiment_actions.csv:row:118` | Overlaps proposed interval up to its end boundary |
+| 08:00–08:30 | Door opened | `experiment_actions.csv:row:116` | Overlaps approved interval |
+| 08:00 | Products in | `experiment_actions.csv:row:117` | Overlaps approved interval |
+| 08:30–10:00 | Door closed | `experiment_actions.csv:row:118` | Overlaps approved interval up to its end boundary |
 | 10:00–10:30 | Door opened | `experiment_actions.csv:row:119` | Begins at excluded end boundary; not included |
 
-The proposal does not translate `Door opened`, `Door closed`, or `Products in` into a handover, shipment event, or causal explanation. Synthetic logistics boundaries do not exist in this task.
+The decision does not translate `Door opened`, `Door closed`, or `Products in` into a handover, shipment event, or causal explanation. Synthetic logistics boundaries do not exist in this task.
 
-## Proposal rationale
+## Approval rationale
 
 The `06:00–10:00` window provides a longer observed pre-variation baseline while retaining one continuous source interval, one sensor, and one frozen source file. It contains interpretable thermal variation and observed post-variation behavior before a new experiment annotation starts at the excluded 10:00 boundary.
 
@@ -65,9 +65,9 @@ This rationale concerns benchmark and demonstration design suitability only. It 
 - Source timestamps have no verified timezone.
 - The reference threshold comparison is not evidence ranking and not compliance evaluation.
 - No excursion duration, synthetic handover, segment boundary, scenario pack, or business context is created here.
-- The major observed high run continues beyond the start of the source `Door closed` annotation; the proposal does not call that a recovery.
-- If v2 is later approved, the approved v1 `07:30–10:30` interval may remain useful as a secondary/right-censored regression case. That regression case is not implemented here.
+- The major observed high run continues beyond the start of the source `Door closed` annotation; the decision does not call that a recovery.
+- The superseded v1 `07:30–10:30` interval may remain useful as a secondary/right-censored regression case. That regression case is not implemented here.
 
-## Approval required
+## Decision outcome
 
-The current approved evidence remains v1 `07:30–10:30`. The proposed v2 `06:00–10:00` interval cannot become authoritative until the team explicitly reviews and approves it in a separate change. Candidate ranking and the deterministic candidate CSV remain unchanged.
+Evidence Decision v2 `[06:00,10:00)` is now authoritative for the main scenario. Evidence Decision v1 remains preserved as superseded historical provenance. Candidate ranking and the deterministic candidate CSV remain unchanged.

@@ -310,7 +310,8 @@ Không yêu cầu:
 Candidate generation và human approval có hai source of truth khác nhau:
 
 - `candidate-zenodo-windows.csv` là machine-generated shortlist và không lưu approval.
-- `evidence-decision.json` là authoritative human decision artifact cho exact sensor/window.
+- `evidence-decision-v2.json` là authoritative human decision artifact cho exact sensor/window.
+- `evidence-decision.json` v1 được giữ nguyên làm superseded historical provenance.
 
 Blueprint chỉ giữ `selection_status = RESOLVED_BY_EVIDENCE_DECISION`
 và reference đến decision artifact; nó không duplicate exact approved interval.
@@ -530,11 +531,15 @@ Nguyên tắc:
 # 14. Pending Decisions
 
 Time-series evidence đã được resolve qua
-`data/scenarios/design/evidence-decision.json` v1.0.0:
+`data/scenarios/design/evidence-decision-v2.json` v2.0.0:
 
 - SENSOR09,
-- `2024-09-10T07:30:00–10:30:00`,
+- `[2024-09-10T06:00:00, 2024-09-10T10:00:00)`,
 - decision status `APPROVED`.
+
+`data/scenarios/design/evidence-decision.json` v1.0.0 với interval lịch sử
+`2024-09-10T07:30:00–10:30:00` đã bị supersede cho main scenario,
+nhưng vẫn được giữ nguyên làm historical provenance.
 
 Blueprint hiện chưa quyết định:
 
@@ -551,7 +556,7 @@ Các quyết định này thuộc Evidence Selection và Design Refinement.
 
 # 15. Next Phase
 
-Evidence Selection v1 đã hoàn thành machine shortlist và human approval.
+Evidence Selection v1 đã hoàn thành machine shortlist; Evidence Decision v2 hiện là human approval authoritative.
 
 Phase tiếp theo:
 
@@ -561,12 +566,13 @@ Inputs đã freeze cho phase này:
 
 - `scenario-blueprint.json` — design contract,
 - `candidate-zenodo-windows.csv` — deterministic machine shortlist,
-- `evidence-decision.json` — authoritative approved sensor/window,
+- `evidence-decision-v2.json` — authoritative approved sensor/window,
+- `evidence-decision.json` — superseded historical v1 provenance,
 - `condition-crosswalk.csv` — Mendeley condition evidence,
 - evidence selection và human-review reports.
 
 Scenario Materialization phải đọc exact Zenodo interval từ
-`evidence-decision.json`, không infer approval từ candidate CSV
+`evidence-decision-v2.json`, không infer approval từ candidate CSV
 và không copy exact selection trở lại blueprint.
 
 ---

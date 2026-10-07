@@ -64,7 +64,7 @@
       "expected_record_type": "TIMESERIES",
       "role": "PRIMARY_TIME_SERIES_EVIDENCE",
       "selection_status": "RESOLVED_BY_EVIDENCE_DECISION",
-      "evidence_decision_ref": "data/scenarios/design/evidence-decision.json"
+      "evidence_decision_ref": "data/scenarios/design/evidence-decision-v2.json"
     },
 
     "spatial": {
