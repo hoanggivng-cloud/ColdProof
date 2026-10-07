@@ -22,6 +22,7 @@ async function bootstrap() {
       '- Immutable audit trail'
     )
     .setVersion('3.2.0')
+    .addBearerAuth()
     .addTag('sources', 'Source asset registry and immutable provenance metadata')
     .addTag('imports', 'Ingestion orchestration and parser outcome summaries')
     .addTag('scenarios', 'Scenario manifests (S01-S06) and scenario builder')

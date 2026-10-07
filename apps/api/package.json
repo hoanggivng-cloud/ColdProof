@@ -9,7 +9,8 @@
     "typecheck": "tsc --noEmit",
     "db:generate": "prisma generate",
     "db:migrate": "prisma migrate deploy",
-    "db:validate": "prisma validate"
+    "db:validate": "prisma validate",
+    "db:seed": "prisma db seed"
   },
   "dependencies": {
     "@nestjs/common": "^11.1.9",
@@ -29,6 +30,9 @@
     "@coldproof/parser-contracts": "workspace:*",
     "@coldproof/scenario-schema": "workspace:*",
     "@coldproof/shared-types": "workspace:*"
+  },
+  "prisma": {
+  "seed": "node --experimental-strip-types prisma/seed.ts" 
   },
   "devDependencies": {
     "@nestjs/cli": "^11.0.14"
