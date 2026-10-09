@@ -83,3 +83,12 @@ Không hiển thị checksum, chữ ký, chứng nhận hoặc số liệu chấ
 - **Từ lô server**: gom `profile_id`, `lower_threshold`, `upper_threshold` từ `GET /batches`. Backend chưa có API profile riêng.
 
 Profile chỉ có trên server được báo “Chưa đồng bộ” vì form Tạo Shipment không chọn được. Ngăn chi tiết hiện ngưỡng, cách so ngưỡng (vượt khi `< dưới` hoặc `> trên`) và các lô dùng profile. Với profile trong form, nút **Tạo Shipment với profile này** mở `/batches/new?profile=<id>` và chọn sẵn profile. Chưa có tạo/sửa profile; đã bỏ tên thuốc, nhãn 21 CFR, “allowed excursion”, trạng thái ACTIVE/REVISION và hash tự bịa trong HTML mẫu.
+
+## Màn Chi tiết lô: biểu đồ và mốc thời gian
+
+`/batches/:id` đọc `GET /batches/:id` (ngưỡng, chặng, timeline) và `GET /batches/:id/measurements` qua `services/batch-detail.ts`.
+
+- `TemperatureChart` (SVG, không thêm thư viện): mỗi cảm biến một đường (INV-04); đường bị ngắt khi số đo thiếu/rỗng, khi hai số đo cách nhau quá 2 lần chu kỳ lấy mẫu trung vị, hoặc khi sang chặng khác `source_id` (INV-03, INV-09). Đây chỉ là quy tắc vẽ, không tạo quality issue.
+- Màu đỏ theo `excursion_flag` của server và khung `EXCURSION_START`/`EXCURSION_END`; giao diện không tự so ngưỡng. Ngưỡng profile là nét đứt; mốc `HANDOVER` là vạch dọc có nhãn.
+- `BatchTimeline`: bảng chặng (thiết bị, nguồn, bàn giao) và mốc thời gian theo thứ tự thời gian; chi tiết sự kiện hiển thị nguyên văn từ server.
+- Số đo có `conflict_flag` hiện cảnh báo “Xung đột cảm biến”; không chọn chuỗi đúng hoặc lấy trung bình.

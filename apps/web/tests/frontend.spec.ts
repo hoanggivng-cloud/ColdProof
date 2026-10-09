@@ -319,3 +319,25 @@ test('profiles merge form fixtures with server batch profiles and prefill shipme
   await expect(page).toHaveURL(/\/batches\/new\?profile=PROFILE-DEMO-FROZEN/);
   await expect(page.locator('select').filter({ hasText: 'PROFILE-DEMO-FROZEN' })).toHaveValue('PROFILE-DEMO-FROZEN');
 });
+
+test('temperature chart keeps sensors separate, breaks at gaps and marks server excursions and handovers', async ({ page }) => {
+  const at = (minutes: number) => new Date(Date.UTC(2026, 9, 1, 8, minutes)).toISOString();
+  const row = (id: string, sensor: string, minutes: number, temp: number | null, extra: Record<string, unknown> = {}) => ({ record_id: id, source_sensor_id: sensor, segment_id: 'LEG-01', timestamp: at(minutes), temperature_c: temp, missing_flag: temp === null, conflict_flag: false, excursion_flag: false, measurement_origin: 'REAL_PUBLIC_DATA', ...extra });
+  const measurements = [
+    row('A1', 'SENSOR-A', 0, 5), row('A2', 'SENSOR-A', 15, 9, { excursion_flag: true }), row('A3', 'SENSOR-A', 30, 9.5, { excursion_flag: true }), row('A4', 'SENSOR-A', 45, null), row('A5', 'SENSOR-A', 60, 6),
+    row('B1', 'SENSOR-B', 0, 5.2, { conflict_flag: true }), row('B2', 'SENSOR-B', 15, 5.4), row('B3', 'SENSOR-B', 30, 5.5),
+  ];
+  await page.route('**/api/backend/batches/CP-CHART', route => route.fulfill({ json: { id: 'CP-CHART', profile_id: 'DEMO_2_8C', lower_threshold: 2, upper_threshold: 8, business_context_origin: 'SYNTHETIC', segments: [{ id: 'LEG-01', source_id: 'S1', device_alias: 'SENSOR-A' }], timeline: [{ id: 'HO', timestamp: at(20), event_type: 'HANDOVER', handover_id: 'HANDOVER-X', segment_id: 'LEG-01' }, { id: 'XS', timestamp: at(15), event_type: 'EXCURSION_START' }, { id: 'XE', timestamp: at(30), event_type: 'EXCURSION_END' }] } }));
+  await page.route('**/api/backend/batches/CP-CHART/measurements', route => route.fulfill({ json: measurements }));
+  await page.goto('/batches/CP-CHART');
+  const chart = page.locator('svg.chart-svg');
+  await expect(chart).toBeVisible();
+  await expect(chart.locator('path.chart-line:not(.chart-line-excursion)')).toHaveCount(3);
+  await expect(chart.locator('path.chart-line-excursion')).toHaveCount(1);
+  await expect(chart.locator('circle.chart-point-excursion')).toHaveCount(2);
+  await expect(chart.locator('rect.chart-band')).toHaveCount(1);
+  await expect(chart.getByText('HANDOVER-X')).toBeVisible();
+  await expect(page.locator('.chart-legend').getByText('SENSOR-B', { exact: true })).toBeVisible();
+  await expect(page.getByText('Xung đột cảm biến')).toBeVisible();
+  await expect(page.getByRole('cell', { name: 'Bàn giao HANDOVER-X' })).toBeVisible();
+});
