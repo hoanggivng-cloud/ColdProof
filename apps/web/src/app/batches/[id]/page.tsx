@@ -1,6 +1,5 @@
-import { BatchTimeline } from '../../../components/BatchTimeline';
-import { TemperatureChartPlaceholder } from '../../../components/TemperatureChartPlaceholder';
-import { ProvenancePanel } from '../../../components/ProvenancePanel';
-export default function BatchDetail() {
-  return <><h1>Batch detail</h1><p>Trang khung, chưa kết nối dữ liệu.</p><BatchTimeline /><TemperatureChartPlaceholder /><ProvenancePanel /></>;
+import { BatchDetail } from '../../../components/batches/BatchDetail';
+export default async function Page({ params }: { params: Promise<{ id: string }> }) {
+  const { id } = await params;
+  return <BatchDetail id={id} />;
 }

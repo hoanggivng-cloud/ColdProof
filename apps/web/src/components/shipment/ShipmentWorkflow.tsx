@@ -1,0 +1,39 @@
+'use client';
+import Link from 'next/link';
+import { createContext, useContext, useState, type ReactNode } from 'react';
+import type { ShipmentDraft, HandoverDraft } from '../../types/shipment-workflow';
+
+interface WorkflowContext {
+  shipment: ShipmentDraft | null; deviceIds: string[]; devicesConfirmed: boolean; handover: HandoverDraft | null;
+  prepare: (shipment: ShipmentDraft, ids: string[]) => void; assign: (ids: string[], confirmed?: boolean) => void;
+  saveHandover: (handover: HandoverDraft) => void; invalidate: () => void; reset: () => void;
+}
+const Context = createContext<WorkflowContext | null>(null);
+export function ShipmentWorkflowProvider({ children }: { children: ReactNode }) {
+  const [shipment, setShipment] = useState<ShipmentDraft | null>(null);
+  const [deviceIds, setDeviceIds] = useState<string[]>([]), [devicesConfirmed, setDevicesConfirmed] = useState(false);
+  const [handover, setHandover] = useState<HandoverDraft | null>(null);
+  const invalidate = () => { setShipment(null); setDevicesConfirmed(false); setHandover(null); };
+  return <Context.Provider value={{ shipment, deviceIds, devicesConfirmed, handover,
+    prepare: (value, ids) => { setShipment(value); setDeviceIds(ids); setDevicesConfirmed(false); setHandover(null); },
+    assign: (ids, confirmed = true) => { setDeviceIds(ids); setDevicesConfirmed(Boolean(shipment) && ids.length > 0 && confirmed); setHandover(null); },
+    saveHandover: value => { if (shipment && devicesConfirmed) setHandover(value); },
+    invalidate, reset: () => { invalidate(); setDeviceIds([]); },
+  }}>{children}</Context.Provider>;
+}
+export function useShipmentWorkflow() {
+  const context = useContext(Context);
+  if (!context) throw new Error('ShipmentWorkflowProvider is required');
+  return context;
+}
+const processSteps: [string, string][] = [['Tạo Shipment', '/batches/new'], ['Gán thiết bị', '/batches/new'], ['Ghi nhận bàn giao', '/batches/new'], ['Import', '/imports'], ['Phân tích', '/batches'], ['QA review', '/qa'], ['Hồ sơ', '/reports']];
+export function WorkflowProgress({ current, batchId }: { current?: number; batchId?: string }) {
+  const { shipment, devicesConfirmed, handover } = useShipmentWorkflow();
+  const formStep = !shipment ? 0 : !devicesConfirmed ? 1 : !handover ? 2 : 3;
+  const active = current ?? formStep;
+  return <nav aria-label="Quy trình xử lý lô" className="workflow-progress process-steps"><ol>{processSteps.map(([label, href], index) => {
+    const inForm = index < 4, complete = inForm && index < formStep;
+    const target = index === 4 && batchId ? `/batches/${encodeURIComponent(batchId)}` : href;
+    return <li key={label} aria-current={index === active ? 'step' : undefined} data-complete={complete}><span>{index + 1}</span><div><Link href={target}><strong>{label}</strong></Link><small>{index === active ? 'Bước hiện tại' : complete ? 'Xong trong form' : inForm ? 'Chưa thực hiện' : 'Xem trên server'}</small><small className="process-source">{inForm ? 'Chưa lưu server' : 'Dữ liệu server'}</small></div></li>;
+  })}</ol></nav>;
+}

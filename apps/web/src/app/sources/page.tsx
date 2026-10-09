@@ -1,2 +1,4 @@
-import { SourceRegistryTable } from '../../components/SourceRegistryTable';
-export default function Sources() { return <><h1>Source registry</h1><SourceRegistryTable sources={[]} /></>; }
+import { PageHeader } from '../../components/layout/PageHeader';
+import { Panel } from '../../components/ui/Panel';
+import { ApiRecords } from '../../components/ApiRecords';
+export default function Sources() { return <><PageHeader title="Source registry" description="Đọc thông tin nguồn và xuất xứ dữ liệu" /><Panel title="Danh sách nguồn"><ApiRecords path="sources" columns={[["id", "Nguồn"], ["dataset", "Dataset"], ["file_name", "File"], ["origin", "Xuất xứ"]]} /></Panel></>; }

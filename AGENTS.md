@@ -87,7 +87,7 @@ TV4 giữ bảng này khớp với `package.json`. Script đổi thì sửa bả
 - Ẩn hành động mà role không có quyền; backend vẫn phải chặn.
 - Biểu đồ: không nối đường qua khoảng trống dữ liệu; hai chuỗi xung đột vẽ cả hai; đoạn vượt ngưỡng tô đỏ.
 - Mỗi màn đủ 4 trạng thái: đang tải, trống, lỗi, có cảnh báo. Mỗi màn chỉ 1 hành động chính.
-- Màu: nền `#FAFAF7`, chữ `#1C1C1A`, nhấn `#0F5E57`. Đỏ `#B42318` chỉ cho sự cố; hổ phách `#B54708` chỉ cho cảnh báo.
+- Màu (token trong `apps/web/src/app/globals.css`, không hard-code trong component): navy đậm `#0E1E3A` cho thanh trên; nhấn `#1F3A68` (hover `#172E54`) cho nút chính, link, focus; nền `#F5F7FA`, panel `#FFFFFF`; chữ `#14171F`, chữ phụ `#4A5568`, viền `#D9DEE7`. Đỏ `#B42318` chỉ cho vượt ngưỡng/lỗi; hổ phách `#B54708` chỉ cho cảnh báo.
 - Font IBM Plex Sans; số, mã lô, thời gian dùng IBM Plex Mono + `tabular-nums`, căn phải trong bảng.
 - Cấm: gradient, glassmorphism, bóng đổ lớn, bo góc ≥ 16px, emoji, hero section, biến mọi thứ thành card.
 - Chữ giao diện tiếng Việt, ngắn, bắt đầu bằng động từ ("Xuất hồ sơ", "Gán thiết bị").
