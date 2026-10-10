@@ -1,0 +1,32 @@
+{
+  "materialization_schema_version": "1.0.0",
+  "materialization_version": "1.0.0",
+  "materialization_status": "MATERIALIZED_DRAFT_PENDING_VALIDATION",
+  "scenario_id": "CP-DEMO-001",
+  "batch_id": "BATCH-DEMO-001",
+  "shipment_id": "SHIP-DEMO-001",
+  "identity_origin": {
+    "scenario": "SYNTHETIC",
+    "batch": "SYNTHETIC",
+    "shipment": "SYNTHETIC"
+  },
+  "evidence_decision_ref": "data/scenarios/design/evidence-decision-v2.json",
+  "evidence_decision_version": "2.0.0",
+  "evidence_decision_status": "APPROVED",
+  "selected_measurement_count": 2880,
+  "leg_count": 4,
+  "handover_count": 3,
+  "artifact_refs": [
+    "source-window.json",
+    "segments.csv",
+    "measurement-leg-map.csv",
+    "handovers.json",
+    "source-events.json",
+    "spatial-context.json",
+    "assumptions.json",
+    "provenance.json",
+    "README.md"
+  ],
+  "authoritative_results_status": "NOT_CREATED_EXCURSION_POLICY_NOT_FROZEN",
+  "legacy_backend_fixture_relationship": "NONE_NOT_SYNCHRONIZED"
+}

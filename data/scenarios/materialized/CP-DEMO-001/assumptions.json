@@ -1,0 +1,24 @@
+{
+  "scenario_id": "CP-DEMO-001",
+  "product_profile": {
+    "profile_id": "DEMO_2_8C",
+    "lower_c": 2,
+    "upper_c": 8,
+    "origin": "ASSUMPTION",
+    "source_dataset_claim": "NONE",
+    "purpose": "ColdProof software rule context only"
+  },
+  "excursion_policy": {
+    "status": "NOT_FROZEN",
+    "authoritative_results_created": false,
+    "unresolved": [
+      "hysteresis",
+      "debounce",
+      "minimum_excursion_duration",
+      "gap_policy",
+      "excursion_merge_behavior",
+      "segment_boundary_behavior",
+      "authoritative_duration_semantics"
+    ]
+  }
+}

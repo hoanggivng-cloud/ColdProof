@@ -1,0 +1,69 @@
+{
+  "materialization_id": "coldproof-scenario-materializer",
+  "materialization_version": "1.0.0",
+  "scenario_id": "CP-DEMO-001",
+  "evidence_decision": {
+    "path": "data/scenarios/design/evidence-decision-v2.json",
+    "version": "2.0.0",
+    "status": "APPROVED",
+    "checksum_sha256": "691414e90376a1508a8dc6edff7ca75fec610ecdb8042781624d1680d7b5eb61"
+  },
+  "primary_source": {
+    "dataset": "ZENODO",
+    "source_id": "ZEN-RAW-S09",
+    "source_file": "SENSOR09.CSV",
+    "relative_path": "data/observed/zenodo/raw/SENSOR09.CSV",
+    "source_checksum_sha256": "c50253f87996f050a0bbda5eeb383775f077b1db8ccf1b38ea52e78498f2a2ed",
+    "source_sensor_id": "SENSOR09",
+    "source_row_or_ref_range": {
+      "first": "row:11522",
+      "last": "row:14401"
+    },
+    "selected_interval": {
+      "start_timestamp": "2024-09-10T06:00:00",
+      "end_timestamp": "2024-09-10T10:00:00",
+      "interval_semantics": "[start,end)",
+      "timezone_status": "UNKNOWN_SOURCE_LOCAL"
+    },
+    "parser_id": "zenodo-cold-storage",
+    "parser_version": "1.0.0",
+    "canonical_normalization_path": "ParsedTimeSeriesRecord -> normalizeTimeSeries -> CanonicalTimeSeriesMeasurement",
+    "canonical_normalization_status": "PENDING_EXPLICIT_TIMEZONE_CONTEXT",
+    "measurement_origin": "REAL_PUBLIC_DATA"
+  },
+  "experiment_event_source": {
+    "source_id": "ZEN-META-ACTIONS",
+    "relative_path": "data/observed/zenodo/metadata/experiment_actions.csv",
+    "source_checksum_sha256": "8ac92d6c4c628233aa083ef53cdf86e30275ec73d01670ca342922c5dc8b4f2e",
+    "origin": "REAL_PUBLIC_DATA"
+  },
+  "supplemental_spatial_sources": [
+    {
+      "condition_id": "C04",
+      "source_id": "MEN-C04",
+      "source_file": "C04 Temperature Horizontal Side 20CAmb 4CInitial 20mmGap.xlsx",
+      "relative_path": "data/observed/mendeley/conditions/C04 Temperature Horizontal Side 20CAmb 4CInitial 20mmGap.xlsx",
+      "source_checksum_sha256": "1dcfa387b2e972cdab139a7b8fcca596f922bad7da37182ef7f9d3d179c4c0cd",
+      "measurement_origin": "REAL_PUBLIC_DATA",
+      "relation_origin": "SYNTHETIC_RELATION"
+    },
+    {
+      "condition_id": "C07",
+      "source_id": "MEN-C07",
+      "source_file": "C07 Temperature Horizontal Side 30CAmb 4CInitial 20mmGap.xlsx",
+      "relative_path": "data/observed/mendeley/conditions/C07 Temperature Horizontal Side 30CAmb 4CInitial 20mmGap.xlsx",
+      "source_checksum_sha256": "d68ecab8ab7f22a9947631e636924009c5165017305195ef67f86eed49b77845",
+      "measurement_origin": "REAL_PUBLIC_DATA",
+      "relation_origin": "SYNTHETIC_RELATION"
+    }
+  ],
+  "origin_categories": {
+    "observed_measurements": "REAL_PUBLIC_DATA",
+    "observed_source_events": "REAL_PUBLIC_DATA",
+    "business_context": "SYNTHETIC",
+    "illustrative_relation": "SYNTHETIC_RELATION",
+    "product_profile": "ASSUMPTION",
+    "mappings_and_counts": "DERIVED"
+  },
+  "checksum_scope_note": "SHA-256 identifies the frozen referenced file; it does not establish sensor accuracy or chain of custody."
+}
