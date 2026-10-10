@@ -1,0 +1,231 @@
+{
+  "catalog_id": "VIETNAM_HEALTHCARE_TEMPERATURE_ANALYSIS_V1",
+  "catalog_version": "1.0.0",
+  "analysis_policy_id": "shipment-temperature-analysis-v1",
+  "analysis_policy_version": "1.0.0",
+  "status": "DEMO_TEST_EXPECTATIONS",
+  "threshold_product_independence": "Threshold configuration is synthetic shipment context and is not inferred from a public product reference.",
+  "default_threshold": {
+    "min_temperature_c": 2,
+    "max_temperature_c": 8,
+    "unit": "CELSIUS",
+    "threshold_origin": "SYNTHETIC_DEMO_CONTEXT",
+    "threshold_reference_id": "VNHC-DEMO-2-8C",
+    "policy_id": "DEMO_2_8C",
+    "policy_version": "1.0.0"
+  },
+  "cases": [
+    {
+      "case_id": "NORMAL_IN_RANGE",
+      "golden_id": "GOLDEN_TEMP_IN_RANGE",
+      "scenario_reference": "VNHC-009",
+      "shipment_reference": "SHIP-VNHC-009",
+      "display_name": "Trong ngưỡng nhiệt độ",
+      "streams": [{ "device_id": "LOGGER-A-TEMP-01", "samples": [[0, 5], [5, 6], [10, 7]] }],
+      "expected_temperature_status": "IN_RANGE",
+      "expected_excursion_count": 0,
+      "expected_dq_status": "PASS"
+    },
+    {
+      "case_id": "EXACT_MINIMUM_BOUNDARY",
+      "scenario_reference": "VNHC-009",
+      "shipment_reference": "SHIP-VNHC-009",
+      "display_name": "Đúng ngưỡng tối thiểu — vẫn trong ngưỡng",
+      "streams": [{ "device_id": "LOGGER-A-TEMP-02", "samples": [[0, 2]] }],
+      "expected_temperature_status": "IN_RANGE",
+      "expected_excursion_count": 0,
+      "expected_dq_status": "PASS"
+    },
+    {
+      "case_id": "EXACT_MAXIMUM_BOUNDARY",
+      "scenario_reference": "VNHC-009",
+      "shipment_reference": "SHIP-VNHC-009",
+      "display_name": "Đúng ngưỡng tối đa — vẫn trong ngưỡng",
+      "streams": [{ "device_id": "LOGGER-A-TEMP-03", "samples": [[0, 8]] }],
+      "expected_temperature_status": "IN_RANGE",
+      "expected_excursion_count": 0,
+      "expected_dq_status": "PASS"
+    },
+    {
+      "case_id": "ABOVE_THRESHOLD_SINGLE_SAMPLE",
+      "golden_id": "GOLDEN_TEMP_ABOVE",
+      "scenario_reference": "VNHC-014",
+      "shipment_reference": "SHIP-VNHC-014",
+      "display_name": "Phát hiện vượt ngưỡng trên — một mẫu",
+      "streams": [{ "device_id": "LOGGER-A-TEMP-04", "samples": [[0, 5], [5, 9], [10, 5]] }],
+      "expected_temperature_status": "EXCURSION_DETECTED",
+      "expected_excursion_count": 1,
+      "expected_dq_status": "PASS"
+    },
+    {
+      "case_id": "ABOVE_THRESHOLD_MULTI_SAMPLE",
+      "scenario_reference": "VNHC-014",
+      "shipment_reference": "SHIP-VNHC-014",
+      "display_name": "Phát hiện vượt ngưỡng trên — nhiều mẫu",
+      "streams": [{ "device_id": "LOGGER-A-TEMP-05", "samples": [[0, 5], [5, 9], [10, 10], [15, 5]] }],
+      "expected_temperature_status": "EXCURSION_DETECTED",
+      "expected_excursion_count": 1,
+      "expected_dq_status": "PASS"
+    },
+    {
+      "case_id": "BELOW_THRESHOLD_SINGLE_SAMPLE",
+      "golden_id": "GOLDEN_TEMP_BELOW",
+      "scenario_reference": "VNHC-015",
+      "shipment_reference": "SHIP-VNHC-015",
+      "display_name": "Phát hiện dưới ngưỡng — một mẫu",
+      "streams": [{ "device_id": "LOGGER-A-TEMP-06", "samples": [[0, 5], [5, 1], [10, 5]] }],
+      "expected_temperature_status": "EXCURSION_DETECTED",
+      "expected_excursion_count": 1,
+      "expected_dq_status": "PASS"
+    },
+    {
+      "case_id": "BELOW_THRESHOLD_MULTI_SAMPLE",
+      "scenario_reference": "VNHC-015",
+      "shipment_reference": "SHIP-VNHC-015",
+      "display_name": "Phát hiện dưới ngưỡng — nhiều mẫu",
+      "streams": [{ "device_id": "LOGGER-A-TEMP-07", "samples": [[0, 5], [5, 1], [10, 0.5], [15, 5]] }],
+      "expected_temperature_status": "EXCURSION_DETECTED",
+      "expected_excursion_count": 1,
+      "expected_dq_status": "PASS"
+    },
+    {
+      "case_id": "MULTIPLE_EXCURSIONS",
+      "golden_id": "GOLDEN_TEMP_MULTIPLE_EXCURSIONS",
+      "scenario_reference": "VNHC-018",
+      "shipment_reference": "SHIP-VNHC-018",
+      "display_name": "Nhiều khoảng vượt ngưỡng độc lập",
+      "streams": [{ "device_id": "LOGGER-A-TEMP-08", "samples": [[0, 5], [5, 9], [10, 5], [15, 1], [20, 5]] }],
+      "expected_temperature_status": "EXCURSION_DETECTED",
+      "expected_excursion_count": 2,
+      "expected_dq_status": "PASS"
+    },
+    {
+      "case_id": "ABOVE_THEN_BELOW",
+      "scenario_reference": "VNHC-018",
+      "shipment_reference": "SHIP-VNHC-018",
+      "display_name": "Chuyển trực tiếp từ trên ngưỡng sang dưới ngưỡng",
+      "streams": [{ "device_id": "LOGGER-A-TEMP-09", "samples": [[0, 9], [5, 1], [10, 5]] }],
+      "expected_temperature_status": "EXCURSION_DETECTED",
+      "expected_excursion_count": 2,
+      "expected_dq_status": "PASS"
+    },
+    {
+      "case_id": "EXCURSION_AT_SEQUENCE_START",
+      "scenario_reference": "VNHC-014",
+      "shipment_reference": "SHIP-VNHC-014",
+      "display_name": "Vượt ngưỡng ngay tại mẫu đầu tiên",
+      "streams": [{ "device_id": "LOGGER-A-TEMP-10", "samples": [[0, 9], [5, 5]] }],
+      "expected_temperature_status": "EXCURSION_DETECTED",
+      "expected_excursion_count": 1,
+      "expected_dq_status": "PASS"
+    },
+    {
+      "case_id": "OPEN_ENDED_EXCURSION",
+      "golden_id": "GOLDEN_TEMP_OPEN_ENDED",
+      "scenario_reference": "VNHC-014",
+      "shipment_reference": "SHIP-VNHC-014",
+      "display_name": "Khoảng vượt ngưỡng chưa có điểm kết thúc",
+      "streams": [{ "device_id": "LOGGER-A-TEMP-11", "samples": [[0, 5], [5, 9], [10, 10]] }],
+      "expected_temperature_status": "EXCURSION_DETECTED",
+      "expected_excursion_count": 1,
+      "expected_dq_status": "PASS"
+    },
+    {
+      "case_id": "DQ_GAP_DURING_EXCURSION",
+      "golden_id": "GOLDEN_TEMP_GAP_UNCERTAIN",
+      "scenario_reference": "VNHC-013",
+      "shipment_reference": "SHIP-VNHC-013",
+      "display_name": "Khoảng dữ liệu bị thiếu — không suy diễn nhiệt độ liên tục",
+      "streams": [{ "device_id": "LOGGER-A-TEMP-12", "samples": [[0, 9], [5, 9], [20, 9], [25, 5]] }],
+      "expected_temperature_status": "EXCURSION_DETECTED",
+      "expected_excursion_count": 2,
+      "expected_dq_status": "FLAGGED"
+    },
+    {
+      "case_id": "DQ_DUPLICATE_WITH_IN_RANGE_TEMP",
+      "scenario_reference": "VNHC-010",
+      "shipment_reference": "SHIP-VNHC-010",
+      "display_name": "Bản ghi trùng lặp nhưng nhiệt độ trong ngưỡng",
+      "streams": [{ "device_id": "LOGGER-A-TEMP-13", "samples": [[0, 5], [0, 5]] }],
+      "expected_temperature_status": "IN_RANGE",
+      "expected_excursion_count": 0,
+      "expected_dq_status": "FLAGGED"
+    },
+    {
+      "case_id": "DQ_DUPLICATE_WITH_EXCURSION",
+      "scenario_reference": "VNHC-010",
+      "shipment_reference": "SHIP-VNHC-010",
+      "display_name": "Bản ghi trùng lặp trong khoảng vượt ngưỡng",
+      "streams": [{ "device_id": "LOGGER-A-TEMP-14", "samples": [[0, 9], [0, 9]] }],
+      "expected_temperature_status": "EXCURSION_DETECTED",
+      "expected_excursion_count": 1,
+      "expected_dq_status": "FLAGGED"
+    },
+    {
+      "case_id": "DQ_CONFLICT_WITH_EXCURSION",
+      "scenario_reference": "VNHC-011",
+      "shipment_reference": "SHIP-VNHC-011",
+      "display_name": "Xung đột giá trị cùng thời điểm có vượt ngưỡng",
+      "streams": [{ "device_id": "LOGGER-A-TEMP-15", "samples": [[0, 9], [0, 1]] }],
+      "expected_temperature_status": "EXCURSION_DETECTED",
+      "expected_excursion_count": 2,
+      "expected_dq_status": "FLAGGED"
+    },
+    {
+      "case_id": "PARTIAL_IMPORT_WITH_EXCURSION",
+      "scenario_reference": "VNHC-013",
+      "shipment_reference": "SHIP-VNHC-013",
+      "display_name": "Nhập tệp một phần và vẫn phát hiện vượt ngưỡng",
+      "integration_fixture": "INLINE_PARTIAL_IMPORT",
+      "streams": [{ "device_id": "LOGGER-A-TEMP-16", "samples": [[0, 5], [10, 9.5], [15, 5]] }],
+      "expected_temperature_status": "EXCURSION_DETECTED",
+      "expected_excursion_count": 1,
+      "expected_dq_status": "FLAGGED"
+    },
+    {
+      "case_id": "NO_CANONICAL_DATA",
+      "scenario_reference": "VNHC-020",
+      "shipment_reference": "SHIP-VNHC-020",
+      "display_name": "Không có dữ liệu chuẩn hóa để đánh giá",
+      "streams": [],
+      "expected_temperature_status": "NOT_ASSESSED",
+      "expected_excursion_count": 0,
+      "expected_dq_status": "PASS"
+    },
+    {
+      "case_id": "MULTI_DEVICE_ONE_EXCURSION",
+      "scenario_reference": "VNHC-021",
+      "shipment_reference": "SHIP-VNHC-021",
+      "display_name": "Hai logger — một luồng có vượt ngưỡng",
+      "streams": [
+        { "device_id": "LOGGER-A-TEMP-18-A", "samples": [[0, 5], [5, 5]] },
+        { "device_id": "LOGGER-A-TEMP-18-B", "samples": [[0, 9], [5, 5]] }
+      ],
+      "expected_temperature_status": "EXCURSION_DETECTED",
+      "expected_excursion_count": 1,
+      "expected_dq_status": "PASS"
+    },
+    {
+      "case_id": "INVALID_THRESHOLD_MIN_EQUALS_MAX",
+      "scenario_reference": "VNHC-009",
+      "shipment_reference": "SHIP-VNHC-009",
+      "display_name": "Cấu hình ngưỡng không hợp lệ — tối thiểu bằng tối đa",
+      "threshold_override": { "min_temperature_c": 8, "max_temperature_c": 8 },
+      "streams": [{ "device_id": "LOGGER-A-TEMP-19", "samples": [[0, 5]] }],
+      "expected_temperature_status": "NOT_ASSESSED",
+      "expected_excursion_count": 0,
+      "expected_dq_status": "PASS"
+    },
+    {
+      "case_id": "INVALID_THRESHOLD_MIN_GREATER_THAN_MAX",
+      "scenario_reference": "VNHC-009",
+      "shipment_reference": "SHIP-VNHC-009",
+      "display_name": "Cấu hình ngưỡng không hợp lệ — tối thiểu lớn hơn tối đa",
+      "threshold_override": { "min_temperature_c": 9, "max_temperature_c": 8 },
+      "streams": [{ "device_id": "LOGGER-A-TEMP-20", "samples": [[0, 5]] }],
+      "expected_temperature_status": "NOT_ASSESSED",
+      "expected_excursion_count": 0,
+      "expected_dq_status": "PASS"
+    }
+  ]
+}
