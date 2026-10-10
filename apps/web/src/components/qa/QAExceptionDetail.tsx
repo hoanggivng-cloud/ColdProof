@@ -8,7 +8,6 @@ import { Button } from '../ui/Button';
 import { Panel } from '../ui/Panel';
 import { Table } from '../ui/Table';
 import { Field } from '../ui/Field';
-import { WorkflowProgress } from '../shipment/ShipmentWorkflow';
 import { PageHeader } from '../layout/PageHeader';
 import { BatchStatusBadge } from '../BatchStatusBadge';
 
@@ -63,7 +62,6 @@ export function QAExceptionDetail({ id }: { id: string }) {
 
   const item = state.data?.exceptions[0];
   return <><PageHeader title="Chi tiết sự cố" breadcrumb={[{ href: '/qa', label: 'QA' }, { label: id }]} description="Đối chiếu sự cố với số đo của lô trước khi ghi nhận." meta={[<span key="id" className="number">{id}</span>]}><Button href="/qa">Về hàng đợi QA</Button><Button href="/reports">Tiếp tục: Hồ sơ bằng chứng</Button></PageHeader>
-    <WorkflowProgress current={5} batchId={item?.batch_id} />
     {state.loading ? (
       <div className="panel" aria-busy="true">
         <div className="section-heading"><h2 className="skeleton" style={{ width: '200px', height: '24px' }}>Loading...</h2></div>

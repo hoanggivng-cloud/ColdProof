@@ -2,7 +2,6 @@
 import { useEffect, useState } from 'react';
 import { ApiRecords } from '../ApiRecords';
 import { PageHeader } from '../layout/PageHeader';
-import { WorkflowProgress } from '../shipment/ShipmentWorkflow';
 import { Button } from '../ui/Button';
 import { Panel } from '../ui/Panel';
 import { TemperatureChart } from './TemperatureChart';
@@ -52,8 +51,6 @@ export function BatchDetail({ id }: { id: string }) {
       >
         <Button href="/batches">Về danh sách lô</Button>
       </PageHeader>
-
-      <WorkflowProgress current={4} batchId={id} />
 
       {/* 1. HERO COMPONENT: Visual Temperature Chart with Safe Zone & Excursions */}
       <TemperatureChart
