@@ -309,7 +309,8 @@ kbd { padding: 0 var(--space-1); border: 1px solid var(--color-border); border-r
 }
 @media (max-width: 760px) {
   .topbar { height: auto; flex-wrap: wrap; gap: var(--space-2); padding: var(--space-2) var(--space-4); }
-  .topbar-menu { order: 3; flex-basis: 100%; }
+  .topbar-menu { order: 3; flex-basis: 100%; overflow-x: auto; white-space: nowrap; -webkit-overflow-scrolling: touch; padding-bottom: var(--space-2); scrollbar-width: none; }
+  .topbar-menu::-webkit-scrollbar { display: none; }
   .topbar-user { margin-left: auto; }
   .app-main { padding: var(--space-4); }
   .env-strip { padding: var(--space-1) var(--space-4); }
@@ -380,3 +381,17 @@ kbd { padding: 0 var(--space-1); border: 1px solid var(--color-border); border-r
   50% { width: 50vw; transform: translateX(25vw); }
   100% { width: 100vw; transform: translateX(100vw); }
 }
+
+.empty-state { padding: var(--space-6); text-align: center; color: var(--color-text-muted); }
+.empty-icon { opacity: 0.5; margin-bottom: var(--space-3); }
+
+/* Micro-interactions */
+.button, input, select, .report-tab, a { transition: all 0.2s ease; }
+tr { transition: background-color 0.15s ease; }
+tbody tr:hover { background-color: var(--color-surface); }
+
+
+/* Table enhancements */
+.table-scroll { border: 1px solid var(--color-border); border-radius: var(--radius-md); overflow-x: auto; background: var(--color-bg); }
+.table-scroll table { min-width: 100%; border-collapse: separate; border-spacing: 0; }
+
