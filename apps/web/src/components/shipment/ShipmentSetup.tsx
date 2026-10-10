@@ -12,7 +12,6 @@ import { PageHeader } from '../layout/PageHeader';
 import { AssignLoggerDialog } from './AssignLoggerDialog';
 import { useShipmentWorkflow, WorkflowProgress } from './ShipmentWorkflow';
 import { RecordHandoverDialog } from './RecordHandoverDialog';
-import { writeRecord } from '../../services/api-client';
 
 export function ShipmentSetup({ presets, devices }: { presets: TemperaturePreset[]; devices: SetupDevice[] }) {
   const router = useRouter();

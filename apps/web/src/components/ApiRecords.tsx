@@ -17,6 +17,8 @@ const formatCell = (value: unknown) => {
 };
 const time = new Intl.DateTimeFormat('vi-VN', { timeZone: 'Asia/Ho_Chi_Minh', dateStyle: 'short', timeStyle: 'short' });
 
+const SKELETON_WIDTHS = ['68%', '82%', '56%', '74%', '60%'];
+
 /** Read-only table of API rows. Loading, error (with retry), empty and data-warning states are rendered here. */
 export function ApiRecords({ path, columns, label, batchLinks = false, collection, linkColumn, emptyText = 'Chưa có dữ liệu.', warning }: {
   path: string; columns: [string, string][]; label?: string; batchLinks?: boolean; collection?: string;
@@ -52,9 +54,9 @@ export function ApiRecords({ path, columns, label, batchLinks = false, collectio
         <tbody>
           {[...Array(5)].map((_, i) => (
             <tr key={i}>
-              {columns.map(([key]) => (
+              {columns.map(([key], colIdx) => (
                 <td key={key}>
-                  <div className="skeleton" style={{ height: '20px', width: `${Math.floor(Math.random() * 40) + 40}%` }} />
+                  <div className="skeleton" style={{ height: '20px', width: SKELETON_WIDTHS[(i + colIdx) % SKELETON_WIDTHS.length] }} />
                 </td>
               ))}
             </tr>

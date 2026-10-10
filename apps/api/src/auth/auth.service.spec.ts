@@ -5,7 +5,7 @@ import { UnauthorizedException } from '@nestjs/common';
 
 describe('AuthService', () => {
   let service: AuthService;
-  let prisma: PrismaService;
+  let _prisma: PrismaService;
 
   const mockUser = {
     id: '1',
@@ -35,7 +35,7 @@ describe('AuthService', () => {
     }).compile();
 
     service = module.get<AuthService>(AuthService);
-    prisma = module.get<PrismaService>(PrismaService);
+    _prisma = module.get<PrismaService>(PrismaService);
   });
 
   it('should be defined', () => {
@@ -63,7 +63,8 @@ describe('AuthService', () => {
       });
 
       // Verify token payload (just simple check)
-      const decodedPayload = JSON.parse(Buffer.from(result.access_token, 'base64').toString('utf-8'));
+      const payloadPart = result.access_token.split('.')[1];
+      const decodedPayload = JSON.parse(Buffer.from(payloadPart, 'base64url').toString('utf-8'));
       expect(decodedPayload.sub).toBe(mockUser.id);
       expect(decodedPayload.email).toBe(mockUser.email);
       expect(decodedPayload.role).toBe(mockUser.role);

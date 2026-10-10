@@ -54,7 +54,15 @@ describe('UsersService', () => {
     it('should return all users ordered by created_at', async () => {
       const result = await service.findAll();
       expect(result).toEqual(mockUsers);
-      expect(prisma.user.findMany).toHaveBeenCalledWith({ orderBy: { created_at: 'asc' } });
+      expect(prisma.user.findMany).toHaveBeenCalledWith({
+        select: {
+          id: true,
+          email: true,
+          role: true,
+          created_at: true,
+        },
+        orderBy: { created_at: 'asc' },
+      });
     });
   });
 
@@ -62,12 +70,28 @@ describe('UsersService', () => {
     it('should return a user by id', async () => {
       const result = await service.findOne('1');
       expect(result).toEqual(mockUsers[0]);
-      expect(prisma.user.findUnique).toHaveBeenCalledWith({ where: { id: '1' } });
+      expect(prisma.user.findUnique).toHaveBeenCalledWith({
+        where: { id: '1' },
+        select: {
+          id: true,
+          email: true,
+          role: true,
+          created_at: true,
+        },
+      });
     });
 
     it('should throw NotFoundException if user not found', async () => {
       await expect(service.findOne('999')).rejects.toThrow(NotFoundException);
-      expect(prisma.user.findUnique).toHaveBeenCalledWith({ where: { id: '999' } });
+      expect(prisma.user.findUnique).toHaveBeenCalledWith({
+        where: { id: '999' },
+        select: {
+          id: true,
+          email: true,
+          role: true,
+          created_at: true,
+        },
+      });
     });
   });
 });
