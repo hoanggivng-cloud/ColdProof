@@ -12,6 +12,7 @@ import { PageHeader } from '../layout/PageHeader';
 import { AssignLoggerDialog } from './AssignLoggerDialog';
 import { useShipmentWorkflow, WorkflowProgress } from './ShipmentWorkflow';
 import { RecordHandoverDialog } from './RecordHandoverDialog';
+import { writeRecord } from '../../services/api-client';
 
 export function ShipmentSetup({ presets, devices }: { presets: TemperaturePreset[]; devices: SetupDevice[] }) {
   const router = useRouter();
@@ -123,6 +124,7 @@ export function ShipmentSetup({ presets, devices }: { presets: TemperaturePreset
     }, selected);
     await saveToServer(lot);
   };
+
   const field = (id: string, label: string, control: ReactNode, className?: string, hint?: string) => <Field id={id} label={label} className={className} hint={hint}>{control}</Field>;
   return <><PageHeader title="Tạo Shipment" breadcrumb={[{ href: '/batches', label: 'Lô hàng' }, { label: 'Tạo Shipment' }]} description="Nhập thông tin lô, chọn profile nhiệt độ và gán thiết bị."><Button href="/batches">Xem danh sách lô</Button></PageHeader>
     <WorkflowProgress />
