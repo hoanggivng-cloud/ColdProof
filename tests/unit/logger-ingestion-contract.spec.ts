@@ -255,6 +255,12 @@ describe('Logger Ingestion Contract v1', () => {
 
   it('exposes every Logger Ingestion v1 data-quality outcome', () => {
     expect(LoggerDataQualityCode.options).toEqual([
+      'RAW_PAYLOAD_CHECKSUM_MISMATCH',
+      'MALFORMED_JSON_PAYLOAD',
+      'PAYLOAD_FORMAT_MISMATCH',
+      'DEVICE_IDENTITY_MISMATCH',
+      'INVALID_TIMEZONE_CONTEXT',
+      'CANONICAL_VALIDATION_FAILED',
       'INVALID_TIMESTAMP',
       'TIMEZONE_CONTEXT_REQUIRED',
       'MISSING_TEMPERATURE',
