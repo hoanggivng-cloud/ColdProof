@@ -21,8 +21,8 @@ import type {
   RuntimeDataQualityResult,
 } from '@coldproof/runtime-data-quality';
 
-import { normalizeTimeSeriesRecord } from '../../normalization/time-series-normalization';
-import { MendeleyAdapter } from '../mendeley/mendeley.adapter';
+import { normalizeTimeSeriesRecord } from '../../normalization';
+import { MendeleyParser } from '../mendeley/mendeley-parser';
 import { readXlsxSheets, type XlsxSheet } from '../mendeley/xlsx-workbook';
 import { ZenodoAdapter } from '../zenodo/zenodo.adapter';
 
@@ -108,7 +108,7 @@ class CsvSyntaxError extends Error {
 }
 
 const zenodoAdapter = new ZenodoAdapter();
-const mendeleyAdapter = new MendeleyAdapter();
+const mendeleyAdapter = new MendeleyParser();
 const DECIMAL = /^[+-]?(?:\d+(?:\.\d*)?|\.\d+)$/;
 const OFFSET_TIMESTAMP = /^(\d{4}-\d{2}-\d{2}T\d{2}:\d{2}:\d{2})(Z|[+-]\d{2}:\d{2})$/;
 

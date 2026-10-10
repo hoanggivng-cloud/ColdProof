@@ -38,13 +38,18 @@ custody.
 | Canonical measurement | `CanonicalTimeSeriesMeasurementSchema` | Authoritative output schema |
 | CSV public-source parser | `ZenodoAdapter` | Used directly for `ZENODO_CSV` |
 | XLSX reader | Mendeley OOXML reader | Shared by Mendeley and `VENDOR_C_XLSX` |
-| Spatial workbook parser | `MendeleyAdapter` | Used only through the context API |
+| Spatial workbook parser | Pure `MendeleyParser`, wrapped by `MendeleyAdapter` for NestJS | Used only through the context API; D10 does not load the provider |
 | Time-series normalization | Pure `normalizeTimeSeriesRecord()` core shared with `NormalizationService` | Preserves deterministic IDs and provenance without requiring NestJS |
 | Sequence data quality | `assessLoggerSequence()` | Sole duplicate/conflict/order/gap engine |
 
 No new CSV or XLSX dependency was added. The CSV parser uses a declared,
 format-specific delimiter and conservative quoted-field handling. It never
 autodetects an ambiguous delimiter.
+
+The supported local D10 import boundary is
+`apps/api/src/adapters/file-import/index.ts`. Consumers must use that barrel
+rather than importing the implementation file directly. Its module graph is
+pure and does not evaluate NestJS providers.
 
 ## Supported formats and adapter identities
 

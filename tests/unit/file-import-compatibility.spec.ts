@@ -15,7 +15,7 @@ import {
   inspectLoggerFile,
   parseLoggerFile,
   parseMendeleySpreadsheetContext,
-} from '../../apps/api/src/adapters/file-import/file-import';
+} from '../../apps/api/src/adapters/file-import';
 import { MendeleyAdapter } from '../../apps/api/src/adapters/mendeley/mendeley.adapter';
 import { ZenodoAdapter } from '../../apps/api/src/adapters/zenodo/zenodo.adapter';
 import { loggerWorkbookFixture } from '../fixtures/file-import/workbook-fixture';
