@@ -15,4 +15,4 @@ export const demoAccounts: { role: Role; email: string }[] = [
   { role: 'QA_REVIEWER', email: 'qa@coldproof.local' },
   { role: 'ADMIN', email: 'admin@coldproof.local' },
 ];
-export const isDemo = () => process.env.NEXT_PUBLIC_APP_ENV === 'demo';
+export const isDemo = () => process.env.NEXT_PUBLIC_APP_ENV === 'demo' || process.env.NODE_ENV !== 'production';

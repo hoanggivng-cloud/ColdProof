@@ -18,13 +18,41 @@ export function AppShell({ children }: { children: ReactNode }) {
   const { user, loading, logout, hasRole } = useSession();
   if (pathname === '/login' || pathname === '/register') return <>{children}</>;
   const visible = links.filter(link => !link.roles || hasRole(...link.roles));
-  return <div className="app-shell">
-    <DemoStrip />
-    <header className="topbar">
-      <Link className="topbar-brand" href="/">ColdProof</Link>
-      <nav className="topbar-menu" aria-label="Menu chính">{visible.map(link => <Link key={link.href} href={link.href} aria-current={pathname === link.href || pathname.startsWith(`${link.href}/`) ? 'page' : undefined}>{link.label}</Link>)}</nav>
-      <div className="topbar-user">{loading ? <span>Đang tải phiên…</span> : user ? <><span><strong>{roleLabels[user.role]}</strong> · {user.email}</span><Button onClick={() => void logout()}>Đăng xuất</Button></> : <Link href="/login">Đăng nhập</Link>}</div>
-    </header>
-    <main className="app-main">{children}</main>
+  return <div className="app-shell sidebar-layout">
+    <aside className="sidebar">
+      <div className="sidebar-header">
+        <Link className="sidebar-brand" href="/">ColdProof</Link>
+      </div>
+      <nav className="sidebar-menu" aria-label="Menu chính">
+        {visible.map(link => (
+          <Link 
+            key={link.href} 
+            href={link.href} 
+            aria-current={pathname === link.href || pathname.startsWith(`${link.href}/`) ? 'page' : undefined}
+          >
+            {link.label}
+          </Link>
+        ))}
+      </nav>
+      <div className="sidebar-footer">
+        {loading ? (
+          <span className="user-info">Đang tải phiên…</span>
+        ) : user ? (
+          <div className="user-profile">
+            <div className="user-info">
+              <strong>{roleLabels[user.role]}</strong>
+              <small>{user.email}</small>
+            </div>
+            <Button className="logout-btn" onClick={() => void logout()}>Đăng xuất</Button>
+          </div>
+        ) : (
+          <Link className="login-link" href="/login">Đăng nhập</Link>
+        )}
+      </div>
+    </aside>
+    <div className="main-content-wrapper">
+      <DemoStrip />
+      <main className="app-main">{children}</main>
+    </div>
   </div>;
 }
