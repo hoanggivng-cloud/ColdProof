@@ -26,7 +26,7 @@ export function useShipmentWorkflow() {
   if (!context) throw new Error('ShipmentWorkflowProvider is required');
   return context;
 }
-const processSteps: [string, string][] = [['Tạo Shipment', '/batches/new'], ['Gán thiết bị', '/batches/new'], ['Ghi nhận bàn giao', '/batches/new'], ['Import', '/imports'], ['Phân tích', '/batches'], ['QA review', '/qa'], ['Hồ sơ', '/reports']];
+const processSteps: [string, string][] = [['Tạo Shipment', '/batches/new'], ['Gán thiết bị', '/batches/new'], ['Ghi nhận bàn giao', '/batches/new'], ['Phân tích', '/batches'], ['QA review', '/qa'], ['Hồ sơ', '/reports']];
 export function WorkflowProgress({ current, batchId }: { current?: number; batchId?: string }) {
   const { shipment, devicesConfirmed, handover } = useShipmentWorkflow();
   const formStep = !shipment ? 0 : !devicesConfirmed ? 1 : !handover ? 2 : 3;

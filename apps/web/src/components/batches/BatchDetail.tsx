@@ -7,7 +7,8 @@ import { Panel } from '../ui/Panel';
 import { TemperatureChart } from './TemperatureChart';
 import { BatchSegmentsCard } from './BatchSegmentsCard';
 import { BatchTimelineView } from './BatchTimelineView';
-import { readRecords, type ApiRecord } from '../../services/api-client';
+import { readRecords, writeRecord, type ApiRecord } from '../../services/api-client';
+import { RoleGate } from '../auth/RoleGate';
 
 const qualityWarning = (rows: unknown[]) =>
   `${rows.length} vấn đề chất lượng dữ liệu từ server cần xem xét. Không nội suy hoặc xóa dữ liệu thiếu.`;
@@ -17,6 +18,7 @@ export function BatchDetail({ id }: { id: string }) {
   const [batchData, setBatchData] = useState<ApiRecord | null>(null);
   const [measurements, setMeasurements] = useState<ApiRecord[]>([]);
   const [loading, setLoading] = useState(true);
+  const [generatingReport, setGeneratingReport] = useState(false);
 
   useEffect(() => {
     const controller = new AbortController();
@@ -33,6 +35,17 @@ export function BatchDetail({ id }: { id: string }) {
     return () => controller.abort();
   }, [path]);
 
+  const handleGenerateReport = async () => {
+    try {
+      setGeneratingReport(true);
+      await writeRecord(`batches/${encodeURIComponent(id)}/reports`, 'POST');
+      window.location.href = '/reports';
+    } catch (e) {
+      alert('Lỗi khi tạo hồ sơ: ' + (e instanceof Error ? e.message : 'Unknown error'));
+      setGeneratingReport(false);
+    }
+  };
+
   const segments = Array.isArray(batchData?.segments) ? (batchData?.segments as ApiRecord[]) : [];
   const timeline = Array.isArray(batchData?.timeline) ? (batchData?.timeline as ApiRecord[]) : [];
   const lowerThreshold = typeof batchData?.lower_threshold === 'number' ? batchData.lower_threshold : 2.0;
@@ -42,6 +55,16 @@ export function BatchDetail({ id }: { id: string }) {
     return <p role="status">Đang tải dữ liệu lô từ server…</p>;
   }
 
+  if (!batchData) {
+    return (
+      <div className="panel">
+        <PageHeader title="Không tìm thấy lô hàng" />
+        <p style={{ margin: '1rem 0' }}>Lô hàng <strong>{id}</strong> không tồn tại trên hệ thống hoặc bạn không có quyền truy cập.</p>
+        <Button href="/batches">Về danh sách lô</Button>
+      </div>
+    );
+  }
+
   return (
     <>
       <PageHeader
@@ -49,6 +72,7 @@ export function BatchDetail({ id }: { id: string }) {
         breadcrumb={[{ href: '/batches', label: 'Lô hàng' }, { label: id }]}
         description="Thông tin lô, biểu đồ nhiệt độ thời gian thực, hành trình các chặng và hồ sơ sự cố."
       >
+        <Button onClick={handleGenerateReport} disabled={generatingReport}>{generatingReport ? 'Đang tạo...' : 'Xuất hồ sơ bằng chứng'}</Button>
         <Button href="/batches">Về danh sách lô</Button>
       </PageHeader>
 
@@ -113,12 +137,14 @@ export function BatchDetail({ id }: { id: string }) {
       </Panel>
 
       <div className="form-footer">
-        <p>Bước tiếp theo: QA xem xét sự cố. Giao diện không kết luận lô đạt/không đạt.</p>
+        <p>Giao diện không kết luận lô đạt/không đạt.</p>
         <div className="actions">
-          <Button href="/reports">Xem hồ sơ bằng chứng</Button>
-          <Button primary href="/qa">
-            Tiếp tục: QA review
-          </Button>
+          <Button onClick={handleGenerateReport} disabled={generatingReport}>{generatingReport ? 'Đang tạo...' : 'Xuất hồ sơ bằng chứng'}</Button>
+          <RoleGate roles={['QA_REVIEWER', 'ADMIN']}>
+            <Button primary href="/qa">
+              Tiếp tục: QA review
+            </Button>
+          </RoleGate>
         </div>
       </div>
     </>

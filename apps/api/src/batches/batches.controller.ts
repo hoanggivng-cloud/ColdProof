@@ -1,4 +1,4 @@
-import { Controller, Get, Param, Post, Body } from '@nestjs/common';
+import { Controller, Get, Param, Post, Body, Req, UseGuards } from '@nestjs/common';
 import { ApiOkResponse, ApiOperation, ApiTags, ApiParam } from '@nestjs/swagger';
 import { BatchesService } from './batches.service';
 import {
@@ -9,6 +9,11 @@ import {
   BatchExceptionsDto,
   CreateBatchDto,
 } from './batches.dto';
+import { JwtAuthGuard } from '../auth/guards/jwt-auth.guard';
+
+interface RequestWithUser {
+  user?: { id?: string; email?: string; role?: string };
+}
 
 @ApiTags('batches')
 @Controller('batches')
@@ -60,10 +65,12 @@ export class BatchesController {
   }
 
   @Post(':id/reports')
+  @UseGuards(JwtAuthGuard)
   @ApiParam({ name: 'id', example: 'CP-DEMO-001', description: 'Batch ID' })
   @ApiOperation({ summary: 'Generate evidence report package for a batch' })
-  generateReport(@Param('id') id: string) {
-    return this.service.generateReport(id);
+  generateReport(@Param('id') id: string, @Req() req: RequestWithUser) {
+    const userEmail = req.user?.email || 'system@coldproof.local';
+    return this.service.generateReport(id, userEmail);
   }
 }
 

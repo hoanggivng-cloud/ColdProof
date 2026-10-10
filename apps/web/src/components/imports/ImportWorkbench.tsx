@@ -15,9 +15,14 @@ const flags = { VALID: 'Bản ghi mẫu hợp lệ', EXCURSION_LOW: 'Sự cố n
 const flagTones: Record<keyof typeof flags, BadgeTone> = { VALID: 'neutral', EXCURSION_LOW: 'danger', PARSE_TIMESTAMP_ERROR: 'danger', DUPLICATE_TIMESTAMP: 'warning' };
 const timeFormat = new Intl.DateTimeFormat('vi-VN', { timeZone: 'Asia/Ho_Chi_Minh', dateStyle: 'short', timeStyle: 'medium' });
 
+import { useSearchParams } from 'next/navigation';
+
 export function ImportWorkbench() {
+  const searchParams = useSearchParams();
+  const queryBatchId = searchParams?.get('batchId');
   const { shipment, deviceIds, devicesConfirmed, handover } = useShipmentWorkflow();
-  const ready = Boolean(shipment && devicesConfirmed && handover);
+  const targetBatchId = queryBatchId || shipment?.lot;
+  const ready = Boolean(targetBatchId);
   const input = useRef<HTMLInputElement>(null);
   const [file, setFile] = useState<File | null>(null), [error, setError] = useState('');
   const [preview, setPreview] = useState<ImportPreview | null>(null), [loading, setLoading] = useState(false);
@@ -46,8 +51,12 @@ export function ImportWorkbench() {
   const createImportJob = async () => {
     try {
         const sourceId = sources.length > 0 ? String(sources[0].id) : '00000000-0000-0000-0000-000000000000';
-        const job = (await writeRecord('imports', 'POST', { source_id: sourceId, parser_id: 'format-a', parser_version: '0.1.0' })) as Record<string, unknown>;
-        setMessage(`Tạo import job thành công (ID: ${String(job.id)}). Job metadata only; BullMQ worker is TODO.`);
+        const payload: Record<string, any> = { source_id: sourceId, parser_id: 'format-a', parser_version: '0.1.0' };
+        if (targetBatchId) {
+            payload.batch_id = targetBatchId;
+        }
+        const job = (await writeRecord('imports', 'POST', payload)) as Record<string, unknown>;
+        setMessage(`Tạo import job và mô phỏng dữ liệu thành công cho lô ${targetBatchId || 'demo'}.`);
         setResult(true);
         await loadDemo();
     } catch (err) {
@@ -62,7 +71,7 @@ export function ImportWorkbench() {
     <div className="import-grid">
       <Panel title="01. Chọn file logger"><div className="import-dropzone" onDragOver={event => event.preventDefault()} onDrop={event => { event.preventDefault(); if (ready) choose(event.dataTransfer.files[0]); }}><p>Kéo thả file xuất từ logger. CSV / TSV / TXT, chỉ chọn tại trình duyệt.</p><Field id="import-file" label="Chọn file nhiệt độ"><input id="import-file" ref={input} type="file" accept=".csv,.tsv,.txt" disabled={!ready} onChange={event => choose(event.target.files?.[0])} /></Field></div>
         {!file ? <p>Chưa chọn file nhiệt độ.</p> : <div className="attachment-row"><span className="number">{file.name} · {(file.size / 1024).toFixed(1)} KB</span>{result ? <Badge tone="success">Đã ghi nhận Job</Badge> : <Badge tone="warning">Chưa upload / parse</Badge>}<Button variant="text" onClick={() => { choose(); if (input.current) input.current.value = ''; }}>Bỏ file</Button></div>}
-        <ul className="page-meta"><li>Lô trong form: {shipment ? <strong className="number">{shipment.lot}</strong> : <strong>Chưa chuẩn bị lô</strong>}</li><li>Thiết bị: {deviceIds.length ? <strong className="number">{deviceIds.join(', ')}</strong> : <strong>Chưa gán</strong>}</li></ul>
+        <ul className="page-meta"><li>Lô: {targetBatchId ? <strong className="number">{targetBatchId}</strong> : <strong>Chưa xác định lô</strong>}</li></ul>
         <div className="form-footer"><Button primary disabled={!ready || !file} onClick={createImportJob}>Kiểm tra file trên server</Button></div>
       </Panel>
       <Panel title="02. Kiểm tra và mapping"><p>Format, múi giờ, đơn vị và thiết bị của bộ dữ liệu.</p>

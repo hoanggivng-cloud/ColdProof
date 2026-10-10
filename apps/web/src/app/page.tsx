@@ -30,13 +30,6 @@ export default function Home() {
                 <Button href="/batches">Xem danh sách</Button>
               </div>
             </Panel>
-
-            <Panel title="📥 Nhập Dữ liệu Thiết bị">
-              <p style={{ minHeight: '40px' }}>Tải lên file dữ liệu nhiệt độ từ thiết bị Logger để hệ thống phân tích và phát hiện sự cố.</p>
-              <div className="actions" style={{ marginTop: 'auto' }}>
-                <Button href="/imports" primary>Import Dữ liệu</Button>
-              </div>
-            </Panel>
           </>
         )}
 
@@ -65,18 +58,18 @@ export default function Home() {
           <div style={{ display: 'grid', gridTemplateColumns: 'repeat(auto-fit, minmax(200px, 1fr))', gap: '16px', paddingTop: '8px' }}>
              <div style={{ padding: '16px', background: '#F9FAFB', borderRadius: '8px', borderLeft: '4px solid #1F3A68' }}>
                 <strong style={{ color: '#111827' }}>Bước 1: Tạo Lô</strong>
-                <p style={{ fontSize: '13px', margin: '8px 0 0', color: '#6B7280' }}>Operator tạo lô mới và gán thiết bị (Logger).</p>
+                <p style={{ fontSize: '13px', margin: '8px 0 0', color: '#6B7280' }}>Operator tạo lô mới và gán thiết bị.</p>
              </div>
              <div style={{ padding: '16px', background: '#F9FAFB', borderRadius: '8px', borderLeft: '4px solid #1F3A68' }}>
-                <strong style={{ color: '#111827' }}>Bước 2: Import</strong>
-                <p style={{ fontSize: '13px', margin: '8px 0 0', color: '#6B7280' }}>Operator tải file nhiệt độ lên để phân tích.</p>
+                <strong style={{ color: '#111827' }}>Bước 2: Ghi nhận & Phân tích</strong>
+                <p style={{ fontSize: '13px', margin: '8px 0 0', color: '#6B7280' }}>Hệ thống tự động tiếp nhận dữ liệu nhiệt độ và phát hiện bất thường.</p>
              </div>
              <div style={{ padding: '16px', background: '#F9FAFB', borderRadius: '8px', borderLeft: '4px solid #B54708' }}>
                 <strong style={{ color: '#111827' }}>Bước 3: QA Duyệt</strong>
                 <p style={{ fontSize: '13px', margin: '8px 0 0', color: '#6B7280' }}>QA kiểm tra các đoạn vượt ngưỡng và ra quyết định.</p>
              </div>
              <div style={{ padding: '16px', background: '#F9FAFB', borderRadius: '8px', borderLeft: '4px solid #10B981' }}>
-                <strong style={{ color: '#111827' }}>Bước 4: Hồ sơ</strong>
+                <strong style={{ color: '#111827' }}>Bước 4: Xuất Hồ sơ</strong>
                 <p style={{ fontSize: '13px', margin: '8px 0 0', color: '#6B7280' }}>Hệ thống sinh báo cáo PDF làm bằng chứng.</p>
              </div>
           </div>

@@ -60,8 +60,23 @@ export function QAExceptionDetail({ id }: { id: string }) {
     }
   };
 
+  const [generatingReport, setGeneratingReport] = useState(false);
+  const handleGenerateReport = async (batchId: string) => {
+    try {
+      setGeneratingReport(true);
+      await writeRecord(`batches/${encodeURIComponent(batchId)}/reports`, 'POST');
+      window.location.href = '/reports';
+    } catch (e) {
+      alert('Lỗi khi tạo hồ sơ: ' + (e instanceof Error ? e.message : 'Unknown error'));
+      setGeneratingReport(false);
+    }
+  };
+
   const item = state.data?.exceptions[0];
-  return <><PageHeader title="Chi tiết sự cố" breadcrumb={[{ href: '/qa', label: 'QA' }, { label: id }]} description="Đối chiếu sự cố với số đo của lô trước khi ghi nhận." meta={[<span key="id" className="number">{id}</span>]}><Button href="/qa">Về hàng đợi QA</Button><Button href="/reports">Tiếp tục: Hồ sơ bằng chứng</Button></PageHeader>
+  return <><PageHeader title="Chi tiết sự cố" breadcrumb={[{ href: '/qa', label: 'QA' }, { label: id }]} description="Đối chiếu sự cố với số đo của lô trước khi ghi nhận." meta={[<span key="id" className="number">{id}</span>]}>
+    <Button href="/qa">Về hàng đợi QA</Button>
+    {item && <Button onClick={() => handleGenerateReport(item.batch_id)} disabled={generatingReport}>{generatingReport ? 'Đang tạo...' : 'Tiếp tục: Xuất hồ sơ bằng chứng'}</Button>}
+  </PageHeader>
     {state.loading ? (
       <div className="panel" aria-busy="true">
         <div className="section-heading"><h2 className="skeleton" style={{ width: '200px', height: '24px' }}>Loading...</h2></div>

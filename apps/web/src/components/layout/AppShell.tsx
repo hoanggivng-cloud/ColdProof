@@ -7,8 +7,12 @@ import { useSession } from '../auth/SessionProvider';
 import { Button } from '../ui/Button';
 
 const links: { href: string; label: string; roles?: Role[] }[] = [
-  { href: '/batches', label: 'Lô hàng' }, { href: '/imports', label: 'Import' }, { href: '/qa', label: 'QA' }, { href: '/reports', label: 'Hồ sơ' },
-  { href: '/profiles', label: 'Profile' }, { href: '/sources', label: 'Nguồn dữ liệu' }, { href: '/admin', label: 'Quản trị', roles: ['ADMIN'] },
+  { href: '/batches', label: 'Lô hàng' }, 
+  { href: '/qa', label: 'QA', roles: ['QA_REVIEWER', 'ADMIN'] }, 
+  { href: '/reports', label: 'Hồ sơ' },
+  { href: '/profiles', label: 'Profile', roles: ['ADMIN'] }, 
+  { href: '/sources', label: 'Nguồn dữ liệu', roles: ['ADMIN'] }, 
+  { href: '/admin', label: 'Quản trị', roles: ['ADMIN'] },
 ];
 
 export function DemoStrip() { return isDemo() ? <div className="env-strip" role="note">Môi trường demo · dữ liệu mô phỏng</div> : null; }

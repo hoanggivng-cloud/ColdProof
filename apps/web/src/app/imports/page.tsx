@@ -12,7 +12,7 @@ export default function Page() {
         <Button href="/batches">Xem danh sách lô</Button>
       </PageHeader>
       <div className="mt-6 space-y-6">
-        <RoleGate roles={['OPERATOR', 'ADMIN']} fallback={<Alert tone="warning" title="Không có quyền import">Import dữ liệu cần vai trò Operator hoặc Admin.</Alert>}>
+        <RoleGate roles={['QA_REVIEWER', 'ADMIN']} fallback={<Alert tone="warning" title="Không có quyền import">Import dữ liệu hiện tại (MVP) cần vai trò QA Reviewer hoặc Admin để phân tích.</Alert>}>
           <ShipmentImportContext />
           <ImportWorkbench />
         </RoleGate>

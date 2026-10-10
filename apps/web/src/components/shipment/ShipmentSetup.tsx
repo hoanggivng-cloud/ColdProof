@@ -12,6 +12,7 @@ import { PageHeader } from '../layout/PageHeader';
 import { AssignLoggerDialog } from './AssignLoggerDialog';
 import { useShipmentWorkflow, WorkflowProgress } from './ShipmentWorkflow';
 import { RecordHandoverDialog } from './RecordHandoverDialog';
+import { writeRecord } from '../../services/api-client';
 
 export function ShipmentSetup({ presets, devices }: { presets: TemperaturePreset[]; devices: SetupDevice[] }) {
   const router = useRouter();
@@ -180,11 +181,19 @@ export function ShipmentSetup({ presets, devices }: { presets: TemperaturePreset
         <Button primary type="submit" form="shipment-form" disabled={saving}>{saving ? 'Đang lưu…' : saveSuccess ? 'Lưu thay đổi Shipment' : 'Tạo Shipment'}</Button>
         {workflow.shipment && !workflow.devicesConfirmed && <Button onClick={() => setAssign(true)}>Tiếp tục: Gán thiết bị</Button>}
         {workflow.shipment && workflow.devicesConfirmed && !workflow.handover && <Button onClick={() => setHandoverOpen(true)}>Tiếp tục: Ghi nhận bàn giao</Button>}
-        {workflow.handover && <Button primary href="/imports">Tiếp tục sang Import</Button>}
+        {workflow.handover && <Button primary onClick={async () => {
+          try {
+            setMessage('Đang hoàn tất và đồng bộ dữ liệu thiết bị...');
+            await writeRecord('imports', 'POST', { source_id: '00000000-0000-0000-0000-000000000000', parser_id: 'format-a', parser_version: '0.1.0', batch_id: workflow.shipment?.lot });
+            window.location.href = '/batches';
+          } catch (e) {
+            setMessage('Lỗi khi đồng bộ dữ liệu. Vui lòng thử lại.');
+          }
+        }}>Hoàn tất khởi tạo lô</Button>}
       </div>
     </div>
     
-    {handoverOpen && workflow.shipment && <RecordHandoverDialog shipment={workflow.shipment} initial={workflow.handover} onClose={() => setHandoverOpen(false)} onSave={value => { workflow.saveHandover(value); setHandoverOpen(false); setMessage('Đã giữ thông tin bàn giao trong form mô phỏng. Chưa lưu server; có thể tiếp tục sang Import.'); }} />}
+    {handoverOpen && workflow.shipment && <RecordHandoverDialog shipment={workflow.shipment} initial={workflow.handover} onClose={() => setHandoverOpen(false)} onSave={value => { workflow.saveHandover(value); setHandoverOpen(false); setMessage('Đã ghi nhận thông tin bàn giao. Nhấn nút Hoàn tất để lưu cấu hình.'); }} />}
     </RoleGate>
     </>;
 }

@@ -274,7 +274,7 @@ export class BatchesService {
     };
   }
 
-  async generateReport(id: string) {
+  async generateReport(id: string, generatedBy: string = 'system@coldproof.local') {
     const batch = await this.findOne(id);
     const measurements = await this.findMeasurements(id);
     const { exceptions, quality_issues } = await this.findExceptions(id);
@@ -290,7 +290,7 @@ export class BatchesService {
       report_id: `RPT-${id}-v${version}`,
       report_version: version,
       generated_at: new Date().toISOString(),
-      generated_by: 'system@coldproof.local',
+      generated_by: generatedBy,
       batch: {
         batch_id: batch.id,
         scenario_id: batch.scenario_id,
