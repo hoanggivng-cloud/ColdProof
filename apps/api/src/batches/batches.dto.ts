@@ -1,4 +1,5 @@
 import { ApiProperty, ApiPropertyOptional } from '@nestjs/swagger';
+import { IsArray, IsNumber, IsOptional, IsString } from 'class-validator';
 
 export class BatchesStatusDto {
   @ApiProperty({ example: 'batches' }) module!: string;
@@ -83,4 +84,40 @@ export class CanonicalMeasurementDto {
 export class BatchExceptionsDto {
   @ApiProperty() exceptions!: Record<string, unknown>[];
   @ApiProperty() quality_issues!: Record<string, unknown>[];
+}
+
+export class CreateBatchDto {
+  @ApiProperty({ example: 'VX-2026-0418', description: 'Unique batch lot identifier' })
+  @IsString()
+  id!: string;
+
+  @ApiPropertyOptional({ example: 'S02' })
+  @IsOptional()
+  @IsString()
+  scenario_id?: string;
+
+  @ApiPropertyOptional({ example: 'DEMO_2_8C' })
+  @IsOptional()
+  @IsString()
+  profile_id?: string;
+
+  @ApiPropertyOptional({ example: 2.0 })
+  @IsOptional()
+  @IsNumber()
+  lower_threshold?: number;
+
+  @ApiPropertyOptional({ example: 8.0 })
+  @IsOptional()
+  @IsNumber()
+  upper_threshold?: number;
+
+  @ApiPropertyOptional({ example: 'SYNTHETIC' })
+  @IsOptional()
+  @IsString()
+  business_context_origin?: string;
+
+  @ApiPropertyOptional({ example: ['SENSOR06'] })
+  @IsOptional()
+  @IsArray()
+  device_ids?: string[];
 }

@@ -1533,9 +1533,14 @@
             "enum": [
               "REVIEWED",
               "NEEDS_EVIDENCE",
-              "REJECTED"
+              "REJECTED",
+              "FLAG_FOR_DISPOSITION"
             ],
             "example": "REVIEWED"
+          },
+          "action": {
+            "type": "string",
+            "example": "FLAG_FOR_DISPOSITION"
           },
           "reviewer_id": {
             "type": "string",
@@ -1545,14 +1550,15 @@
             "type": "string",
             "example": "Reviewed temperature excursion during handover."
           },
+          "justification": {
+            "type": "string",
+            "example": "Handover door open duration exceeded 15 mins. Quarantine batch."
+          },
           "corrective_action": {
             "type": "string",
             "example": "Quarantine batch and verify secondary logger."
           }
-        },
-        "required": [
-          "status"
-        ]
+        }
       },
       "ReviewResponseDto": {
         "type": "object",

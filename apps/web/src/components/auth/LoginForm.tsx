@@ -1,5 +1,6 @@
 'use client';
 import { useState, type FormEvent } from 'react';
+import Link from 'next/link';
 import { useRouter } from 'next/navigation';
 import { demoAccounts, isDemo, roleLabels } from '../../lib/session';
 import { Alert } from '../ui/Alert';
@@ -41,7 +42,7 @@ export function LoginForm() {
       {error && <Alert tone="error">{error}</Alert>}
       <Button type="submit" variant="primary" disabled={pending}>{pending ? 'Đang đăng nhập…' : 'Đăng nhập'}</Button>
     </form>
-    <p className="auth-help">Chưa có tài khoản? Liên hệ quản trị viên.</p>
+    <p className="auth-help">Chưa có tài khoản? <Link href="/register">Đăng ký tài khoản</Link>.</p>
     {isDemo() && <section className="auth-demo" aria-labelledby="demo-title"><h2 id="demo-title">Đăng nhập nhanh tài khoản demo</h2><div className="actions">{demoAccounts.map(account => <Button key={account.role} disabled={pending} onClick={() => void login(account.email, '')}>{roleLabels[account.role]}</Button>)}</div></section>}
   </section>;
 }

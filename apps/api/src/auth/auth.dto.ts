@@ -33,3 +33,20 @@ export class LoginResponseDto {
   user!: AuthUserDto;
 }
 
+export class RegisterDto {
+  @ApiProperty({ example: 'user@coldproof.local' })
+  @IsEmail()
+  @IsNotEmpty()
+  email!: string;
+
+  @ApiPropertyOptional({ example: 'password123' })
+  @IsOptional()
+  @IsString()
+  password?: string;
+
+  @ApiPropertyOptional({ example: 'OPERATOR', enum: ['OPERATOR', 'QA_REVIEWER', 'VIEWER'] })
+  @IsOptional()
+  @IsString()
+  role?: string;
+}
+

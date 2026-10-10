@@ -8,19 +8,24 @@ const invalid = () => NextResponse.json({ message: 'Email hoặc mật khẩu kh
 
 export function GET(request: NextRequest) {
   const user = decodeUser(request.cookies.get(USER_COOKIE)?.value);
-  return user && request.cookies.has(TOKEN_COOKIE) ? NextResponse.json({ user }) : NextResponse.json({ user: null }, { status: 401 });
+  return user && request.cookies.has(TOKEN_COOKIE) ? NextResponse.json({ user }) : NextResponse.json({ user: null });
 }
 
 export async function POST(request: NextRequest) {
   const body: unknown = await request.json().catch(() => null);
-  const { email, password } = typeof body === 'object' && body !== null ? body as Record<string, unknown> : {};
+  const { email, password, action, role: reqRole } = typeof body === 'object' && body !== null ? body as Record<string, unknown> : {};
   if (typeof email !== 'string' || !email || typeof password !== 'string') return invalid();
+  const isRegister = action === 'register';
+  const endpoint = isRegister ? '/auth/register' : '/auth/login';
+  const selectedRole = typeof reqRole === 'string' && (reqRole === 'QA_REVIEWER' || reqRole === 'OPERATOR') ? reqRole : 'OPERATOR';
+  const payload = isRegister ? { email, password, role: selectedRole } : { email, password };
   let response: Response;
   try {
-    response = await fetch(`${apiBase()}/auth/login`, { method: 'POST', headers: { 'content-type': 'application/json' }, body: JSON.stringify({ email, password }), cache: 'no-store', signal: AbortSignal.timeout(8000) });
+    response = await fetch(`${apiBase()}${endpoint}`, { method: 'POST', headers: { 'content-type': 'application/json' }, body: JSON.stringify(payload), cache: 'no-store', signal: AbortSignal.timeout(8000) });
   } catch { return NextResponse.json({ message: 'Không kết nối được máy chủ. Thử lại sau.' }, { status: 503 }); }
+  if (isRegister && response.status === 409) return NextResponse.json({ message: 'Email này đã được sử dụng.' }, { status: 409 });
   if (response.status === 400 || response.status === 401 || response.status === 404) return invalid();
-  if (!response.ok) return NextResponse.json({ message: 'Không đăng nhập được. Thử lại sau.' }, { status: 502 });
+  if (!response.ok) return NextResponse.json({ message: isRegister ? 'Không đăng ký được. Thử lại sau.' : 'Không đăng nhập được. Thử lại sau.' }, { status: 502 });
   const data: unknown = await response.json().catch(() => null);
   const record = typeof data === 'object' && data !== null ? data as Record<string, unknown> : {};
   const user = typeof record.user === 'object' && record.user !== null ? record.user as Record<string, unknown> : {};

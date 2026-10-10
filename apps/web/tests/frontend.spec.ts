@@ -32,9 +32,11 @@ test('screens require a session and login sends users back to the requested scre
   await expect(page).toHaveURL(/\/login\?next=%2Fbatches/);
   await expect(page.getByRole('heading', { name: 'Đăng nhập', exact: true })).toBeVisible();
   await expect(page.getByLabel('Email')).toBeFocused();
-  await expect(page.getByRole('link', { name: 'Đăng ký' })).toHaveCount(0);
-  await expect(page.getByText('Chưa có tài khoản? Liên hệ quản trị viên.')).toBeVisible();
-  await page.goto('/register');
+  await expect(page.getByRole('link', { name: 'Đăng ký tài khoản' })).toBeVisible();
+  await page.getByRole('link', { name: 'Đăng ký tài khoản' }).click();
+  await expect(page).toHaveURL(/\/register$/);
+  await expect(page.getByRole('heading', { name: 'Đăng ký tài khoản', exact: true })).toBeVisible();
+  await page.getByRole('link', { name: 'Đăng nhập ngay' }).click();
   await expect(page).toHaveURL(/\/login$/);
   let attempts = 0;
   await page.route('**/api/session', async route => {

@@ -1,7 +1,7 @@
 import { Body, Controller, Get, Post } from '@nestjs/common';
-import { ApiOkResponse, ApiOperation, ApiTags } from '@nestjs/swagger';
+import { ApiCreatedResponse, ApiOkResponse, ApiOperation, ApiTags } from '@nestjs/swagger';
 import { AuthService } from './auth.service';
-import { AuthStatusDto, LoginDto, LoginResponseDto, AuthUserDto } from './auth.dto';
+import { AuthStatusDto, LoginDto, LoginResponseDto, AuthUserDto, RegisterDto } from './auth.dto';
 
 @ApiTags('auth')
 @Controller('auth')
@@ -22,6 +22,13 @@ export class AuthController {
     return this.service.login(dto);
   }
 
+  @Post('register')
+  @ApiCreatedResponse({ type: LoginResponseDto })
+  @ApiOperation({ summary: 'Register a new user account with role' })
+  register(@Body() dto: RegisterDto) {
+    return this.service.register(dto);
+  }
+
   @Get('me')
   @ApiOkResponse({ type: AuthUserDto })
   @ApiOperation({ summary: 'Get current authenticated user profile and active role' })
@@ -29,4 +36,3 @@ export class AuthController {
     return this.service.me();
   }
 }
-

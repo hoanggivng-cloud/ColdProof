@@ -40,6 +40,13 @@ export function ReportPreviewDialog({ report, focus, onClose }: { report: Eviden
       <section><h3>2. Thông tin hồ sơ</h3><dl className="report-meta"><div><dt>Mã hồ sơ</dt><dd className="number">{code}</dd></div><div><dt>ID server</dt><dd className="number">{report.id}</dd></div><div><dt>Kịch bản</dt><dd>{report.scenario_id ?? missing}</dd></div><div><dt>Tạo lúc (UTC+7)</dt><dd className="number">{formatTime(report.created_at)}</dd></div><div><dt>Người tạo</dt><dd>{report.generated_by ?? missing}</dd></div><div><dt>SHA-256</dt><dd className="number">{report.checksum_sha256}</dd></div><div><dt>Chặng</dt><dd className="number">{report.segments.join(', ') || missing}</dd></div><div><dt>Nguồn dữ liệu</dt><dd className="number">{report.source_assets.join(', ') || missing}</dd></div><div><dt>Parser</dt><dd className="number">{report.parser_versions.join(', ') || missing}</dd></div></dl><Alert>SHA-256 hiển thị đúng như server trả về; giao diện chưa tính lại để đối chiếu.</Alert>{report.disclaimer && <Alert title="Ghi chú từ server">{report.disclaimer}</Alert>}</section>
       <section ref={auditSection} aria-labelledby="report-audit-title"><h3 id="report-audit-title">3. Nhật ký audit</h3>{pending ?? (!context?.audit.length ? <p>Chưa có sự kiện audit gắn với hồ sơ này.</p> : <div className="table-scroll"><table><thead><tr>{['Thời gian (UTC+7)', 'Hành động', 'Đối tượng', 'Người thực hiện'].map(label => <th key={label} scope="col">{label}</th>)}</tr></thead><tbody>{context.audit.map(entry => <tr key={entry.id}><td className="number">{formatTime(entry.created_at)}</td><td>{entry.action}</td><td>{entry.entity_type}</td><td className="number">{entry.actor_id ?? 'Hệ thống'}</td></tr>)}</tbody></table></div>)}</section>
     </div>
-    <div className="logger-footer"><p>Xuất PDF chưa có trên server. Gói tải về là JSON từ endpoint download.</p><div className="actions"><Button onClick={onClose}>Đóng</Button><a className="button button-primary" href={`/api/backend/reports/${encodeURIComponent(report.id)}/download`} download={`${code}.json`}>Tải gói bằng chứng JSON</a></div></div>
+    <div className="logger-footer">
+      <p>Tải gói bằng chứng điện tử định dạng PDF hoặc JSON kèm mã băm SHA-256.</p>
+      <div className="actions">
+        <Button onClick={onClose}>Đóng</Button>
+        <a className="button" href={`/api/backend/reports/${encodeURIComponent(report.id)}/download`} download={`${code}.json`}>Tải JSON</a>
+        <a className="button button-primary" href={`/api/backend/reports/${encodeURIComponent(report.id)}/pdf`} target="_blank" rel="noopener noreferrer" download={`${code}.pdf`}>📄 Xuất Báo Cáo PDF</a>
+      </div>
+    </div>
   </dialog>;
 }

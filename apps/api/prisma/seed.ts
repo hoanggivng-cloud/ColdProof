@@ -1,52 +1,60 @@
 import { PrismaClient, MeasurementOrigin, BusinessContextOrigin, ImportStatus } from '@prisma/client';
 
+import * as crypto from 'crypto';
+
+function hashPassword(password: string): string {
+  const salt = crypto.randomBytes(16).toString('hex');
+  const hash = crypto.scryptSync(password, salt, 64).toString('hex');
+  return `${salt}:${hash}`;
+}
+
 const prisma = new PrismaClient();
 
 async function main() {
   console.log('--- Seeding ColdProof Database ---');
 
+  const defaultPasswordHash = hashPassword('ColdProof2026!');
+
   // 1. Users
   const adminUser = await prisma.user.upsert({
     where: { email: 'admin@coldproof.local' },
-    update: {},
+    update: { role: 'ADMIN', password_hash: defaultPasswordHash },
     create: {
       id: '00000000-0000-0000-0000-000000000001',
       email: 'admin@coldproof.local',
       role: 'ADMIN',
+      password_hash: defaultPasswordHash,
     },
   });
 
   const operatorUser = await prisma.user.upsert({
     where: { email: 'operator@coldproof.local' },
-    update: {},
+    update: { role: 'OPERATOR', password_hash: defaultPasswordHash },
     create: {
       id: '00000000-0000-0000-0000-000000000002',
       email: 'operator@coldproof.local',
-      role: 'DATA_ENGINEER',
+      role: 'OPERATOR',
+      password_hash: defaultPasswordHash,
     },
   });
 
   const qaUser = await prisma.user.upsert({
     where: { email: 'qa@coldproof.local' },
-    update: {},
+    update: { role: 'QA_REVIEWER', password_hash: defaultPasswordHash },
     create: {
       id: '00000000-0000-0000-0000-000000000003',
       email: 'qa@coldproof.local',
       role: 'QA_REVIEWER',
+      password_hash: defaultPasswordHash,
     },
   });
 
-  const viewerUser = await prisma.user.upsert({
-    where: { email: 'viewer@coldproof.local' },
-    update: {},
-    create: {
-      id: '00000000-0000-0000-0000-000000000004',
-      email: 'viewer@coldproof.local',
-      role: 'VIEWER',
-    },
+  // Clean up any legacy viewer users if they exist
+  await prisma.user.deleteMany({
+    where: { role: { notIn: ['ADMIN', 'OPERATOR', 'QA_REVIEWER'] } },
   });
 
-  console.log(`Created/verified users: ${adminUser.email}, ${operatorUser.email}, ${qaUser.email}, ${viewerUser.email}`);
+  console.log(`Created/verified users: ${adminUser.email}, ${operatorUser.email}, ${qaUser.email}`);
 
   // 2. Source Assets (Zenodo & Mendeley)
   // Note: source_assets has immutability trigger on UPDATE/DELETE, so check existence first.
