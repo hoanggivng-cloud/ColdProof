@@ -6,7 +6,7 @@
     "path": "data/scenarios/design/evidence-decision-v2.json",
     "version": "2.0.0",
     "status": "APPROVED",
-    "checksum_sha256": "691414e90376a1508a8dc6edff7ca75fec610ecdb8042781624d1680d7b5eb61"
+    "checksum_sha256": "dd5d9083c9f92d541650a7640505dfb03efaa8fd628c49389b68864e55eddbd0"
   },
   "primary_source": {
     "dataset": "ZENODO",

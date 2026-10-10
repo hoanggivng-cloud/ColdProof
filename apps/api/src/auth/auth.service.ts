@@ -17,9 +17,15 @@ export class AuthService {
   }
 
   async login(dto: LoginDto) {
-    const user = (await this.prisma.user.findUnique({
+    const user = await this.prisma.user.findUnique({
       where: { email: dto.email },
-    })) as any;
+      select: {
+        id: true,
+        email: true,
+        role: true,
+        password_hash: true,
+      },
+    });
 
     if (!user) {
       throw new UnauthorizedException(`User with email ${dto.email} not found`);

@@ -9,7 +9,8 @@ async function handleRequest(request: NextRequest, { params }: { params: Promise
     return NextResponse.json({ message: 'Unknown resource' }, { status: 404 });
   }
 
-  const base = process.env.API_URL ?? process.env.NEXT_PUBLIC_API_URL ?? 'http://localhost:3001/api';
+  const rawBase = process.env.API_URL ?? process.env.NEXT_PUBLIC_API_URL ?? 'http://127.0.0.1:3001/api';
+  const base = rawBase.replace('localhost', '127.0.0.1');
   const token = request.cookies.get(TOKEN_COOKIE)?.value;
   const headers: HeadersInit = {};
   if (token) headers['authorization'] = `Bearer ${token}`;
@@ -28,7 +29,8 @@ async function handleRequest(request: NextRequest, { params }: { params: Promise
   }
 
   try {
-    const response = await fetch(`${base.replace(/\/$/, '')}/${path.map(encodeURIComponent).join('/')}`, init);
+    const search = request.nextUrl.search || '';
+    const response = await fetch(`${base.replace(/\/$/, '')}/${path.map(encodeURIComponent).join('/')}${search}`, init);
     if (!response.ok) {
         // try parsing response text to return proper api error
         const text = await response.text();

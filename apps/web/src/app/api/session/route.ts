@@ -2,7 +2,7 @@ import { NextResponse, type NextRequest } from 'next/server';
 import { toRole, TOKEN_COOKIE, USER_COOKIE } from '../../../lib/session';
 import { decodeUser, encodeUser } from '../../../lib/session-server';
 
-const apiBase = () => (process.env.API_URL ?? process.env.NEXT_PUBLIC_API_URL ?? 'http://localhost:3001/api').replace(/\/$/, '');
+const apiBase = () => (process.env.API_URL ?? process.env.NEXT_PUBLIC_API_URL ?? 'http://127.0.0.1:3001/api').replace('localhost', '127.0.0.1').replace(/\/$/, '');
 const cookieOptions = { httpOnly: true, sameSite: 'lax' as const, path: '/', secure: process.env.NODE_ENV === 'production', maxAge: 60 * 60 * 8 };
 const invalid = () => NextResponse.json({ message: 'Email hoặc mật khẩu không đúng' }, { status: 401 });
 
