@@ -44,6 +44,12 @@ export function ShipmentSetup({ presets, devices }: { presets: TemperaturePreset
         }),
       });
       if (!response.ok) {
+        if (response.status === 409) {
+          setSaveSuccess(lotToSave);
+          setMessage(`Lô ${lotToSave} đã có trên server. Đang chuyển hướng đến hồ sơ lô...`);
+          router.push(`/batches/${encodeURIComponent(lotToSave)}`);
+          return true;
+        }
         const err: unknown = await response.json().catch(() => ({}));
         const msg = typeof err === 'object' && err !== null && typeof (err as { message?: unknown }).message === 'string'
           ? (err as { message: string }).message
@@ -52,7 +58,7 @@ export function ShipmentSetup({ presets, devices }: { presets: TemperaturePreset
         return false;
       } else {
         setSaveSuccess(lotToSave);
-        setMessage(`Đã tạo lô ${lotToSave} thành công! Đang chuyển hướng...`);
+        setMessage(`Đã lưu lô ${lotToSave} thành công! Đang chuyển hướng...`);
         router.push(`/batches/${encodeURIComponent(lotToSave)}`);
         return true;
       }

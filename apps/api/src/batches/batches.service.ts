@@ -1,4 +1,4 @@
-import { ConflictException, Injectable, NotFoundException } from '@nestjs/common';
+import { Injectable, NotFoundException } from '@nestjs/common';
 import { BusinessContextOrigin } from '@prisma/client';
 import { PrismaService } from '../common/prisma.service';
 import { CreateBatchDto, TimelineEventDto } from './batches.dto';
@@ -20,12 +20,47 @@ export class BatchesService {
 
   async create(dto: CreateBatchDto) {
     const nextId = dto.id ?? `CP-BATCH-${String((await this.prisma.batch.count()) + 1).padStart(3, '0')}`;
+    const origin = dto.business_context_origin === 'REAL' ? BusinessContextOrigin.REAL : BusinessContextOrigin.SYNTHETIC;
     const existing = await this.prisma.batch.findUnique({ where: { id: nextId } });
     if (existing) {
-      throw new ConflictException(`Batch with ID '${nextId}' already exists.`);
+      const updated = await this.prisma.batch.update({
+        where: { id: nextId },
+        data: {
+          profile_id: dto.profile_id ?? existing.profile_id,
+          lower_threshold: dto.lower_threshold ?? existing.lower_threshold,
+          upper_threshold: dto.upper_threshold ?? existing.upper_threshold,
+        },
+      });
+
+      if (dto.device_ids && dto.device_ids.length > 0) {
+        for (let i = 0; i < dto.device_ids.length; i++) {
+          const segId = `LEG-${nextId}-0${i + 1}`;
+          const segExist = await this.prisma.segment.findUnique({ where: { id: segId } });
+          if (!segExist) {
+            await this.prisma.segment.create({
+              data: {
+                id: segId,
+                batch_id: updated.id,
+                selector: `transit_segment_${i + 1}`,
+                business_context_origin: origin,
+              },
+            });
+          }
+        }
+      }
+
+      await this.prisma.auditEvent.create({
+        data: {
+          action: 'BATCH_UPDATED',
+          entity_type: 'batches',
+          entity_id: updated.id,
+          payload: { id: updated.id, profile_id: updated.profile_id },
+        },
+      });
+
+      return updated;
     }
 
-    const origin = dto.business_context_origin === 'REAL' ? BusinessContextOrigin.REAL : BusinessContextOrigin.SYNTHETIC;
     const batch = await this.prisma.batch.create({
       data: {
         id: nextId,

@@ -20,18 +20,18 @@ export function BatchDetail({ id }: { id: string }) {
   const [loading, setLoading] = useState(true);
 
   useEffect(() => {
-    const controller = new AbortController();
+    let isMounted = true;
     Promise.all([
-      readRecords(path, controller.signal).catch(() => []),
-      readRecords(`${path}/measurements`, controller.signal).catch(() => []),
+      readRecords(path).catch(() => []),
+      readRecords(`${path}/measurements`).catch(() => []),
     ]).then(([batches, meas]) => {
-      if (!controller.signal.aborted) {
+      if (isMounted) {
         if (batches.length > 0) setBatchData(batches[0]);
         setMeasurements(meas);
         setLoading(false);
       }
     });
-    return () => controller.abort();
+    return () => { isMounted = false; };
   }, [path]);
 
   const segments = Array.isArray(batchData?.segments) ? (batchData?.segments as ApiRecord[]) : [];

@@ -27,8 +27,9 @@ export function ApiRecords({ path, columns, label, batchLinks = false, collectio
   const [state, setState] = useState<{ rows: ApiRecord[]; error: string; loading: boolean }>({ rows: [], error: '', loading: true });
   const [attempt, setAttempt] = useState(0);
   useEffect(() => {
-    const controller = new AbortController();
-    readRecords(path, controller.signal).then(rows => {
+    let isMounted = true;
+    readRecords(path).then(rows => {
+      if (!isMounted) return;
       if (collection) {
         const items = rows[0]?.[collection];
         if (!Array.isArray(items) || !items.every(value => typeof value === 'object' && value !== null && !Array.isArray(value))) throw new Error('Dữ liệu API không đúng định dạng.');
@@ -36,9 +37,10 @@ export function ApiRecords({ path, columns, label, batchLinks = false, collectio
       }
       setState({ rows, error: '', loading: false });
     }).catch((error: unknown) => {
-      if (!controller.signal.aborted) setState({ rows: [], error: error instanceof Error ? error.message : 'Không tải được dữ liệu.', loading: false });
+      if (!isMounted) return;
+      setState({ rows: [], error: error instanceof Error ? error.message : 'Không tải được dữ liệu.', loading: false });
     });
-    return () => controller.abort();
+    return () => { isMounted = false; };
   }, [path, attempt, collection]);
   const retry = () => { setState({ rows: [], error: '', loading: true }); setAttempt(value => value + 1); };
   if (state.loading) {
