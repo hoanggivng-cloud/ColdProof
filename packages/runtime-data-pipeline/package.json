@@ -1,0 +1,17 @@
+{
+  "name": "@coldproof/runtime-data-pipeline",
+  "private": true,
+  "version": "0.1.0",
+  "main": "dist/index.js",
+  "types": "dist/index.d.ts",
+  "scripts": {
+    "build": "tsc -p tsconfig.json",
+    "typecheck": "tsc -p tsconfig.json --noEmit"
+  },
+  "dependencies": {
+    "@coldproof/canonical-schema": "workspace:*",
+    "@coldproof/logger-normalizer": "workspace:*",
+    "@coldproof/parser-contracts": "workspace:*",
+    "@coldproof/runtime-data-quality": "workspace:*"
+  }
+}

@@ -165,6 +165,21 @@ importers:
         specifier: ^3.25.76
         version: 3.25.76
 
+  packages/runtime-data-pipeline:
+    dependencies:
+      '@coldproof/canonical-schema':
+        specifier: workspace:*
+        version: link:../canonical-schema
+      '@coldproof/logger-normalizer':
+        specifier: workspace:*
+        version: link:../logger-normalizer
+      '@coldproof/parser-contracts':
+        specifier: workspace:*
+        version: link:../parser-contracts
+      '@coldproof/runtime-data-quality':
+        specifier: workspace:*
+        version: link:../runtime-data-quality
+
   packages/runtime-data-quality:
     dependencies:
       '@coldproof/canonical-schema':
