@@ -158,6 +158,9 @@ importers:
       '@coldproof/canonical-schema':
         specifier: workspace:*
         version: link:../canonical-schema
+      zod:
+        specifier: ^3.25.76
+        version: 3.25.76
 
   packages/scenario-schema:
     dependencies:

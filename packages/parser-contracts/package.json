@@ -9,6 +9,7 @@
     "typecheck": "tsc -p tsconfig.json --noEmit"
   },
   "dependencies": {
-    "@coldproof/canonical-schema": "workspace:*"
+    "@coldproof/canonical-schema": "workspace:*",
+    "zod": "^3.25.76"
   }
 }
