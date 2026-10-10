@@ -58,6 +58,7 @@ button, input, select, textarea { font: inherit; }
 button, a, input, select, textarea, summary { outline: none; }
 :is(button, a, input, select, textarea, summary, [tabindex]):focus-visible { box-shadow: var(--focus-ring); border-radius: var(--radius-sm); }
 button { cursor: pointer; }
+button, a, input, select, textarea, .report-tab, td, .badge, .alert { transition: all 0.2s cubic-bezier(0.4, 0, 0.2, 1); }
 button:disabled { cursor: not-allowed; opacity: .6; }
 .number, time { font-family: var(--font-mono); font-variant-numeric: tabular-nums; }
 .visually-hidden { position: absolute; width: 1px; height: 1px; overflow: hidden; clip: rect(0 0 0 0); white-space: nowrap; }
@@ -122,7 +123,7 @@ button:disabled { cursor: not-allowed; opacity: .6; }
 .tone-danger { background: var(--color-danger-bg); border-color: var(--color-danger-border); color: var(--color-danger); }
 
 /* Tables: sticky header, 40px rows, numbers right-aligned */
-.table-scroll { overflow: auto; max-width: 100%; max-height: min(70vh, 760px); border: 1px solid var(--color-border); border-radius: var(--radius-sm); }
+.table-scroll { overflow: auto; -webkit-overflow-scrolling: touch; scroll-behavior: smooth; max-width: 100%; max-height: min(70vh, 760px); border: 1px solid var(--color-border); border-radius: var(--radius-sm); }
 table { width: 100%; border-collapse: separate; border-spacing: 0; margin: 0; background: var(--color-surface); font-size: var(--text-sm); }
 th, td { height: var(--row-height); text-align: left; padding: var(--space-2) var(--space-3); border-bottom: 1px solid var(--color-border); overflow-wrap: anywhere; vertical-align: middle; }
 th { position: sticky; top: 0; z-index: 1; font-size: var(--text-xs); font-weight: 600; color: var(--color-text-muted); background: var(--color-bg); }
@@ -331,4 +332,20 @@ kbd { padding: 0 var(--space-1); border: 1px solid var(--color-border); border-r
   .report-meta > div { grid-template-columns: 1fr; gap: 2px; }
   .process-steps .process-source { display: none; }
   .process-steps li { padding: var(--space-1) var(--space-2); }
+}
+
+/* Skeleton Loading */
+@keyframes shimmer {
+  0% { background-position: -1000px 0; }
+  100% { background-position: 1000px 0; }
+}
+.skeleton {
+  animation: shimmer 2s infinite linear;
+  background: linear-gradient(to right, var(--color-bg) 4%, var(--color-border) 25%, var(--color-bg) 36%);
+  background-size: 1000px 100%;
+  border-radius: var(--radius-sm);
+  color: transparent !important;
+}
+.skeleton * {
+  visibility: hidden;
 }

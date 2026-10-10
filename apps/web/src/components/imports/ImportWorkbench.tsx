@@ -68,7 +68,16 @@ export function ImportWorkbench() {
         {!preview ? <p>Chưa có kết quả kiểm tra. Chọn xem mẫu để kiểm tra bố cục.</p> : <><dl className="workflow-summary"><dt>File mẫu</dt><dd className="number">{preview.file_name}</dd><dt>Format</dt><dd>{preview.format}</dd><dt>Múi giờ gốc</dt><dd>{preview.timezone}</dd><dt>Đơn vị</dt><dd>{preview.unit}</dd><dt>Thiết bị trong mẫu</dt><dd className="number">{preview.device_id}</dd><dt>Profile trong mẫu</dt><dd className="number">{preview.profile_id} · {preview.lower}–{preview.upper}°C</dd></dl><Alert>Các cờ kiểm tra được dựng sẵn trong mẫu (mô phỏng). Chưa kiểm tra schema, serial hoặc checksum file đã chọn.</Alert>{!deviceIds.includes(preview.device_id) && <Alert tone="warning" title="Thiết bị không khớp">Thiết bị trong mẫu không nằm trong lựa chọn của lô. Không tự gán mẫu vào thiết bị khác.</Alert>}</>}
       </Panel>
     </div>
-    {loading && <p role="status">Đang tải mẫu xem trước…</p>}
+    {loading && (
+      <div className="panel" aria-busy="true">
+        <div className="section-heading"><h2 className="skeleton" style={{ width: '200px', height: '24px' }}>Loading...</h2></div>
+        <div className="table-scroll">
+          <table className="skeleton" style={{ width: '100%', height: '200px' }}>
+            <tbody><tr><td></td></tr></tbody>
+          </table>
+        </div>
+      </div>
+    )}
     <Panel title="03. Xem trước số đo và cờ dữ liệu">
       {!preview ? <p>Chưa có số đo xem trước.</p> : <>
         <ul className="page-meta"><li><strong className="number">{preview.summary.total}</strong> dòng mẫu</li><li><strong className="number">{preview.summary.flagged}</strong> dòng có cờ</li><li>Thấp nhất <strong className="number">{preview.summary.minimum}°C</strong></li><li>Cao nhất <strong className="number">{preview.summary.maximum}°C</strong></li><li><strong className="number">{preview.summary.excursions}</strong> sự cố mẫu</li></ul>

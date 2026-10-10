@@ -54,7 +54,16 @@ export function QAExceptionDetail({ id }: { id: string }) {
   const item = state.data?.exceptions[0];
   return <><PageHeader title="Chi tiết sự cố" breadcrumb={[{ href: '/qa', label: 'QA' }, { label: id }]} description="Đối chiếu sự cố với số đo của lô trước khi ghi nhận." meta={[<span key="id" className="number">{id}</span>]}><Button href="/qa">Về hàng đợi QA</Button><Button href="/reports">Tiếp tục: Hồ sơ bằng chứng</Button></PageHeader>
     <WorkflowProgress current={5} batchId={item?.batch_id} />
-    {state.loading ? <p role="status">Đang tải sự cố…</p> : state.error ? <Alert tone="error" title="Không tải được sự cố">{state.error}<div className="actions"><Button onClick={() => { setState({ data: null, error: '', loading: true }); setAttempt(value => value + 1); }}>Thử lại</Button></div></Alert> : !item ? <p>Chưa có thông tin sự cố.</p> : <>
+    {state.loading ? (
+      <div className="panel" aria-busy="true">
+        <div className="section-heading"><h2 className="skeleton" style={{ width: '200px', height: '24px' }}>Loading...</h2></div>
+        <div className="form-grid">
+          <div className="skeleton" style={{ height: '40px', width: '100%' }}></div>
+          <div className="skeleton" style={{ height: '40px', width: '100%' }}></div>
+          <div className="skeleton span-two" style={{ height: '40px', width: '100%' }}></div>
+        </div>
+      </div>
+    ) : state.error ? <Alert tone="error" title="Không tải được sự cố">{state.error}<div className="actions"><Button onClick={() => { setState({ data: null, error: '', loading: true }); setAttempt(value => value + 1); }}>Thử lại</Button></div></Alert> : !item ? <p>Chưa có thông tin sự cố.</p> : <>
       {!item.record_ids.length && <Alert tone="warning">Sự cố chưa có tham chiếu số đo; không đối chiếu được với chuỗi nhiệt độ.</Alert>}
       <Panel title="Thông tin sự cố"><dl className="workflow-summary"><dt>Lô</dt><dd className="number">{item.batch_id}</dd><dt>Profile</dt><dd className="number">{item.profile_id ?? 'Chưa có'}</dd><dt>Trạng thái server</dt><dd><BatchStatusBadge status={item.status} /></dd><dt>Tham chiếu số đo</dt><dd className="number">{item.record_ids.join(', ') || 'Chưa có tham chiếu'}</dd></dl><div className="form-footer"><span /><Button primary href={`/batches/${encodeURIComponent(item.batch_id)}`}>Xem số đo và bằng chứng của lô</Button></div></Panel>
       <Panel title="Đánh giá QA">
