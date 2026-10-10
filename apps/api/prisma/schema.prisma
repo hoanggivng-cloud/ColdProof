@@ -25,7 +25,7 @@ enum ImportStatus {
 model User {
   id String @id @default(uuid()) @db.Uuid
   email String @unique
-  role String @default("VIEWER")
+  role String @default("OPERATOR")
   created_at DateTime @default(now()) @db.Timestamptz(3)
   @@map("users")
 }
