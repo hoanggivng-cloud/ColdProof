@@ -1,0 +1,25 @@
+{
+  "bundle_version": "1.0.0",
+  "release_tag": "data-freeze-v1",
+  "archive_filename": "coldproof-observed-data-v1.0.0.tar.gz",
+  "archive_root": "coldproof-observed-data-v1.0.0",
+  "archive_size_bytes": 10444345,
+  "archive_sha256": "da627ee03f4a16a665315d76c1bfd8054756919893b189ed79f7bccd9d3bda41",
+  "asset_count": 36,
+  "asset_manifest": "data/manifests/source_manifest.csv",
+  "immutable_download_reference": "https://github.com/hoanggivng-cloud/ColdProof/releases/download/data-freeze-v1/coldproof-observed-data-v1.0.0.tar.gz",
+  "sources": [
+    {
+      "dataset": "Temperature and Humidity Time Series of Cold Storage Room Monitoring",
+      "doi": "10.5281/zenodo.15130001",
+      "version": "v1",
+      "license": "CC-BY-4.0"
+    },
+    {
+      "dataset": "Average temperature in an insulated box",
+      "doi": "10.17632/sz5dgkz7k8.1",
+      "version": "1",
+      "license": "CC-BY-4.0"
+    }
+  ]
+}
