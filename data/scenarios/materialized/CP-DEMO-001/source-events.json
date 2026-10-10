@@ -1,0 +1,57 @@
+{
+  "scenario_id": "CP-DEMO-001",
+  "source_asset_ref": "ZEN-META-ACTIONS",
+  "source_file": "experiment_actions.csv",
+  "source_checksum_sha256": "8ac92d6c4c628233aa083ef53cdf86e30275ec73d01670ca342922c5dc8b4f2e",
+  "selected_measurement_window": {
+    "start_timestamp": "2024-09-10T06:00:00",
+    "end_timestamp": "2024-09-10T10:00:00",
+    "interval_semantics": "[start,end)"
+  },
+  "events": [
+    {
+      "source_ref": "experiment_actions.csv:row:116",
+      "event_type": "Door opened",
+      "start_timestamp": "2024-09-10T08:00:00",
+      "end_timestamp": "2024-09-10T08:30:00",
+      "window_relation": "TEMPORAL_OVERLAP",
+      "origin": "REAL_PUBLIC_DATA",
+      "event_scope": "SOURCE_EXPERIMENT_EVENT",
+      "logistics_role": "NONE",
+      "causal_relation_to_handover": "NONE"
+    },
+    {
+      "source_ref": "experiment_actions.csv:row:117",
+      "event_type": "Products in",
+      "start_timestamp": "2024-09-10T08:00:00",
+      "end_timestamp": "2024-09-10T08:00:00",
+      "window_relation": "WITHIN_SELECTED_WINDOW",
+      "origin": "REAL_PUBLIC_DATA",
+      "event_scope": "SOURCE_EXPERIMENT_EVENT",
+      "logistics_role": "NONE",
+      "causal_relation_to_handover": "NONE"
+    },
+    {
+      "source_ref": "experiment_actions.csv:row:118",
+      "event_type": "Door closed",
+      "start_timestamp": "2024-09-10T08:30:00",
+      "end_timestamp": "2024-09-10T10:00:00",
+      "window_relation": "TEMPORAL_OVERLAP",
+      "origin": "REAL_PUBLIC_DATA",
+      "event_scope": "SOURCE_EXPERIMENT_EVENT",
+      "logistics_role": "NONE",
+      "causal_relation_to_handover": "NONE"
+    },
+    {
+      "source_ref": "experiment_actions.csv:row:119",
+      "event_type": "Door opened",
+      "start_timestamp": "2024-09-10T10:00:00",
+      "end_timestamp": "2024-09-10T10:30:00",
+      "window_relation": "BOUNDARY_TOUCH_ONLY",
+      "origin": "REAL_PUBLIC_DATA",
+      "event_scope": "SOURCE_EXPERIMENT_EVENT",
+      "logistics_role": "NONE",
+      "causal_relation_to_handover": "NONE"
+    }
+  ]
+}

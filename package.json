@@ -19,6 +19,8 @@
     "test:e2e": "playwright test",
     "openapi:generate": "node apps/api/scripts/export-openapi.mjs",
     "data:setup": "node scripts/setup-data.mjs",
+    "data:bundle": "node scripts/build-frozen-data-bundle.mjs",
+    "data:restore": "node scripts/restore-data.mjs",
     "data:verify": "node scripts/verify-data.mjs",
     "db:generate": "pnpm --filter @coldproof/api db:generate",
     "db:migrate": "dotenv -e .env -- pnpm --filter @coldproof/api db:migrate",

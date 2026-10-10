@@ -1,0 +1,42 @@
+{
+  "source_window_id": "CP-DEMO-001-ZENODO-S09-WINDOW-001",
+  "scenario_id": "CP-DEMO-001",
+  "evidence_decision_ref": "data/scenarios/design/evidence-decision-v2.json",
+  "evidence_decision_version": "2.0.0",
+  "evidence_decision_status": "APPROVED",
+  "source_id": "ZEN-RAW-S09",
+  "source_dataset": "ZENODO",
+  "source_file": "SENSOR09.CSV",
+  "source_sensor_id": "SENSOR09",
+  "source_checksum_sha256": "c50253f87996f050a0bbda5eeb383775f077b1db8ccf1b38ea52e78498f2a2ed",
+  "start_timestamp": "2024-09-10T06:00:00",
+  "end_timestamp": "2024-09-10T10:00:00",
+  "interval_semantics": "[start,end)",
+  "timezone_status": "UNKNOWN_SOURCE_LOCAL",
+  "observation_count": 2880,
+  "expected_interval_seconds": 5,
+  "first_included_source_ref": "row:11522",
+  "last_included_source_ref": "row:14401",
+  "excluded_end_boundary_source_ref": "row:14402",
+  "source_quality": {
+    "internal_missing_interval_count": 0,
+    "expected_missing_sample_count": 0,
+    "duplicate_timestamp_count": 0,
+    "out_of_order_count": 0,
+    "origin": "DERIVED"
+  },
+  "parsing": {
+    "adapter_id": "zenodo-cold-storage",
+    "adapter_version": "1.0.0",
+    "output_contract": "ParsedTimeSeriesRecord"
+  },
+  "canonical_normalization": {
+    "implementation_ref": "apps/api/src/normalization/normalization.service.ts#normalizeTimeSeries",
+    "target_contract": "CanonicalTimeSeriesMeasurement",
+    "status": "PENDING_EXPLICIT_TIMEZONE_CONTEXT",
+    "reason": "The approved source timezone is unknown and the canonical contract requires an explicit offset.",
+    "invented_timezone_used": false
+  },
+  "measurement_origin": "REAL_PUBLIC_DATA",
+  "mapping_origin": "DERIVED"
+}

@@ -1,0 +1,32 @@
+{
+  "scenario_id": "CP-DEMO-001",
+  "handovers": [
+    {
+      "handover_id": "HANDOVER-01",
+      "timestamp": "2024-09-10T07:00:00",
+      "from_leg_id": "LEG-01",
+      "to_leg_id": "LEG-02",
+      "origin": "SYNTHETIC",
+      "boundary_basis": "SCENARIO_DESIGN",
+      "inferred_from_source_event": false
+    },
+    {
+      "handover_id": "HANDOVER-02",
+      "timestamp": "2024-09-10T07:55:00",
+      "from_leg_id": "LEG-02",
+      "to_leg_id": "LEG-03",
+      "origin": "SYNTHETIC",
+      "boundary_basis": "SCENARIO_DESIGN",
+      "inferred_from_source_event": false
+    },
+    {
+      "handover_id": "HANDOVER-03",
+      "timestamp": "2024-09-10T09:30:00",
+      "from_leg_id": "LEG-03",
+      "to_leg_id": "LEG-04",
+      "origin": "SYNTHETIC",
+      "boundary_basis": "SCENARIO_DESIGN",
+      "inferred_from_source_event": false
+    }
+  ]
+}
