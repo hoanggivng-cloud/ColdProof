@@ -485,3 +485,42 @@ tbody tr:hover td { background: #F9FAFB; }
 .panel p { color: #6B7280; font-size: 14px; margin-bottom: 24px; }
 .panel .actions { display: flex; gap: 12px; }
 
+
+/* Fix for minmax overflowing on small screens */
+@media (max-width: 480px) {
+  .grid { grid-template-columns: 1fr; }
+  .import-grid { grid-template-columns: 1fr; }
+  
+  .page-header { text-align: left; }
+  .page-header h1 { text-align: left; }
+  .page-header p { text-align: left; }
+  
+  .workflow-progress li { min-width: 140px; }
+  .panel { padding: var(--space-3); }
+}
+
+@media (max-width: 640px) {
+  .grid { grid-template-columns: 1fr; }
+  .import-grid { grid-template-columns: 1fr; }
+}
+
+/* Make sure all inputs and buttons stretch on mobile if needed */
+@media (max-width: 768px) {
+  .button { width: 100%; justify-content: center; margin-bottom: 8px; }
+  .panel .actions { flex-direction: column; width: 100%; }
+  .form-footer .actions { flex-direction: column; width: 100%; }
+  
+  .page-header { text-align: left; align-items: stretch; }
+  .page-header > div { margin-bottom: var(--space-4); }
+  
+  /* Topbar mobile */
+  .topbar-brand { text-align: left; border-bottom: none; font-size: 24px; }
+  .topbar-menu { order: 2; padding-top: 8px; border-top: 1px solid rgba(255,255,255,0.1); }
+  .topbar-user { order: 1; align-items: flex-end; border-top: none; padding-top: 0; }
+  .topbar { display: grid; grid-template-columns: 1fr 1fr; grid-template-areas: "brand user" "menu menu"; }
+  .topbar-brand { grid-area: brand; align-self: center; }
+  .topbar-user { grid-area: user; flex-direction: row; align-self: center; justify-self: end; gap: 8px; }
+  .topbar-menu { grid-area: menu; width: 100%; }
+}
+
+@media (max-width: 480px) { .auth-panel { padding: var(--space-5); } }
