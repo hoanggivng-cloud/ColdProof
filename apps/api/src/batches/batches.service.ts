@@ -20,14 +20,18 @@ export class BatchesService {
 
   async create(dto: CreateBatchDto) {
     const nextId = dto.id ?? `CP-BATCH-${String((await this.prisma.batch.count()) + 1).padStart(3, '0')}`;
-    const existing = await this.prisma.batch.findUnique({ where: { id: nextId } });
-    if (existing) {
-      throw new ConflictException(`Batch with ID '${nextId}' already exists.`);
-    }
-
     const origin = dto.business_context_origin === 'REAL' ? BusinessContextOrigin.REAL : BusinessContextOrigin.SYNTHETIC;
-    const batch = await this.prisma.batch.create({
-      data: {
+    
+    const batch = await this.prisma.batch.upsert({
+      where: { id: nextId },
+      update: {
+        scenario_id: dto.scenario_id,
+        profile_id: dto.profile_id ?? 'DEMO_2_8C',
+        lower_threshold: dto.lower_threshold ?? 2.0,
+        upper_threshold: dto.upper_threshold ?? 8.0,
+        business_context_origin: origin,
+      },
+      create: {
         id: nextId,
         scenario_id: dto.scenario_id,
         profile_id: dto.profile_id ?? 'DEMO_2_8C',
@@ -39,9 +43,16 @@ export class BatchesService {
 
     if (dto.device_ids && dto.device_ids.length > 0) {
       for (let i = 0; i < dto.device_ids.length; i++) {
-        await this.prisma.segment.create({
-          data: {
-            id: `LEG-${nextId}-0${i + 1}`,
+        const segId = `LEG-${nextId}-0${i + 1}`;
+        await this.prisma.segment.upsert({
+          where: { id: segId },
+          update: {
+            batch_id: batch.id,
+            selector: `transit_segment_${i + 1}`,
+            business_context_origin: origin,
+          },
+          create: {
+            id: segId,
             batch_id: batch.id,
             selector: `transit_segment_${i + 1}`,
             business_context_origin: origin,
@@ -52,7 +63,7 @@ export class BatchesService {
 
     await this.prisma.auditEvent.create({
       data: {
-        action: 'BATCH_CREATED',
+        action: 'BATCH_UPSERTED',
         entity_type: 'batches',
         entity_id: batch.id,
         payload: { id: batch.id, profile_id: batch.profile_id },

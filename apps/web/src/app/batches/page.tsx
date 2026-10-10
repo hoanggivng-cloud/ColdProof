@@ -12,7 +12,14 @@ const missingProfile = (rows: ApiRecord[]) => {
 
 export default function Batches() {
   return <>
-    <PageHeader title="Lô hàng" description="Mở hồ sơ lô để xem số đo, sự cố và chất lượng dữ liệu."><RoleGate roles={['OPERATOR', 'ADMIN']}><Button primary href="/batches/new">Tạo Shipment</Button></RoleGate></PageHeader>
-    <ApiRecords path="batches" label="Danh sách lô" batchLinks emptyText="Chưa có lô trên server." warning={missingProfile} columns={[['id', 'Mã lô'], ['scenario_id', 'Kịch bản'], ['status', 'Trạng thái'], ['segments_count', 'Số chặng'], ['profile_id', 'Profile'], ['created_at', 'Tạo lúc (UTC+7)']]} />
+    <PageHeader title="Lô hàng (Batches)" description="Quản lý hồ sơ lô, theo dõi tiến trình, sự cố và chất lượng dữ liệu nhiệt độ.">
+      <RoleGate roles={['OPERATOR', 'ADMIN']}>
+        <Button primary href="/batches/new">+ Tạo Shipment Mới</Button>
+      </RoleGate>
+    </PageHeader>
+    <div className="panel" style={{ marginTop: '24px' }}>
+      <h2 style={{ fontSize: '18px', fontWeight: 600, color: '#111827', marginBottom: '16px' }}>Danh sách Lô hàng trên Hệ thống</h2>
+      <ApiRecords path="batches" batchLinks emptyText="Chưa có lô hàng nào trên server." warning={missingProfile} columns={[['id', 'Mã lô'], ['scenario_id', 'Kịch bản'], ['status', 'Trạng thái'], ['segments_count', 'Số chặng'], ['profile_id', 'Profile'], ['created_at', 'Tạo lúc (UTC+7)']]} />
+    </div>
   </>;
 }

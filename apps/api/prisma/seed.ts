@@ -13,37 +13,37 @@ const prisma = new PrismaClient();
 async function main() {
   console.log('--- Seeding ColdProof Database ---');
 
-  const defaultPasswordHash = hashPassword('ColdProof2026!');
+  const defaultPasswordHash = hashPassword('123456');
 
   // 1. Users
   const adminUser = await prisma.user.upsert({
-    where: { email: 'admin@coldproof.local' },
+    where: { email: 'admin@gmail.com' },
     update: { role: 'ADMIN', password_hash: defaultPasswordHash },
     create: {
       id: '00000000-0000-0000-0000-000000000001',
-      email: 'admin@coldproof.local',
+      email: 'admin@gmail.com',
       role: 'ADMIN',
       password_hash: defaultPasswordHash,
     },
   });
 
   const operatorUser = await prisma.user.upsert({
-    where: { email: 'operator@coldproof.local' },
+    where: { email: 'operator@gmail.com' },
     update: { role: 'OPERATOR', password_hash: defaultPasswordHash },
     create: {
       id: '00000000-0000-0000-0000-000000000002',
-      email: 'operator@coldproof.local',
+      email: 'operator@gmail.com',
       role: 'OPERATOR',
       password_hash: defaultPasswordHash,
     },
   });
 
   const qaUser = await prisma.user.upsert({
-    where: { email: 'qa@coldproof.local' },
+    where: { email: 'qa@gmail.com' },
     update: { role: 'QA_REVIEWER', password_hash: defaultPasswordHash },
     create: {
       id: '00000000-0000-0000-0000-000000000003',
-      email: 'qa@coldproof.local',
+      email: 'qa@gmail.com',
       role: 'QA_REVIEWER',
       password_hash: defaultPasswordHash,
     },
@@ -71,7 +71,7 @@ async function main() {
   if (!zenodoSource) {
     zenodoSource = await prisma.sourceAsset.create({
       data: {
-        id: '11111111-1111-1111-1111-111111111111',
+        id: '11111111-1111-4111-8111-111111111111',
         dataset: 'Zenodo - Cold Storage Room Monitoring (2025)',
         file_name: 'SENSOR06_raw.csv',
         checksum_sha256: 'e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855',
@@ -97,7 +97,7 @@ async function main() {
   if (!mendeleySource) {
     mendeleySource = await prisma.sourceAsset.create({
       data: {
-        id: '22222222-2222-2222-2222-222222222222',
+        id: '22222222-2222-4222-8222-222222222222',
         dataset: 'Mendeley - Average temperature in an insulated box (sz5dgkz7k8)',
         file_name: 'C07_condition_snapshot.xlsx',
         checksum_sha256: 'c5b164c4897f26d21e8e818816c72e27d825ae72fb8b0d8ce20df01e847775a6',
@@ -111,7 +111,7 @@ async function main() {
   }
 
   // 3. Import Jobs
-  const importJobId = '33333333-3333-3333-3333-333333333333';
+  const importJobId = '33333333-3333-4333-8333-333333333333';
   const existingImport = await prisma.importJob.findUnique({ where: { id: importJobId } });
   if (!existingImport) {
     await prisma.importJob.create({
@@ -432,7 +432,7 @@ async function main() {
         report_id: 'RPT-CP-DEMO-001-v1',
         report_version: 1,
         generated_at: new Date().toISOString(),
-        generated_by: 'qa@coldproof.local',
+        generated_by: 'qa@gmail.com',
         batch_id: 'CP-DEMO-001',
         scenario_id: 'S02',
         product_profile: 'DEMO_2_8C',

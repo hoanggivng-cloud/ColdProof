@@ -15,8 +15,8 @@ export function ShipmentWorkflowProvider({ children }: { children: ReactNode }) 
   const [handover, setHandover] = useState<HandoverDraft | null>(null);
   const invalidate = () => { setShipment(null); setDevicesConfirmed(false); setHandover(null); };
   return <Context.Provider value={{ shipment, deviceIds, devicesConfirmed, handover,
-    prepare: (value, ids) => { setShipment(value); setDeviceIds(ids); setDevicesConfirmed(false); setHandover(null); },
-    assign: (ids, confirmed = true) => { setDeviceIds(ids); setDevicesConfirmed(Boolean(shipment) && ids.length > 0 && confirmed); setHandover(null); },
+    prepare: (value, ids) => { setShipment(value); setDeviceIds(ids); setDevicesConfirmed(ids.length > 0); },
+    assign: (ids, confirmed = true) => { setDeviceIds(ids); setDevicesConfirmed(Boolean(shipment) && ids.length > 0 && confirmed); },
     saveHandover: value => { if (shipment && devicesConfirmed) setHandover(value); },
     invalidate, reset: () => { invalidate(); setDeviceIds([]); },
   }}>{children}</Context.Provider>;
@@ -34,6 +34,9 @@ export function WorkflowProgress({ current, batchId }: { current?: number; batch
   return <nav aria-label="Quy trình xử lý lô" className="workflow-progress process-steps"><ol>{processSteps.map(([label, href], index) => {
     const inForm = index < 4, complete = inForm && index < formStep;
     const target = index === 4 && batchId ? `/batches/${encodeURIComponent(batchId)}` : href;
-    return <li key={label} aria-current={index === active ? 'step' : undefined} data-complete={complete}><span>{index + 1}</span><div><Link href={target}><strong>{label}</strong></Link><small>{index === active ? 'Bước hiện tại' : complete ? 'Xong trong form' : inForm ? 'Chưa thực hiện' : 'Xem trên server'}</small><small className="process-source">{inForm ? 'Chưa lưu server' : 'Dữ liệu server'}</small></div></li>;
+    return <li key={label} aria-current={index === active ? 'step' : undefined} data-complete={complete}>
+      <span>{complete ? <svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="3" strokeLinecap="round" strokeLinejoin="round"><polyline points="20 6 9 17 4 12"></polyline></svg> : index + 1}</span>
+      <div><Link href={target}><strong>{label}</strong></Link><small>{index === active ? 'Bước hiện tại' : complete ? 'Xong' : inForm ? 'Chưa thực hiện' : 'Xem trên server'}</small><small className="process-source">{inForm ? 'Chưa lưu server' : 'Dữ liệu server'}</small></div>
+    </li>;
   })}</ol></nav>;
 }
