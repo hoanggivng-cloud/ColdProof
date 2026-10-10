@@ -70,12 +70,14 @@ export function BatchDetail({ id }: { id: string }) {
       <PageHeader
         title={id}
         breadcrumb={[{ href: '/batches', label: 'Lô hàng' }, { label: id }]}
-        description="Thông tin lô, biểu đồ nhiệt độ thời gian thực, hành trình các chặng và hồ sơ sự cố."
+        description="Thông tin Shipment, số đo mô phỏng, sự cố và lịch sử QA."
       >
-        <Button onClick={handleGenerateReport} disabled={generatingReport}>{generatingReport ? 'Đang tạo...' : 'Xuất hồ sơ bằng chứng'}</Button>
+        <RoleGate roles={['QA_REVIEWER', 'ADMIN']}><Button onClick={handleGenerateReport} disabled={generatingReport}>{generatingReport ? 'Đang tạo...' : 'Xuất hồ sơ bằng chứng'}</Button></RoleGate>
+        {!measurements.length && <RoleGate roles={['OPERATOR', 'ADMIN']}><Button primary href={`/imports?batchId=${encodeURIComponent(id)}`}>Sinh dữ liệu mô phỏng</Button></RoleGate>}
         <Button href="/batches">Về danh sách lô</Button>
       </PageHeader>
 
+      <Panel title="Cấu hình Shipment và bàn giao đã lưu"><dl>{Object.entries((batchData.context ?? {}) as ApiRecord).filter(([key]) => ['product','origin','destination','start','end','reference','sop'].includes(key)).map(([key,value]) => <div key={key}><dt>{({product:'Sản phẩm',origin:'Điểm xuất phát',destination:'Điểm nhận',start:'Bắt đầu (UTC)',end:'Kết thúc (UTC)',reference:'Vận đơn',sop:'Phiên bản SOP'} as Record<string,string>)[key]}</dt><dd>{String(value)}</dd></div>)}<dt>Bàn giao</dt><dd>{String(((batchData.context as ApiRecord)?.handover as ApiRecord)?.location ?? 'Chưa ghi nhận')}</dd></dl></Panel>
       {/* 1. HERO COMPONENT: Visual Temperature Chart with Safe Zone & Excursions */}
       <TemperatureChart
         measurements={measurements}
@@ -139,7 +141,8 @@ export function BatchDetail({ id }: { id: string }) {
       <div className="form-footer">
         <p>Giao diện không kết luận lô đạt/không đạt.</p>
         <div className="actions">
-          <Button onClick={handleGenerateReport} disabled={generatingReport}>{generatingReport ? 'Đang tạo...' : 'Xuất hồ sơ bằng chứng'}</Button>
+          <RoleGate roles={['QA_REVIEWER', 'ADMIN']}><Button onClick={handleGenerateReport} disabled={generatingReport}>{generatingReport ? 'Đang tạo...' : 'Xuất hồ sơ bằng chứng'}</Button></RoleGate>
+        {!measurements.length && <RoleGate roles={['OPERATOR', 'ADMIN']}><Button primary href={`/imports?batchId=${encodeURIComponent(id)}`}>Sinh dữ liệu mô phỏng</Button></RoleGate>}
           <RoleGate roles={['QA_REVIEWER', 'ADMIN']}>
             <Button primary href="/qa">
               Tiếp tục: QA review

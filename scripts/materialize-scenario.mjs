@@ -147,7 +147,9 @@ const { artifacts, summary } = buildMaterializationArtifacts({
   eventAsset,
   experimentEvents: parseExperimentActions(eventContent.toString('utf8')),
   spatialContexts,
-  evidenceDecisionSha256: sha256(Buffer.from(decisionText, 'utf8')),
+  // Frozen decision provenance was recorded with CRLF bytes; Git may check out LF.
+  // This applies only to the decision document, never observed sensor assets.
+  evidenceDecisionSha256: sha256(Buffer.from(decisionText.replace(/\r?\n/g, '\r\n'), 'utf8')),
 });
 
 if (checkOnly) {

@@ -1,4 +1,4 @@
-import { Injectable, NotFoundException } from '@nestjs/common';
+import { BadRequestException, Injectable, NotFoundException } from '@nestjs/common';
 import { PrismaService } from '../common/prisma.service';
 import { ReviewActionDto } from './exceptions.dto';
 import {
@@ -41,14 +41,16 @@ export class ExceptionsService {
   }
 
   async review(id: string, dto: ReviewActionDto) {
-    const exception = await this.findOne(id);
+    await this.findOne(id);
 
+    if (!dto.notes?.trim() && !dto.justification?.trim()) throw new BadRequestException('Cần nhập ghi chú QA');
     const reviewerId = dto.reviewer_id ?? '00000000-0000-0000-0000-000000000003';
     const effectiveStatus = dto.status ?? (dto.action === 'FLAG_FOR_DISPOSITION' ? 'REVIEWED' : dto.action) ?? 'REVIEWED';
     const effectiveNotes = dto.notes ?? dto.justification ?? null;
 
+    return this.prisma.$transaction(async tx => {
     // Create review entry
-    const review = await this.prisma.review.create({
+    const review = await tx.review.create({
       data: {
         exception_id: id,
         reviewer_id: reviewerId,
@@ -58,22 +60,15 @@ export class ExceptionsService {
     });
 
     // Update exception status
-    await this.prisma.exception.update({
+    await tx.exception.update({
       where: { id },
       data: { status: effectiveStatus },
     });
 
-    // Update review status on measurements WITHOUT mutating observed temperatures (Immutable raw data standard)
-    if (exception.record_ids && exception.record_ids.length > 0) {
-      await this.prisma.measurement.updateMany({
-        where: { record_id: { in: exception.record_ids } },
-        data: { review_status: effectiveStatus },
-      });
-    }
-
     // Append immutable audit event
-    await this.prisma.auditEvent.create({
+    await tx.auditEvent.create({
       data: {
+        actor_id: reviewerId,
         action: 'QA_REVIEW_ACTION',
         entity_type: 'exceptions',
         entity_id: id,
@@ -95,6 +90,7 @@ export class ExceptionsService {
       notes: effectiveNotes,
       created_at: review.created_at,
     };
+    });
   }
 
   /**

@@ -26,17 +26,17 @@ export function useShipmentWorkflow() {
   if (!context) throw new Error('ShipmentWorkflowProvider is required');
   return context;
 }
-const processSteps: [string, string][] = [['Tạo Shipment', '/batches/new'], ['Gán thiết bị', '/batches/new'], ['Ghi nhận bàn giao', '/batches/new'], ['Phân tích', '/batches'], ['QA review', '/qa'], ['Hồ sơ', '/reports']];
-export function WorkflowProgress({ current, batchId }: { current?: number; batchId?: string }) {
+const processSteps: [string, string][] = [['Tạo Shipment', '/batches/new'], ['Gán thiết bị', '/batches/new'], ['Ghi nhận bàn giao', '/batches/new'], ['Sinh dữ liệu mô phỏng', '/imports'], ['QA review', '/qa'], ['Hồ sơ', '/reports']];
+export function WorkflowProgress({ current, batchId: _batchId }: { current?: number; batchId?: string }) {
   const { shipment, devicesConfirmed, handover } = useShipmentWorkflow();
   const formStep = !shipment ? 0 : !devicesConfirmed ? 1 : !handover ? 2 : 3;
   const active = current ?? formStep;
   return <nav aria-label="Quy trình xử lý lô" className="workflow-progress process-steps"><ol>{processSteps.map(([label, href], index) => {
     const inForm = index < 4, complete = inForm && index < formStep;
-    const target = index === 4 && batchId ? `/batches/${encodeURIComponent(batchId)}` : href;
+    const target = index === 3 && shipment ? `/imports?batchId=${encodeURIComponent(shipment.lot)}` : index === 4 ? '/qa' : href;
     return <li key={label} aria-current={index === active ? 'step' : undefined} data-complete={complete}>
       <span>{complete ? <svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="3" strokeLinecap="round" strokeLinejoin="round"><polyline points="20 6 9 17 4 12"></polyline></svg> : index + 1}</span>
-      <div><Link href={target}><strong>{label}</strong></Link><small>{index === active ? 'Bước hiện tại' : complete ? 'Xong' : inForm ? 'Chưa thực hiện' : 'Xem trên server'}</small><small className="process-source">{inForm ? 'Chưa lưu server' : 'Dữ liệu server'}</small></div>
+      <div><Link href={target}><strong>{label}</strong></Link><small>{index === active ? 'Bước hiện tại' : complete ? 'Xong' : inForm ? 'Chưa thực hiện' : 'Xem trên server'}</small><small className="process-source">{inForm ? 'Cấu hình Shipment' : 'Dữ liệu server'}</small></div>
     </li>;
   })}</ol></nav>;
 }

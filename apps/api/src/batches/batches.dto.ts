@@ -1,5 +1,5 @@
 import { ApiProperty, ApiPropertyOptional } from '@nestjs/swagger';
-import { IsArray, IsNumber, IsOptional, IsString } from 'class-validator';
+import { IsArray, IsNumber, IsOptional, IsString, IsObject, ArrayMaxSize } from 'class-validator';
 
 export class BatchesStatusDto {
   @ApiProperty({ example: 'batches' }) module!: string;
@@ -87,6 +87,7 @@ export class BatchExceptionsDto {
 }
 
 export class CreateBatchDto {
+  @ApiPropertyOptional() @IsOptional() @IsObject() context?: Record<string, unknown>;
   @ApiProperty({ example: 'VX-2026-0418', description: 'Unique batch lot identifier' })
   @IsString()
   id!: string;
@@ -119,5 +120,6 @@ export class CreateBatchDto {
   @ApiPropertyOptional({ example: ['SENSOR06'] })
   @IsOptional()
   @IsArray()
+  @IsString({ each: true }) @ArrayMaxSize(8)
   device_ids?: string[];
 }

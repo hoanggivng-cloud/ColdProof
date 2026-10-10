@@ -1,9 +1,11 @@
+import { PrismaService } from '../../common/prisma.service';
 import { CanActivate, ExecutionContext, Injectable, UnauthorizedException } from '@nestjs/common';
 import * as crypto from 'crypto';
 
 @Injectable()
 export class JwtAuthGuard implements CanActivate {
-  canActivate(context: ExecutionContext): boolean {
+  constructor(private readonly prisma: PrismaService) {}
+  async canActivate(context: ExecutionContext): Promise<boolean> {
     const request = context.switchToHttp().getRequest();
     const authHeader = request.headers['authorization'] || request.headers['Authorization'];
 
@@ -34,20 +36,19 @@ export class JwtAuthGuard implements CanActivate {
         }
 
         payload = JSON.parse(Buffer.from(bodyB64, 'base64url').toString('utf8'));
-      } else {
-        // Fallback for simple base64 tokens
-        const decoded = Buffer.from(token, 'base64').toString('utf8');
-        payload = JSON.parse(decoded);
-      }
+      } else { throw new UnauthorizedException('Signed JWT required'); }
 
       if (!payload || !payload.sub || !payload.role) {
         throw new UnauthorizedException('Malformed token payload');
       }
 
+      if (typeof payload.exp !== "number" || payload.exp <= Math.floor(Date.now() / 1000)) throw new UnauthorizedException("Token expired");
+      const user = await this.prisma.user.findUnique({ where: { id: String(payload.sub) } });
+      if (!user || !user.active) throw new UnauthorizedException("Account disabled");
       request.user = {
         id: payload.sub,
         email: payload.email,
-        role: payload.role,
+        role: user.role,
       };
 
       return true;

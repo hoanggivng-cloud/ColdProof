@@ -9,7 +9,7 @@ function report(row: ApiRecord): EvidenceReport {
   return {
     id: required(row, 'id'), batch_id: required(row, 'batch_id'), version: row.version, checksum_sha256: required(row, 'checksum_sha256'), created_at: required(row, 'created_at'),
     report_code: text(provenance.report_id), scenario_id: text(provenance.scenario_id), profile_id: text(provenance.product_profile), generated_by: text(provenance.generated_by), generated_at: text(provenance.generated_at),
-    segments: list(provenance.segments), source_assets: list(provenance.source_assets), parser_versions: list(provenance.parser_versions), disclaimer: text(provenance.disclaimer),
+    segments: Array.isArray(provenance.segments) ? provenance.segments.map(s => typeof s === 'string' ? s : String((s as ApiRecord).id)) : [], source_assets: list(provenance.source_assets), parser_versions: list(provenance.parser_versions), disclaimer: text(provenance.disclaimer),
   };
 }
 function auditEntry(row: ApiRecord): ReportAuditEntry {
@@ -19,11 +19,12 @@ export async function getReports(signal?: AbortSignal): Promise<EvidenceReport[]
   return (await readRecords('reports', signal)).map(report);
 }
 export async function getReportContext(item: EvidenceReport, signal?: AbortSignal): Promise<ReportContext> {
-  const path = `batches/${encodeURIComponent(item.batch_id)}`;
-  const [audit, batch, issues] = await Promise.all([readRecords('audit', signal), readRecords(path, signal), readRecords(`${path}/exceptions`, signal)]);
+  const [audit, reports] = await Promise.all([readRecords(`reports/${encodeURIComponent(item.id)}/audit`, signal), readRecords(`reports/${encodeURIComponent(item.id)}`, signal)]);
+  const provenance = (reports[0]?.provenance ?? {}) as ApiRecord;
+  const batch = (provenance.batch ?? {}) as ApiRecord;
+  const thresholds = (provenance.thresholds ?? {}) as ApiRecord;
   const number = (value: unknown) => typeof value === 'number' && Number.isFinite(value) ? value : null;
-  const count = (value: unknown) => Array.isArray(value) ? value.length : null;
-  return { audit: audit.filter(row => row.entity_id === item.id).map(auditEntry), origin: text(batch[0]?.business_context_origin), lower: number(batch[0]?.lower_threshold), upper: number(batch[0]?.upper_threshold), exceptions: count(issues[0]?.exceptions), quality_issues: count(issues[0]?.quality_issues) };
+  return { audit: audit.map(auditEntry), origin: text(batch.context_origin), lower: number(thresholds.lower), upper: number(thresholds.upper), exceptions: number(provenance.exceptions_count), quality_issues: number(provenance.quality_issues_count) };
 }
 export function reportsCSV(rows: EvidenceReport[]): string {
   const cell = (value: string) => `"${(/^[=+\-@\t\r\n]/.test(value) ? `'${value}` : value).replaceAll('"', '""')}"`;

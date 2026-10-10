@@ -1,0 +1,2 @@
+ALTER TABLE "batches" ADD COLUMN "context" JSONB;
+ALTER TABLE "users" ADD COLUMN "active" BOOLEAN NOT NULL DEFAULT true;

@@ -1,5 +1,6 @@
-import { Body, Controller, Get, Post } from '@nestjs/common';
+import { Body, Controller, Get, Post, Req, UseGuards } from '@nestjs/common';
 import { ApiCreatedResponse, ApiOkResponse, ApiOperation, ApiTags } from '@nestjs/swagger';
+import { JwtAuthGuard } from './guards/jwt-auth.guard';
 import { AuthService } from './auth.service';
 import { AuthStatusDto, LoginDto, LoginResponseDto, AuthUserDto, RegisterDto } from './auth.dto';
 
@@ -29,10 +30,11 @@ export class AuthController {
     return this.service.register(dto);
   }
 
+  @UseGuards(JwtAuthGuard)
   @Get('me')
   @ApiOkResponse({ type: AuthUserDto })
   @ApiOperation({ summary: 'Get current authenticated user profile and active role' })
-  me() {
-    return this.service.me();
+  me(@Req() req: { user: { id: string } }) {
+    return this.service.me(req.user.id);
   }
 }

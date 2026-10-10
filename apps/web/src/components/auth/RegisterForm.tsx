@@ -87,12 +87,7 @@ export function RegisterForm() {
             placeholder="duoc-vien@gmail.com"
           />
         </Field>
-        <Field id="register-role" label="Vai trò hệ thống" hint="Phân quyền tài khoản trong chuỗi lạnh">
-          <select id="register-role" name="role" defaultValue="OPERATOR" disabled={pending}>
-            <option value="OPERATOR">Operator (Vận hành & Nhập dữ liệu hành trình)</option>
-            <option value="QA_REVIEWER">QA Reviewer (Kiểm định chất lượng & Phê duyệt ngoại lệ)</option>
-          </select>
-        </Field>
+        <p>Tài khoản mới có quyền Operator. Admin cấp quyền QA khi cần.</p>
         <Field id="register-password" label="Mật khẩu" hint="Tối thiểu 6 ký tự">
           <div className="field-control">
             <input

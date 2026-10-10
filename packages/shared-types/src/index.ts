@@ -17,7 +17,7 @@ export type QualityIssueCode =
 export interface QualityIssue { id: string; record_ids: string[]; code: QualityIssueCode; detail: string }
 export interface ExceptionCandidate { id: string; batch_id: string; record_ids: string[]; profile_id: string }
 export interface EvidencePackage { id: string; version: number; source_ids: string[]; checksums: string[]; transformation_refs: string[] }
-export type Role = 'ADMIN' | 'DATA_ENGINEER' | 'QA_REVIEWER' | 'VIEWER';
+export type Role = 'ADMIN' | 'OPERATOR' | 'DATA_ENGINEER' | 'QA_REVIEWER' | 'VIEWER';
 
 const nonEmptyText = z.string().min(1);
 

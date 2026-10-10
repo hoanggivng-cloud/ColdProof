@@ -1,3 +1,4 @@
+import { hashPassword } from './password.util';
 import { Test, TestingModule } from '@nestjs/testing';
 import { AuthService } from './auth.service';
 import { PrismaService } from '../common/prisma.service';
@@ -11,6 +12,8 @@ describe('AuthService', () => {
     id: '1',
     email: 'operator@coldproof.local',
     role: 'OPERATOR',
+    active: true,
+    password_hash: hashPassword('password'),
     created_at: new Date(),
   };
 

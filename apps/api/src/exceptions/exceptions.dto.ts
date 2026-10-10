@@ -1,5 +1,5 @@
 import { ApiProperty, ApiPropertyOptional } from '@nestjs/swagger';
-import { IsOptional, IsString, IsUUID } from 'class-validator';
+import { IsOptional, IsString, IsUUID, IsIn } from 'class-validator';
 
 export class ExceptionsStatusDto {
   @ApiProperty({ example: 'exceptions' }) module!: string;
@@ -23,11 +23,13 @@ export class ReviewActionDto {
   })
   @IsOptional()
   @IsString()
+  @IsIn(["REVIEWED", "NEEDS_EVIDENCE", "ACKNOWLEDGE", "ESCALATE"])
   status?: string;
 
   @ApiPropertyOptional({ example: 'FLAG_FOR_DISPOSITION' })
   @IsOptional()
   @IsString()
+  @IsIn(["ACKNOWLEDGE", "ESCALATE", "FLAG_FOR_DISPOSITION"])
   action?: string;
 
   @ApiPropertyOptional({ example: '00000000-0000-0000-0000-000000000003' })

@@ -1,18 +1,10 @@
 # ColdProof
 
-ColdProof là dự án workflow dữ liệu và bằng chứng cho chuỗi lạnh dược của đội **APEX**, hướng tới **GenD Arena 2026**.
+ColdProof của đội APEX là bản demo hồ sơ bằng chứng cho chuỗi lạnh dược.
 
-Luồng dự kiến: nguồn dữ liệu → nhập file → parser → chuẩn hóa → kiểm tra chất lượng → gắn lô/chặng → ngoại lệ → QA review → báo cáo có truy vết nguồn.
+Luồng demo hiện tại: **Operator tạo Shipment → sinh số đo mô phỏng → backend phát hiện sự cố → QA ghi nhận/chuyển cấp → xuất PDF/JSON → Admin quản lý quyền và audit**.
 
-Repository hiện chỉ là **khung ban đầu**, chưa có dữ liệu mẫu hay nghiệp vụ hoàn chỉnh. MVP dự kiến dùng dữ liệu công khai và ngữ cảnh nghiệp vụ mô phỏng; không thay thế quyết định của QA, chứng nhận GDP/GSP hoặc tích hợp vendor production.
-
-## Công nghệ và cấu trúc
-
-- `apps/web`: Next.js, React, TypeScript; các trang trống để phát triển UI.
-- `apps/api`: NestJS, REST/Swagger, Prisma; các module nghiệp vụ.
-- `packages`: canonical schema, parser contracts, scenario schema và shared types.
-- `data`, `tests`: thư mục cho dữ liệu và kiểm thử sau này.
-- `infra`: PostgreSQL, Redis, MinIO qua Docker Compose.
+Số đo mới được sinh theo kịch bản và seed, luôn mang nhãn `SYNTHETIC`. Không upload file logger trong luồng demo này. Không có quyết định tự động về việc sử dụng hay loại bỏ sản phẩm.
 
 ## Chạy local
 
@@ -25,18 +17,55 @@ pnpm install --frozen-lockfile
 pnpm db:generate
 docker compose up -d --wait
 pnpm db:migrate
+pnpm db:seed
 pnpm dev
 ```
 
-PowerShell có thể dùng `Copy-Item .env.example .env`. Nếu cổng PostgreSQL 5432 bị chặn, đổi `POSTGRES_PORT` và cổng trong `DATABASE_URL` sang 15432. MinIO được build từ source; lần chạy đầu có thể mất vài phút. Không commit `.env`.
+Nếu chỉ demo workflow mới, PostgreSQL là dịch vụ cần thiết; Redis/MinIO chưa tham gia vào sinh số đo hoặc tạo báo cáo. Không commit `.env`. Tạo `JWT_SECRET` riêng cho môi trường triển khai.
 
-| Dịch vụ | Địa chỉ / cổng mặc định |
+| Dịch vụ | Địa chỉ |
 | --- | --- |
 | Web | http://localhost:3000 |
-| API / Swagger | http://localhost:3001/api/health · http://localhost:3001/docs |
-| PostgreSQL / Redis | 5432 / 6379 |
-| MinIO API / Console | 9000 / 9001 |
+| API | http://localhost:3001/api |
+| Swagger | http://localhost:3001/docs |
 
-Kiểm tra: `pnpm lint`, `pnpm typecheck`, `pnpm test`, `pnpm build`. Nhiều test đang là TODO; parser chưa được triển khai.
+`db:seed` tạo ba tài khoản local: `operator@gmail.com`, `qa@gmail.com`, `admin@gmail.com`; mật khẩu demo `123456`. Chỉ dùng các tài khoản này trong môi trường demo local. Tài khoản đăng ký mới luôn là Operator; Admin cấp quyền QA hoặc Admin và có thể khóa tài khoản.
 
-Phân công: TV1 dữ liệu/parser; TV2 backend/nghiệp vụ; TV3 frontend; TV4 QA/report/hạ tầng. Xem [ownership](docs/team-ownership.md). Làm việc qua feature branch và PR; không push trực tiếp lên `main`.
+## Demo
+
+1. Đăng nhập Operator, mở **Lô hàng → Tạo Shipment**.
+2. Nhập mã lô mới, sản phẩm, tuyến đường, khung giờ, chọn profile và thiết bị. Lưu Shipment.
+3. Có thể ghi nhận bàn giao; thông tin lưu server. Tệp đính kèm chỉ lưu tên/kích thước, chưa upload bytes.
+4. Chọn **Sinh dữ liệu mô phỏng**, chọn kịch bản và seed. Mỗi lô chỉ sinh một lần.
+5. Xem biểu đồ, số đo và sự cố. Đăng xuất, đăng nhập QA để ghi nhận hoặc chuyển cấp xử lý.
+6. Xuất hồ sơ; mở **Hồ sơ → Xem trước → Tải PDF/JSON**.
+7. Đăng nhập Admin để đổi quyền, khóa/mở tài khoản và xem audit.
+
+Chi tiết: [demo workflow](docs/demo-workflow.md).
+
+## Kiểm tra
+
+```bash
+pnpm lint
+pnpm typecheck
+pnpm test
+pnpm build
+```
+
+Test tích hợp cần PostgreSQL đã migrate/seed. Test benchmark cần bộ dữ liệu frozen:
+
+```bash
+pnpm data:restore
+pnpm data:verify
+```
+
+Kho còn các test TODO kế thừa; không tính chúng là chức năng đã kiểm thử.
+
+## Cấu trúc và giới hạn
+
+- `apps/web`: Next.js/React/TypeScript.
+- `apps/api`: NestJS/Prisma/PostgreSQL, RBAC, phân tích, QA và report.
+- `packages`: các contract và logic phân tích dữ liệu độc lập.
+- `data`: benchmark công khai và kịch bản mô phỏng.
+
+Bản demo dùng schema batch/segment hiện có. Chưa chuyển toàn bộ hệ thống sang device-window spec v3.2; chưa hoàn thiện upload logger, queue worker, profile CRUD hoặc quản lý thiết bị production. Sinh dữ liệu và tạo report hiện chạy đồng bộ, có giới hạn tối đa 8 thiết bị và 121 số đo mỗi thiết bị. Không mô tả bản demo là đã đáp ứng toàn bộ spec production.

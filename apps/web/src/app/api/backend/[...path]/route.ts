@@ -40,6 +40,7 @@ async function handleRequest(request: NextRequest, { params }: { params: Promise
             return NextResponse.json({ message: 'API request failed' }, { status: response.status });
         }
     }
+    if (response.headers.get('content-type')?.includes('application/pdf')) return new NextResponse(await response.arrayBuffer(), { headers: { 'Content-Type': 'application/pdf', 'Content-Disposition': response.headers.get('content-disposition') ?? 'attachment; filename=coldproof-report.pdf' } });
     const data: unknown = await response.json();
     return NextResponse.json(data);
   } catch { 

@@ -1,3 +1,6 @@
+import { UseGuards as Protect } from '@nestjs/common';
+import { JwtAuthGuard as AuthGuard } from '../auth/guards/jwt-auth.guard';
+import { RolesGuard as AccessGuard } from '../auth/guards/roles.guard';
 import {
   Body,
   Controller,
@@ -33,6 +36,7 @@ interface RequestWithUser {
 }
 
 @ApiTags('exceptions')
+@Protect(AuthGuard, AccessGuard)
 @Controller('exceptions')
 export class ExceptionsController {
   constructor(private readonly service: ExceptionsService) {}
@@ -72,7 +76,7 @@ export class ExceptionsController {
     @Body() dto: ReviewActionDto,
     @Req() req: RequestWithUser,
   ) {
-    const reviewerId = dto.reviewer_id ?? req.user?.id;
+    const reviewerId = req.user?.id;
     return this.service.review(id, { ...dto, reviewer_id: reviewerId });
   }
 }

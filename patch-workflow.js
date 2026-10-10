@@ -1,4 +1,4 @@
-const fs = require('fs');
+import fs from 'node:fs';
 const file = 'apps/web/src/components/shipment/ShipmentWorkflow.tsx';
 let content = fs.readFileSync(file, 'utf8');
 content = content.replace(

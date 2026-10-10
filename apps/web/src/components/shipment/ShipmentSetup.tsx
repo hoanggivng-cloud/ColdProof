@@ -1,6 +1,5 @@
 'use client';
 import { useEffect, useState, type FormEvent, type ReactNode } from 'react';
-import { useRouter } from 'next/navigation';
 import type { SetupDevice, TemperaturePreset } from '../../types/shipment-setup';
 import { RoleGate } from '../auth/RoleGate';
 import { Alert } from '../ui/Alert';
@@ -9,13 +8,13 @@ import { Button } from '../ui/Button';
 import { Field } from '../ui/Field';
 import { Table } from '../ui/Table';
 import { PageHeader } from '../layout/PageHeader';
+import { writeRecord } from '../../services/api-client';
 import { AssignLoggerDialog } from './AssignLoggerDialog';
 import { useShipmentWorkflow, WorkflowProgress } from './ShipmentWorkflow';
 import { RecordHandoverDialog } from './RecordHandoverDialog';
-import { writeRecord } from '../../services/api-client';
+
 
 export function ShipmentSetup({ presets, devices }: { presets: TemperaturePreset[]; devices: SetupDevice[] }) {
-  const router = useRouter();
   const workflow = useShipmentWorkflow();
   const [restored, setRestored] = useState(workflow.shipment), [formVersion, setFormVersion] = useState(0);
   const [profileId, setProfileId] = useState(workflow.shipment?.profileId ?? presets[0]?.id ?? '');
@@ -43,6 +42,7 @@ export function ShipmentSetup({ presets, devices }: { presets: TemperaturePreset
           lower_threshold: profile?.lower ?? 2.0,
           upper_threshold: profile?.upper ?? 8.0,
           device_ids: selected,
+          context: { ...Object.fromEntries(new FormData(document.getElementById("shipment-form") as HTMLFormElement)), start: new Date(`${(document.querySelector('[name="start"]') as HTMLInputElement).value}:00+07:00`).toISOString(), end: new Date(`${(document.querySelector('[name="end"]') as HTMLInputElement).value}:00+07:00`).toISOString() },
         }),
       });
       if (!response.ok) {
@@ -130,7 +130,7 @@ export function ShipmentSetup({ presets, devices }: { presets: TemperaturePreset
   return <><PageHeader title="Tạo Shipment" breadcrumb={[{ href: '/batches', label: 'Lô hàng' }, { label: 'Tạo Shipment' }]} description="Nhập thông tin lô, chọn profile nhiệt độ và gán thiết bị."><Button href="/batches">Xem danh sách lô</Button></PageHeader>
     <WorkflowProgress />
     <RoleGate roles={['OPERATOR', 'ADMIN']} fallback={<Alert tone="warning" title="Không có quyền tạo Shipment">Tạo Shipment cần vai trò Operator hoặc Admin. Vai trò hiện tại chỉ xem lô và hồ sơ.</Alert>}>
-    <Alert title="Hệ thống sẵn sàng">Khi nhấn Tạo Shipment, lô hàng sẽ được lưu trực tiếp vào cơ sở dữ liệu và chuyển hướng đến trang chi tiết lô.</Alert>
+    <Alert title="Hệ thống sẵn sàng">Khi nhấn Tạo Shipment, lô hàng sẽ được lưu trên server. Tiếp tục ghi nhận bàn giao hoặc sinh dữ liệu mô phỏng.</Alert>
     {issues.length > 0 && <Alert tone="error" title={`${issues.length} thông tin cần kiểm tra`}><ul>{issues.map(issue => <li key={issue}>{issue}</li>)}</ul></Alert>}
     <form id="shipment-form" key={formVersion} noValidate onSubmit={submit} onReset={reset} onChange={event => {
       if (!(event.target instanceof HTMLElement) || event.target.closest('dialog')) return;
@@ -146,16 +146,16 @@ export function ShipmentSetup({ presets, devices }: { presets: TemperaturePreset
         {field('shipment-start', 'Thời gian bắt đầu (UTC+7) *', <input id="shipment-start" name="start" defaultValue={restored?.start ?? ''} type="datetime-local" required className="number" />)}
         {field('shipment-end', 'Thời gian kết thúc (UTC+7) *', <input id="shipment-end" name="end" defaultValue={restored?.end ?? ''} type="datetime-local" required className="number" />)}
       </div></section>
-      <section className="panel"><div className="section-heading"><div><h2>02. Profile nhiệt độ</h2><p>Ngưỡng theo profile được chọn</p></div><Badge tone="synthetic">Chuẩn GDP/GSP</Badge></div><div className="form-grid">
+      <section className="panel"><div className="section-heading"><div><h2>02. Profile nhiệt độ</h2><p>Ngưỡng theo profile được chọn</p></div><Badge tone="synthetic">Ngưỡng mô phỏng</Badge></div><div className="form-grid">
         {field('shipment-profile', 'Profile nhiệt độ', <select id="shipment-profile" value={profileId} onChange={event => setProfileId(event.target.value)}>{presets.map(item => <option key={item.id} value={item.id}>{item.label} · {item.id}</option>)}</select>, 'span-full')}
         {field('profile-lower', 'Ngưỡng dưới (°C)', <input id="profile-lower" readOnly value={profile?.lower ?? ''} className="number" />)}
         {field('profile-upper', 'Ngưỡng trên (°C)', <input id="profile-upper" readOnly value={profile?.upper ?? ''} className="number" />)}
         {field('profile-duration', 'Thời lượng tiêu chuẩn (phút)', <input id="profile-duration" readOnly value={profile?.durationMinutes ?? ''} className="number" aria-describedby="profile-duration-hint" />)}
       </div>{profile && <div className="thermal-preview" aria-label="Xem trước ngưỡng"><span>Dưới {profile.lower}°C</span><span>Khoảng {profile.lower}°C – {profile.upper}°C</span><span>Trên {profile.upper}°C</span></div>}</section>
       <section className="panel"><div className="section-heading"><div><h2>03. Gán thiết bị</h2><p>Chọn thiết bị theo dõi cho lô</p></div><Button onClick={() => setAssign(value => !value)}>Gán thiết bị</Button></div>
-        {assign && <AssignLoggerDialog devices={devices} selected={selected} onClose={() => setAssign(false)} onConfirm={ids => { setSelected(ids); workflow.assign(ids); setAssign(false); }} />}
+        {assign && <AssignLoggerDialog devices={devices} selected={selected} onClose={() => setAssign(false)} onConfirm={ids => { setSelected(ids); workflow.assign(ids); if (workflow.shipment) setIsDirty(true); setAssign(false); }} />}
         {devices.some(device => selected.includes(device.id) && device.warning) && <Alert tone="warning" title="Kiểm tra hiệu chuẩn">Một thiết bị đã chọn cần kiểm tra hạn hiệu chuẩn. Giữ riêng các chuỗi cảm biến.</Alert>}
-        <Table label="Thiết bị đã gán"><thead><tr>{['Thiết bị', 'Serial', 'Model', 'Kênh', 'Hiệu chuẩn'].map(label => <th key={label} scope="col">{label}</th>)}<th scope="col" className="number">Pin</th><th scope="col">Thao tác</th></tr></thead><tbody>{devices.filter(device => selected.includes(device.id)).map(device => <tr key={device.id}><td className="number">{device.id}</td><td className="number">{device.serial}</td><td>{device.model}</td><td>{device.channel}</td><td><Badge tone={device.warning ? 'warning' : 'neutral'}>{device.calibrationLabel}</Badge></td><td className="number">{device.battery}%</td><td><Button variant="text" onClick={() => { const ids = selected.filter(id => id !== device.id); setSelected(ids); workflow.assign(ids, false); }}>Bỏ gán</Button></td></tr>)}{!selected.length && <tr><td colSpan={7}>Chưa gán thiết bị.</td></tr>}</tbody></Table>
+        <Table label="Thiết bị đã gán"><thead><tr>{['Thiết bị', 'Serial', 'Model', 'Kênh', 'Hiệu chuẩn'].map(label => <th key={label} scope="col">{label}</th>)}<th scope="col" className="number">Pin</th><th scope="col">Thao tác</th></tr></thead><tbody>{devices.filter(device => selected.includes(device.id)).map(device => <tr key={device.id}><td className="number">{device.id}</td><td className="number">{device.serial}</td><td>{device.model}</td><td>{device.channel}</td><td><Badge tone={device.warning ? 'warning' : 'neutral'}>{device.calibrationLabel}</Badge></td><td className="number">{device.battery}%</td><td><Button variant="text" onClick={() => { const ids = selected.filter(id => id !== device.id); setSelected(ids); workflow.assign(ids, false); if (workflow.shipment) setIsDirty(true); }}>Bỏ gán</Button></td></tr>)}{!selected.length && <tr><td colSpan={7}>Chưa gán thiết bị.</td></tr>}</tbody></Table>
       </section>
       <section className="panel"><div className="section-heading"><div><h2>04. Thông tin bổ sung & tham chiếu QA</h2><p>Vận đơn, SOP và hướng dẫn bàn giao</p></div></div><div className="form-grid">
         {field('shipment-reference', 'Mã vận đơn / tham chiếu *', <input id="shipment-reference" name="reference" defaultValue={restored?.reference ?? 'REF-2026-001'} required maxLength={100} placeholder="VD: REF-2026-001" />)}
@@ -163,7 +163,7 @@ export function ShipmentSetup({ presets, devices }: { presets: TemperaturePreset
         {field('shipment-notes', 'Ghi chú / hướng dẫn xử lý', <textarea id="shipment-notes" name="notes" defaultValue={restored?.notes ?? ''} rows={3} maxLength={500} aria-describedby="shipment-notes-hint" />, 'span-full', 'Tối đa 500 ký tự')}
       </div></section>
       <section className="panel" style={{ opacity: (!workflow.shipment || !workflow.devicesConfirmed) ? 0.6 : 1, transition: 'opacity 0.2s' }}><div className="section-heading"><div><h2>05. Ghi nhận bàn giao</h2><p>Hoàn thành thông tin Shipment và xác nhận thiết bị trước bước này</p></div><Button disabled={!workflow.shipment || !workflow.devicesConfirmed} onClick={() => setHandoverOpen(true)}>{workflow.handover ? 'Chỉnh sửa bàn giao' : 'Ghi nhận bàn giao'}</Button></div>
-        {!workflow.handover ? <p style={{ color: 'var(--text-sub)' }}>Chưa ghi nhận bàn giao trong form.</p> : <><Alert>Bàn giao (mô phỏng) đã được giữ trong phiên ứng dụng; chưa lưu server.</Alert><dl className="workflow-summary"><dt>Thời gian (UTC+7)</dt><dd className="number">{workflow.handover.timestampRaw.replace('T', ' ')}</dd><dt>Địa điểm</dt><dd>{workflow.handover.location}</dd><dt>Bàn giao</dt><dd>{workflow.handover.fromParty} → {workflow.handover.toParty}</dd><dt>Người giao / nhận</dt><dd>{workflow.handover.sender} / {workflow.handover.receiver}</dd><dt>Tài liệu</dt><dd>{workflow.handover.attachment?.name ?? 'Chưa chọn tài liệu'}</dd></dl></>}
+        {!workflow.handover ? <p style={{ color: 'var(--text-sub)' }}>Chưa ghi nhận bàn giao trong form.</p> : <><Alert>Bàn giao mô phỏng đã lưu trên server. Tệp đính kèm chỉ lưu metadata.</Alert><dl className="workflow-summary"><dt>Thời gian (UTC+7)</dt><dd className="number">{workflow.handover.timestampRaw.replace('T', ' ')}</dd><dt>Địa điểm</dt><dd>{workflow.handover.location}</dd><dt>Bàn giao</dt><dd>{workflow.handover.fromParty} → {workflow.handover.toParty}</dd><dt>Người giao / nhận</dt><dd>{workflow.handover.sender} / {workflow.handover.receiver}</dd><dt>Tài liệu</dt><dd>{workflow.handover.attachment?.name ?? 'Chưa chọn tài liệu'}</dd></dl></>}
       </section>
     </form>
     
@@ -177,23 +177,14 @@ export function ShipmentSetup({ presets, devices }: { presets: TemperaturePreset
       </div>
       <div className="actions" style={{ marginTop: '1rem', borderTop: '1px solid var(--border)', paddingTop: '1.5rem', display: 'flex', justifyContent: 'flex-end', gap: '0.75rem' }}>
         <Button variant="text" href="/batches">Hủy</Button>
-        <Button onClick={() => setMessage('Dữ liệu biểu mẫu hiện tại đã được ghi nhận.')}>Lưu bản nháp</Button>
         <Button primary type="submit" form="shipment-form" disabled={saving}>{saving ? 'Đang lưu…' : saveSuccess ? 'Lưu thay đổi Shipment' : 'Tạo Shipment'}</Button>
         {workflow.shipment && !workflow.devicesConfirmed && <Button onClick={() => setAssign(true)}>Tiếp tục: Gán thiết bị</Button>}
         {workflow.shipment && workflow.devicesConfirmed && !workflow.handover && <Button onClick={() => setHandoverOpen(true)}>Tiếp tục: Ghi nhận bàn giao</Button>}
-        {workflow.handover && <Button primary onClick={async () => {
-          try {
-            setMessage('Đang hoàn tất và đồng bộ dữ liệu thiết bị...');
-            await writeRecord('imports', 'POST', { source_id: '00000000-0000-0000-0000-000000000000', parser_id: 'format-a', parser_version: '0.1.0', batch_id: workflow.shipment?.lot });
-            window.location.href = '/batches';
-          } catch (e) {
-            setMessage('Lỗi khi đồng bộ dữ liệu. Vui lòng thử lại.');
-          }
-        }}>Hoàn tất khởi tạo lô</Button>}
+        {saveSuccess && !isDirty && <Button primary href={`/imports?batchId=${encodeURIComponent(saveSuccess)}`}>Tiếp tục: Sinh dữ liệu mô phỏng</Button>}
       </div>
     </div>
     
-    {handoverOpen && workflow.shipment && <RecordHandoverDialog shipment={workflow.shipment} initial={workflow.handover} onClose={() => setHandoverOpen(false)} onSave={value => { workflow.saveHandover(value); setHandoverOpen(false); setMessage('Đã ghi nhận thông tin bàn giao. Nhấn nút Hoàn tất để lưu cấu hình.'); }} />}
+    {handoverOpen && workflow.shipment && <RecordHandoverDialog shipment={workflow.shipment} initial={workflow.handover} onClose={() => setHandoverOpen(false)} onSave={async value => { try { await writeRecord(`batches/${encodeURIComponent(workflow.shipment!.lot)}/handover`, 'POST', { id: workflow.shipment!.lot, context: { ...value, attachment: value.attachment ? { name: value.attachment.name, size: value.attachment.size } : null } }); workflow.saveHandover(value); setHandoverOpen(false); setMessage('Đã lưu bàn giao trên server. File đính kèm chỉ lưu tên và kích thước.'); } catch (e) { setMessage(e instanceof Error ? e.message : 'Không lưu được bàn giao'); } }} />}
     </RoleGate>
     </>;
 }

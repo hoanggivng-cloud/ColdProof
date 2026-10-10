@@ -1,3 +1,4 @@
+import { hashPassword } from '../../apps/api/src/auth/password.util';
 import 'reflect-metadata';
 import { INestApplication } from '@nestjs/common';
 import { Test } from '@nestjs/testing';
@@ -26,21 +27,21 @@ describe('TC-010 • RBAC (Operator review forbidden, QA permitted)', () => {
     // Ensure test users exist for authentication
     await prisma.user.upsert({
       where: { email: 'operator@coldproof.local' },
-      update: { role: 'DATA_ENGINEER' },
+      update: { role: 'OPERATOR', active: true, password_hash: hashPassword('test-password') },
       create: {
-        id: '00000000-0000-0000-0000-000000000002',
+        id: '00000000-0000-0000-0000-000000000012',
         email: 'operator@coldproof.local',
-        role: 'DATA_ENGINEER',
+        role: 'OPERATOR', password_hash: hashPassword('test-password'),
       },
     });
 
     await prisma.user.upsert({
       where: { email: 'qa@coldproof.local' },
-      update: { role: 'QA_REVIEWER' },
+      update: { role: 'QA_REVIEWER', active: true, password_hash: hashPassword('test-password') },
       create: {
-        id: '00000000-0000-0000-0000-000000000003',
+        id: '00000000-0000-0000-0000-000000000013',
         email: 'qa@coldproof.local',
-        role: 'QA_REVIEWER',
+        role: 'QA_REVIEWER', password_hash: hashPassword('test-password'),
       },
     });
 
@@ -75,10 +76,10 @@ describe('TC-010 • RBAC (Operator review forbidden, QA permitted)', () => {
     // 1. Operator logs in
     const loginRes = await request(app.getHttpServer())
       .post('/api/auth/login')
-      .send({ email: 'operator@coldproof.local' })
+      .send({ email: 'operator@coldproof.local', password: 'test-password' })
       .expect(201);
 
-    expect(loginRes.body.user.role).toBe('DATA_ENGINEER');
+    expect(loginRes.body.user.role).toBe('OPERATOR');
     const operatorToken = loginRes.body.access_token;
 
     // 2. Operator attempts to review exception
@@ -88,7 +89,7 @@ describe('TC-010 • RBAC (Operator review forbidden, QA permitted)', () => {
       .send({ status: 'REVIEWED', notes: 'Operator trying to approve' })
       .expect(403);
 
-    expect(reviewRes.body.message).toContain("Role 'DATA_ENGINEER' is not authorized");
+    expect(reviewRes.body.message).toContain("Role 'OPERATOR' is not authorized");
 
     // 3. Verify audit log was recorded for the unauthorized attempt (FR-SEC-001)
     const auditRecord = await prisma.auditEvent.findFirst({
@@ -100,14 +101,14 @@ describe('TC-010 • RBAC (Operator review forbidden, QA permitted)', () => {
     });
 
     expect(auditRecord).toBeDefined();
-    expect((auditRecord?.payload as Record<string, unknown>)?.role).toBe('DATA_ENGINEER');
+    expect((auditRecord?.payload as Record<string, unknown>)?.role).toBe('OPERATOR');
   });
 
   it('authorizes QA Reviewer (QA_REVIEWER) to successfully submit exception review', async () => {
     // 1. QA logs in
     const loginRes = await request(app.getHttpServer())
       .post('/api/auth/login')
-      .send({ email: 'qa@coldproof.local' })
+      .send({ email: 'qa@coldproof.local', password: 'test-password' })
       .expect(201);
 
     expect(loginRes.body.user.role).toBe('QA_REVIEWER');

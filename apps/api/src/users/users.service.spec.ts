@@ -59,6 +59,7 @@ describe('UsersService', () => {
           id: true,
           email: true,
           role: true,
+          active: true,
           created_at: true,
         },
         orderBy: { created_at: 'asc' },
@@ -76,6 +77,7 @@ describe('UsersService', () => {
           id: true,
           email: true,
           role: true,
+          active: true,
           created_at: true,
         },
       });
@@ -89,6 +91,7 @@ describe('UsersService', () => {
           id: true,
           email: true,
           role: true,
+          active: true,
           created_at: true,
         },
       });

@@ -1,9 +1,13 @@
+import { UseGuards as Protect } from '@nestjs/common';
+import { JwtAuthGuard as AuthGuard } from '../auth/guards/jwt-auth.guard';
+import { RolesGuard as AccessGuard } from '../auth/guards/roles.guard';
 import { Controller, Get, Header, Param, ParseUUIDPipe, StreamableFile } from '@nestjs/common';
 import { ApiOkResponse, ApiOperation, ApiTags, ApiParam, ApiProduces } from '@nestjs/swagger';
 import { ReportsService } from './reports.service';
 import { ReportsStatusDto, ReportSummaryDto } from './reports.dto';
 
 @ApiTags('reports')
+@Protect(AuthGuard, AccessGuard)
 @Controller('reports')
 export class ReportsController {
   constructor(private readonly service: ReportsService) {}
@@ -28,6 +32,9 @@ export class ReportsController {
   findOne(@Param('id', ParseUUIDPipe) id: string) {
     return this.service.findOne(id);
   }
+
+  @Get(':id/audit')
+  audit(@Param('id', ParseUUIDPipe) id: string) { return this.service.audit(id); }
 
   @Get(':id/download')
   @ApiParam({ name: 'id', example: '77777777-7777-7777-7777-777777777771', description: 'Report UUID' })

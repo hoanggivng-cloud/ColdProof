@@ -24,25 +24,15 @@ export class AuthService {
         email: true,
         role: true,
         password_hash: true,
+        active: true,
       },
     });
 
-    if (!user) {
+    if (!user || !user.active) {
       throw new UnauthorizedException(`User with email ${dto.email} not found`);
     }
 
-    if (user.password_hash) {
-      if (dto.password) {
-        if (!verifyPassword(dto.password, user.password_hash)) {
-          throw new UnauthorizedException('Email hoặc mật khẩu không đúng');
-        }
-      } else {
-        const isDevOrTest = process.env.NODE_ENV !== 'production';
-        if (!isDevOrTest) {
-          throw new UnauthorizedException('Mật khẩu không được để trống');
-        }
-      }
-    }
+    if (!user.password_hash || !dto.password || !verifyPassword(dto.password, user.password_hash)) throw new UnauthorizedException('Email hoặc mật khẩu không đúng');
 
     const payload = {
       sub: user.id,
@@ -77,8 +67,8 @@ export class AuthService {
       throw new ConflictException(`User with email '${dto.email}' already exists`);
     }
 
-    const allowedRoles = ['OPERATOR', 'QA_REVIEWER', 'VIEWER', 'DATA_ENGINEER'];
-    const assignedRole = dto.role && allowedRoles.includes(dto.role) ? dto.role : 'OPERATOR';
+    const assignedRole = 'OPERATOR';
+    if (!dto.password) throw new UnauthorizedException('Cần nhập mật khẩu');
     const passwordHash = dto.password ? hashPassword(dto.password) : null;
 
     const user = await this.prisma.user.create({

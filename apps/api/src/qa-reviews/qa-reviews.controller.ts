@@ -1,9 +1,13 @@
+import { UseGuards as Protect } from '@nestjs/common';
+import { JwtAuthGuard as AuthGuard } from '../auth/guards/jwt-auth.guard';
+import { RolesGuard as AccessGuard } from '../auth/guards/roles.guard';
 import { Controller, Get, Param, ParseUUIDPipe } from '@nestjs/common';
 import { ApiOkResponse, ApiOperation, ApiTags, ApiParam } from '@nestjs/swagger';
 import { QAReviewsService } from './qa-reviews.service';
 import { QAReviewsStatusDto, QAReviewItemDto } from './qa-reviews.dto';
 
 @ApiTags('qa-reviews')
+@Protect(AuthGuard, AccessGuard)
 @Controller('qa-reviews')
 export class QAReviewsController {
   constructor(private readonly service: QAReviewsService) {}

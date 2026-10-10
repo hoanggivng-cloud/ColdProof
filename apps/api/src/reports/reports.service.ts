@@ -31,6 +31,11 @@ export class ReportsService {
     return report;
   }
 
+  async audit(id: string) {
+    await this.findOne(id);
+    return this.prisma.auditEvent.findMany({ where: { entity_type: 'reports', entity_id: id }, orderBy: { created_at: 'asc' } });
+  }
+
   async download(id: string) {
     const report = await this.findOne(id);
     return {

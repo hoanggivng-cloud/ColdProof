@@ -27,6 +27,7 @@ model User {
   email String @unique
   password_hash String?
   role String @default("OPERATOR")
+  active Boolean @default(true)
   created_at DateTime @default(now()) @db.Timestamptz(3)
   @@map("users")
 }
@@ -70,6 +71,7 @@ model Scenario {
 }
 model Batch {
   id String @id
+  context Json?
   scenario_id String?
   business_context_origin BusinessContextOrigin @default(SYNTHETIC)
   profile_id String?

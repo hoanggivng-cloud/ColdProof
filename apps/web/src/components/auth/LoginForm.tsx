@@ -43,6 +43,6 @@ export function LoginForm() {
       <Button type="submit" variant="primary" disabled={pending}>{pending ? 'Đang đăng nhập…' : 'Đăng nhập'}</Button>
     </form>
     <p className="auth-help">Chưa có tài khoản? <Link href="/register">Đăng ký tài khoản</Link>.</p>
-    {isDemo() && <section className="auth-demo" aria-labelledby="demo-title"><h2 id="demo-title">Đăng nhập nhanh tài khoản demo</h2><div className="actions">{demoAccounts.map(account => <Button key={account.role} disabled={pending} onClick={() => void login(account.email, '')}>{roleLabels[account.role]}</Button>)}</div></section>}
+    {isDemo() && <section className="auth-demo" aria-labelledby="demo-title"><h2 id="demo-title">Đăng nhập nhanh tài khoản demo</h2><div className="actions">{demoAccounts.map(account => <Button key={account.role} disabled={pending} onClick={() => void login(account.email, '123456')}>{roleLabels[account.role]}</Button>)}</div></section>}
   </section>;
 }

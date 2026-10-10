@@ -1,8 +1,14 @@
+import { UseGuards as Protect } from '@nestjs/common';
+import { JwtAuthGuard as AuthGuard } from '../auth/guards/jwt-auth.guard';
+import { RolesGuard as AccessGuard } from '../auth/guards/roles.guard';
+import { Roles as AllowRoles } from '../auth/decorators/roles.decorator';
 import { Body, Controller, Get, Param, ParseUUIDPipe, Post } from '@nestjs/common';
 import { ApiTags, ApiOperation } from '@nestjs/swagger';
 import { SourcesService } from './sources.service';
 import { CreateSourceDto } from './create-source.dto';
-@ApiTags('sources') @Controller('sources')
+@ApiTags('sources') @Protect(AuthGuard, AccessGuard)
+@AllowRoles('ADMIN')
+@Controller('sources')
 export class SourcesController {
   constructor(private readonly service: SourcesService) {}
   @Get('status') status() { return this.service.status(); }
