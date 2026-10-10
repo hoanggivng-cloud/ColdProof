@@ -104,6 +104,79 @@ describe('Vietnam Healthcare Demo Scenarios v2', () => {
     );
   });
 
+  it('keeps verified public product identity separate from synthetic logistics', () => {
+    expect(definitions.products.products).toHaveLength(5);
+    expect(definitions.products.products.map((product) => product.product_id)).toEqual([
+      'PROD-DEMO-VACCINE',
+      'PROD-DEMO-BIOLOGIC',
+      'PROD-DEMO-DIAGNOSTIC',
+      'PROD-DEMO-MEDICINE',
+      'PROD-DEMO-REFERENCE',
+    ]);
+    for (const product of definitions.products.products) {
+      expect(product).toMatchObject({
+        reference_origin: 'PUBLIC_PRODUCT_REFERENCE',
+        verification_status: 'VERIFIED',
+        product_category: 'VACCINE',
+        storage_claim: null,
+        regulatory_claim: null,
+      });
+      expect(product.source_reference.publisher).not.toBe('');
+      expect(product.source_reference.title).not.toBe('');
+      expect(product.source_reference.url_or_identifier).toMatch(/^https:\/\//);
+      expect(product.public_reference_code).toMatch(/^PROD-REF-[A-Z0-9-]+$/);
+      expect(product).not.toHaveProperty('batch_id');
+      expect(product).not.toHaveProperty('shipment_id');
+      expect(product).not.toHaveProperty('lot_number');
+    }
+
+    const distribution = definitions.scenarios.reduce<Record<string, number>>(
+      (counts, item) => ({
+        ...counts,
+        [item.product_reference_id]: (counts[item.product_reference_id] ?? 0) + 1,
+      }),
+      {},
+    );
+    expect(Object.values(distribution).sort((left, right) => left - right)).toEqual([
+      5, 5, 6, 6, 6,
+    ]);
+    for (const item of definitions.scenarios) {
+      expect(item.business_context).toMatchObject({
+        origin: 'SYNTHETIC_DEMO_CONTEXT',
+        batch_context: { origin: 'SYNTHETIC_DEMO_CONTEXT' },
+        shipment_context: { origin: 'SYNTHETIC_DEMO_CONTEXT' },
+        trip_context: { origin: 'SYNTHETIC_DEMO_CONTEXT' },
+        sender_receiver_relation: { origin: 'SYNTHETIC_DEMO_CONTEXT' },
+      });
+    }
+  });
+
+  it('preserves Vietnamese UTF-8 display text and stable technical identifiers', () => {
+    expect(definitions.locations.locations).toHaveLength(13);
+    expect(definitions.routes.routes).toHaveLength(12);
+    expect(definitions.locations.locations.find(
+      (location) => location.location_id === 'LOC-CAN-THO',
+    )).toMatchObject({
+      display_name: 'Trung tâm tiêm chủng Cần Thơ 01 — DEMO',
+      city: 'Cần Thơ',
+      facility_type: 'VACCINATION_CENTER',
+      origin: 'SYNTHETIC_DEMO_CONTEXT',
+    });
+    expect(definitions.routes.routes.find(
+      (route) => route.route_id === 'ROUTE-HCM-LONG-AN-CAN-THO',
+    )?.display_label).toBe('TP.HCM → Long An → Cần Thơ');
+    expect(scenario('VNHC-020').scenario_name).toBe(
+      'Logger B — thiếu ngữ cảnh múi giờ',
+    );
+    expect(demoCore.canonicalJson(definitions.locations)).toContain('Cần Thơ');
+    expect(demoCore.canonicalJson(definitions.locations)).not.toContain('\\u1ea7');
+    expect(definitions.scenarios.map((item) => item.scenario_id)).toEqual(
+      Array.from({ length: 28 }, (_, index) =>
+        `VNHC-${String(index + 1).padStart(3, '0')}`,
+      ),
+    );
+  });
+
   it('derives tracked definitions and the Markdown summary byte-for-byte', () => {
     const trackedSummary = readFileSync(
       path.join(repositoryRoot, 'data/demo/vietnam-healthcare/catalog-summary.md'),
@@ -379,5 +452,58 @@ describe('Vietnam Healthcare Demo Scenarios v2', () => {
     expect(comparison.trip_association.canonical_record_id).toBe(
       canonical.record_id,
     );
+  });
+
+  it('reconciles every standard runtime raw record with canonical output or one blocking rejection', async () => {
+    const runtimeDefinitions = definitions.scenarios.filter(
+      (item) => item.measurement_source.kind === 'SIMULATED_LOGGER',
+    );
+    let rawRecordCount = 0;
+    let canonicalRecordCount = 0;
+    const rejections: Array<{
+      scenario_id: string;
+      rejected_count: number;
+      failure_code: string;
+      expected_stage: string;
+    }> = [];
+    for (const definition of runtimeDefinitions) {
+      const runtime = await demoCore.executeRuntimeScenario(
+        definition,
+        dependencies(),
+      );
+      rawRecordCount += runtime.raw_records.length;
+      canonicalRecordCount += runtime.canonical_measurements.length;
+      const rejected = runtime.processing_results.filter((result) => !result.success);
+      if (rejected.length > 0) {
+        const first = rejected[0];
+        if (first.success) throw new Error('Expected rejected processing result');
+        rejections.push({
+          scenario_id: definition.scenario_id,
+          rejected_count: rejected.length,
+          failure_code: first.normalization.issues[0].code,
+          expected_stage: 'NORMALIZATION',
+        });
+      }
+    }
+    const reconciliation = definitions.outcomes.record_count_reconciliation;
+    expect(rawRecordCount).toBe(25_704);
+    expect(canonicalRecordCount).toBe(25_698);
+    expect(rawRecordCount - canonicalRecordCount).toBe(6);
+    expect(rejections).toEqual(reconciliation.rejections_by_scenario);
+    expect(rawRecordCount).toBe(
+      canonicalRecordCount + reconciliation.normalization_rejected_count,
+    );
+  });
+
+  it('keeps temperature-pattern DQ PASS distinct from temperature compliance', async () => {
+    for (const id of ['VNHC-015', 'VNHC-016']) {
+      const runtime = await demoCore.executeRuntimeScenario(
+        scenario(id),
+        dependencies(),
+      );
+      expect(runtime.dq?.assessment_status).toBe('PASS');
+      expect(scenario(id).expected.temperature_pattern_is_excursion_conclusion).toBe(false);
+      expect(scenario(id).expected.expected_stage).toBe('NONE');
+    }
   });
 });

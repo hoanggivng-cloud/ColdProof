@@ -1,21 +1,29 @@
 {
   "scenario_id": "VNHC-018",
-  "scenario_name": "invalid temperature — Vietnam healthcare demo",
+  "scenario_name": "Đà Nẵng → Huế — giá trị nhiệt độ không hợp lệ",
   "scenario_family": "SIMULATED_RUNTIME",
-  "description": "Deterministic ColdProof software test scenario with explicitly synthetic Vietnam healthcare logistics context.",
+  "description": "Kịch bản kiểm thử ColdProof xác định, sử dụng hồ sơ INVALID_TEMPERATURE; ngữ cảnh vận chuyển y tế Việt Nam là dữ liệu demo tổng hợp.",
   "scenario_origin": "SYNTHETIC_DEMO_CONTEXT",
   "product_reference_id": "PROD-DEMO-DIAGNOSTIC",
   "route_id": "ROUTE-DA-NANG-HUE",
   "business_context": {
-    "batch_id": "BATCH-VNHC-018",
-    "shipment_id": "SHIP-VNHC-018",
-    "trip_id": "TRIP-VNHC-018",
     "origin": "SYNTHETIC_DEMO_CONTEXT",
-    "sender_receiver_relation": {
+    "batch_context": {
+      "batch_id": "BATCH-VNHC-018",
+      "lot_number": "LOT-VNHC-018",
       "origin": "SYNTHETIC_DEMO_CONTEXT"
     },
-    "lot_number": {
-      "value": "LOT-VNHC-018",
+    "shipment_context": {
+      "shipment_id": "SHIP-VNHC-018",
+      "origin": "SYNTHETIC_DEMO_CONTEXT"
+    },
+    "trip_context": {
+      "trip_id": "TRIP-VNHC-018",
+      "origin": "SYNTHETIC_DEMO_CONTEXT"
+    },
+    "sender_receiver_relation": {
+      "sender_location_id": "LOC-DA-NANG",
+      "receiver_location_id": "LOC-HUE",
       "origin": "SYNTHETIC_DEMO_CONTEXT"
     },
     "association": {
@@ -25,6 +33,12 @@
     }
   },
   "data_profile": "INVALID_TEMPERATURE",
+  "test_purposes": [
+    "NORMALIZATION",
+    "QA_REVIEW"
+  ],
+  "test_severity": "HIGH",
+  "test_severity_semantics": "DEMO_TEST_ONLY",
   "labels": [
     "VIETNAM_HEALTHCARE_DEMO",
     "SIMULATED_RUNTIME",
@@ -54,7 +68,7 @@
     "anomaly_injection": {
       "profile": "INVALID_TEMPERATURE",
       "origin": "SYNTHETIC_TEST_PROFILE",
-      "generator_version": "vietnam-healthcare-demo-v2"
+      "generator_version": "vietnam-healthcare-demo-v2.1"
     },
     "used_for_dq": true,
     "used_for_excursion_calculation": false
@@ -66,6 +80,8 @@
     "expected_finding_codes": [
       "INVALID_TEMPERATURE"
     ],
+    "expected_failure_code": "INVALID_TEMPERATURE",
+    "expected_stage": "NORMALIZATION",
     "expected_raw_record_count": 1,
     "expected_canonical_record_count": 0,
     "expected_device_count": 1,
@@ -76,7 +92,7 @@
     "simulator": "@coldproof/simulated-logger",
     "normalizer": "@coldproof/logger-normalizer",
     "dq_policy": "runtime-dq-v1",
-    "scenario_generator": "vietnam-healthcare-demo-v2"
+    "scenario_generator": "vietnam-healthcare-demo-v2.1"
   },
   "test_profiles": [
     "INVALID_TEMPERATURE"

@@ -1,21 +1,29 @@
 {
   "scenario_id": "VNHC-011",
-  "scenario_name": "conflict — Vietnam healthcare demo",
+  "scenario_name": "Chuyến giao vaccine Cần Thơ → Tiền Giang — xung đột cùng thời điểm",
   "scenario_family": "SIMULATED_RUNTIME",
-  "description": "Deterministic ColdProof software test scenario with explicitly synthetic Vietnam healthcare logistics context.",
+  "description": "Kịch bản kiểm thử ColdProof xác định, sử dụng hồ sơ CONFLICT; ngữ cảnh vận chuyển y tế Việt Nam là dữ liệu demo tổng hợp.",
   "scenario_origin": "SYNTHETIC_DEMO_CONTEXT",
   "product_reference_id": "PROD-DEMO-VACCINE",
   "route_id": "ROUTE-CAN-THO-TIEN-GIANG",
   "business_context": {
-    "batch_id": "BATCH-VNHC-011",
-    "shipment_id": "SHIP-VNHC-011",
-    "trip_id": "TRIP-VNHC-011",
     "origin": "SYNTHETIC_DEMO_CONTEXT",
-    "sender_receiver_relation": {
+    "batch_context": {
+      "batch_id": "BATCH-VNHC-011",
+      "lot_number": "LOT-VNHC-011",
       "origin": "SYNTHETIC_DEMO_CONTEXT"
     },
-    "lot_number": {
-      "value": "LOT-VNHC-011",
+    "shipment_context": {
+      "shipment_id": "SHIP-VNHC-011",
+      "origin": "SYNTHETIC_DEMO_CONTEXT"
+    },
+    "trip_context": {
+      "trip_id": "TRIP-VNHC-011",
+      "origin": "SYNTHETIC_DEMO_CONTEXT"
+    },
+    "sender_receiver_relation": {
+      "sender_location_id": "LOC-CAN-THO",
+      "receiver_location_id": "LOC-TIEN-GIANG",
       "origin": "SYNTHETIC_DEMO_CONTEXT"
     },
     "association": {
@@ -25,6 +33,12 @@
     }
   },
   "data_profile": "CONFLICT",
+  "test_purposes": [
+    "DATA_QUALITY",
+    "QA_REVIEW"
+  ],
+  "test_severity": "MEDIUM",
+  "test_severity_semantics": "DEMO_TEST_ONLY",
   "labels": [
     "VIETNAM_HEALTHCARE_DEMO",
     "SIMULATED_RUNTIME",
@@ -49,7 +63,7 @@
     "anomaly_injection": {
       "profile": "CONFLICT",
       "origin": "SYNTHETIC_TEST_PROFILE",
-      "generator_version": "vietnam-healthcare-demo-v2"
+      "generator_version": "vietnam-healthcare-demo-v2.1"
     },
     "used_for_dq": true,
     "used_for_excursion_calculation": false
@@ -61,6 +75,8 @@
     "expected_finding_codes": [
       "CONFLICTING_RECORD"
     ],
+    "expected_failure_code": null,
+    "expected_stage": "DATA_QUALITY",
     "expected_raw_record_count": 2001,
     "expected_canonical_record_count": 2001,
     "expected_device_count": 1,
@@ -71,7 +87,7 @@
     "simulator": "@coldproof/simulated-logger",
     "normalizer": "@coldproof/logger-normalizer",
     "dq_policy": "runtime-dq-v1",
-    "scenario_generator": "vietnam-healthcare-demo-v2"
+    "scenario_generator": "vietnam-healthcare-demo-v2.1"
   },
   "test_profiles": [
     "CONFLICT"

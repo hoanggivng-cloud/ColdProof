@@ -1,21 +1,29 @@
 {
   "scenario_id": "VNHC-006",
-  "scenario_name": "observed continuous — Vietnam healthcare demo",
+  "scenario_name": "SENSOR04 — tuyến Đà Nẵng → Huế liên tục",
   "scenario_family": "ZENODO_OBSERVED_BACKED",
-  "description": "Deterministic ColdProof software test scenario with explicitly synthetic Vietnam healthcare logistics context.",
+  "description": "Kịch bản kiểm thử ColdProof xác định, sử dụng hồ sơ OBSERVED_CONTINUOUS; ngữ cảnh vận chuyển y tế Việt Nam là dữ liệu demo tổng hợp.",
   "scenario_origin": "SYNTHETIC_DEMO_CONTEXT",
   "product_reference_id": "PROD-DEMO-VACCINE",
   "route_id": "ROUTE-DA-NANG-HUE",
   "business_context": {
-    "batch_id": "BATCH-VNHC-006",
-    "shipment_id": "SHIP-VNHC-006",
-    "trip_id": "TRIP-VNHC-006",
     "origin": "SYNTHETIC_DEMO_CONTEXT",
-    "sender_receiver_relation": {
+    "batch_context": {
+      "batch_id": "BATCH-VNHC-006",
+      "lot_number": "LOT-VNHC-006",
       "origin": "SYNTHETIC_DEMO_CONTEXT"
     },
-    "lot_number": {
-      "value": "LOT-VNHC-006",
+    "shipment_context": {
+      "shipment_id": "SHIP-VNHC-006",
+      "origin": "SYNTHETIC_DEMO_CONTEXT"
+    },
+    "trip_context": {
+      "trip_id": "TRIP-VNHC-006",
+      "origin": "SYNTHETIC_DEMO_CONTEXT"
+    },
+    "sender_receiver_relation": {
+      "sender_location_id": "LOC-DA-NANG",
+      "receiver_location_id": "LOC-HUE",
       "origin": "SYNTHETIC_DEMO_CONTEXT"
     },
     "association": {
@@ -25,6 +33,13 @@
     }
   },
   "data_profile": "OBSERVED_CONTINUOUS",
+  "test_purposes": [
+    "PIPELINE",
+    "TRIP_ASSOCIATION",
+    "FRONTEND_DEMO"
+  ],
+  "test_severity": "INFO",
+  "test_severity_semantics": "DEMO_TEST_ONLY",
   "labels": [
     "VIETNAM_HEALTHCARE_DEMO",
     "ZENODO_OBSERVED_BACKED",
@@ -68,6 +83,8 @@
     "normalization_expected": "PRE_NORMALIZED_PUBLIC_EVIDENCE",
     "dq_status_expected": "PASS",
     "expected_finding_codes": [],
+    "expected_failure_code": null,
+    "expected_stage": "NONE",
     "expected_raw_record_count": 2160,
     "expected_canonical_record_count": 2160,
     "expected_device_count": 1,
@@ -77,7 +94,7 @@
   "provenance": {
     "primary_origin": "REAL_PUBLIC_DATA",
     "logistics_context_origin": "SYNTHETIC_DEMO_CONTEXT",
-    "scenario_generator": "vietnam-healthcare-demo-v2"
+    "scenario_generator": "vietnam-healthcare-demo-v2.1"
   },
   "test_profiles": [
     "OBSERVED_CONTINUOUS"

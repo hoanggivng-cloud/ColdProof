@@ -1,21 +1,29 @@
 {
   "scenario_id": "VNHC-025",
-  "scenario_name": "handover with gap — Vietnam healthcare demo",
+  "scenario_name": "Tuyến có bàn giao và khoảng thiếu — ngữ cảnh C08/C12",
   "scenario_family": "COMBINED_REFERENCE_CONTEXT",
-  "description": "Deterministic ColdProof software test scenario with explicitly synthetic Vietnam healthcare logistics context.",
+  "description": "Kịch bản kiểm thử ColdProof xác định, sử dụng hồ sơ HANDOVER_WITH_GAP; ngữ cảnh vận chuyển y tế Việt Nam là dữ liệu demo tổng hợp.",
   "scenario_origin": "SYNTHETIC_DEMO_CONTEXT",
   "product_reference_id": "PROD-DEMO-REFERENCE",
   "route_id": "ROUTE-HCM-THU-DUC",
   "business_context": {
-    "batch_id": "BATCH-VNHC-025",
-    "shipment_id": "SHIP-VNHC-025",
-    "trip_id": "TRIP-VNHC-025",
     "origin": "SYNTHETIC_DEMO_CONTEXT",
-    "sender_receiver_relation": {
+    "batch_context": {
+      "batch_id": "BATCH-VNHC-025",
+      "lot_number": "LOT-VNHC-025",
       "origin": "SYNTHETIC_DEMO_CONTEXT"
     },
-    "lot_number": {
-      "value": "LOT-VNHC-025",
+    "shipment_context": {
+      "shipment_id": "SHIP-VNHC-025",
+      "origin": "SYNTHETIC_DEMO_CONTEXT"
+    },
+    "trip_context": {
+      "trip_id": "TRIP-VNHC-025",
+      "origin": "SYNTHETIC_DEMO_CONTEXT"
+    },
+    "sender_receiver_relation": {
+      "sender_location_id": "LOC-HCM",
+      "receiver_location_id": "LOC-THU-DUC",
       "origin": "SYNTHETIC_DEMO_CONTEXT"
     },
     "association": {
@@ -32,6 +40,13 @@
     ]
   },
   "data_profile": "HANDOVER_WITH_GAP",
+  "test_purposes": [
+    "REFERENCE_CONTEXT",
+    "QA_REVIEW",
+    "FRONTEND_DEMO"
+  ],
+  "test_severity": "MEDIUM",
+  "test_severity_semantics": "DEMO_TEST_ONLY",
   "labels": [
     "VIETNAM_HEALTHCARE_DEMO",
     "COMBINED_REFERENCE_CONTEXT",
@@ -56,7 +71,7 @@
     "anomaly_injection": {
       "profile": "HANDOVER_WITH_GAP",
       "origin": "SYNTHETIC_TEST_PROFILE",
-      "generator_version": "vietnam-healthcare-demo-v2"
+      "generator_version": "vietnam-healthcare-demo-v2.1"
     },
     "used_for_dq": true,
     "used_for_excursion_calculation": false
@@ -117,6 +132,8 @@
     "expected_finding_codes": [
       "MISSING_INTERVAL"
     ],
+    "expected_failure_code": null,
+    "expected_stage": "DATA_QUALITY",
     "expected_raw_record_count": 1799,
     "expected_canonical_record_count": 1799,
     "expected_device_count": 1,
@@ -130,7 +147,7 @@
     "simulator": "@coldproof/simulated-logger",
     "normalizer": "@coldproof/logger-normalizer",
     "dq_policy": "runtime-dq-v1",
-    "scenario_generator": "vietnam-healthcare-demo-v2"
+    "scenario_generator": "vietnam-healthcare-demo-v2.1"
   },
   "test_profiles": [
     "HANDOVER_WITH_GAP",

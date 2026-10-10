@@ -1,4 +1,4 @@
-# Vietnam Healthcare Demo Scenarios v2
+# Vietnam Healthcare Demo Scenarios v2.1
 
 ## Purpose
 
@@ -11,7 +11,8 @@ Public physical data does not make synthetic shipment relationships real. The ca
 The machine-readable catalog is under `data/demo/vietnam-healthcare/`:
 
 - `catalog.json` indexes the scenarios and families.
-- `products.json`, `locations.json`, and `routes.json` define synthetic demo references.
+- `products.json` records verified public product identity references.
+- `locations.json` and `routes.json` define synthetic Vietnam demo facilities and routes.
 - `scenarios/VNHC-001.json` through `VNHC-028.json` are deterministic definitions.
 - `expected-outcomes.json` is the machine-testable processing expectation manifest.
 - `catalog-summary.md` is generated from the same definitions for human review.
@@ -37,6 +38,8 @@ node scripts/vietnam-demo-scenarios.mjs --check
 | `MENDELEY_CONTEXT_ONLY` | 2 | Spatial/experimental QA reference without a runtime timeline |
 
 All batch, shipment, route, lot, sender/receiver, handover, and trip-association context is labelled `SYNTHETIC_DEMO_CONTEXT`. Organization names are demo labels and are not claims about actual facilities or movements.
+
+Human-facing Vietnam content is stored as readable UTF-8 Vietnamese with diacritics. Technical IDs and enum values remain stable English/ASCII values.
 
 ## Zenodo role
 
@@ -75,7 +78,9 @@ LOGGER_B definitions either provide explicit normalization context or intentiona
 
 Expected states use `NOT_ASSESSED`, `PASS`, and `FLAGGED` without collapsing them. Normalization failures are `NOT_ASSESSED`, never DQ `PASS`. DQ findings come from the existing `runtime-dq-v1` implementation and remain device-partitioned. A missing interval is a derived finding and does not create a physical measurement.
 
-`HIGH_TEMP_PATTERN` and `LOW_TEMP_PATTERN` describe synthetic measurements only. They are not excursion, regulatory, product-quality, or compliance conclusions. No excursion policy is applied by this catalog. Synthetic handover boundaries do not terminate or truncate physical thermal patterns.
+Each expected outcome also records `expected_stage`: `NORMALIZATION`, `DATA_QUALITY`, or `NONE`. A blocking normalization error has one explicit `expected_failure_code`, produces no canonical measurement, and never proceeds to DQ.
+
+`HIGH_TEMP_PATTERN` and `LOW_TEMP_PATTERN` describe synthetic measurements only. They are not excursion, regulatory, product-quality, or compliance conclusions. DQ `PASS` means only that no configured data-integrity anomaly was detected. No excursion policy is applied by this catalog. Synthetic handover boundaries do not terminate or truncate physical thermal patterns.
 
 ## Golden scenarios
 
@@ -91,11 +96,53 @@ The expected-outcome manifest records normalization state, DQ state, issue/findi
 
 ## Product references
 
-The product catalog uses generic, synthetic references only. Manufacturer and storage claims are intentionally null. A scenario's synthetic shipment relationship does not imply that any named or real manufacturer shipped a demo batch.
+The catalog contains five verified public identity references: Vaxigrip Tetra, Influvac Tetra, Gardasil 9, Prevenar 13, and Prevenar 20. Product identity comes from an explicit official manufacturer or regulator reference:
+
+- Vaxigrip Tetra — Sanofi professional information. Manufacturer is deliberately not recorded because the selected page verifies identity but does not establish a legal manufacturing entity.
+- Influvac Tetra — Singapore National Drug Formulary; manufacturer recorded as `Abbott Biologicals B.V.` from that regulator entry.
+- Gardasil 9 — U.S. Food and Drug Administration product page.
+- Prevenar 13 — Pfizer product information.
+- Prevenar 20 — Pfizer product information.
+
+`PUBLIC_PRODUCT_REFERENCE` describes identity only. The catalog does not add a product storage claim, regulatory claim, or operational shipment claim. Manufacturer is present only where supported by the stored source reference.
+
+Existing `product_id` values remain stable for consumer compatibility. Each product adds a product-specific ASCII `public_reference_code` so verified identity is explicit without changing scenario foreign keys.
+
+Product identity is separate from `batch_context`, `shipment_context`, `trip_context`, route, lot, sender, and receiver. Those scenario relationships always remain `SYNTHETIC_DEMO_CONTEXT`. A real product name does not imply that its manufacturer shipped, owned, approved, or participated in a demo scenario. Manufacturer remains null when the stored identity source does not support a precise manufacturer claim.
+
+## Vietnam facilities and routes
+
+The 13 facilities use synthetic names with real Vietnamese geography, for example:
+
+- `Kho phân phối dược phẩm TP.HCM — DEMO`
+- `Bệnh viện Demo Thủ Đức`
+- `Trung tâm tiêm chủng Cần Thơ 01 — DEMO`
+- `Kho lạnh miền Bắc tại Hà Nội — DEMO`
+
+Facility types are limited to `DISTRIBUTION_HUB`, `COLD_STORAGE`, `HOSPITAL`, `VACCINATION_CENTER`, `CLINIC`, and `PROVINCIAL_HUB`. Routes expose origin, destination, optional waypoints, and Vietnamese display labels such as `TP.HCM → Long An → Cần Thơ`. These are display-ready synthetic routes, not records of real pharmaceutical movements.
+
+## Scenario purpose and severity
+
+`test_purposes` lets backend and frontend consumers filter scenarios by `PIPELINE`, `NORMALIZATION`, `DATA_QUALITY`, `TRIP_ASSOCIATION`, `QA_REVIEW`, `FRONTEND_DEMO`, or `REFERENCE_CONTEXT`.
+
+`test_severity` (`INFO`, `LOW`, `MEDIUM`, or `HIGH`) is demo/test severity only. It is not regulatory severity, patient risk, GSP/GDP status, compliance, or batch disposition.
+
+## Raw/canonical reconciliation
+
+The standard runtime scope generates 25,704 raw records and 25,698 canonical records. The six rejected records are exactly:
+
+- `VNHC-017` — `MISSING_TEMPERATURE`
+- `VNHC-018` — `INVALID_TEMPERATURE`
+- `VNHC-019` — `INVALID_TIMESTAMP`
+- `VNHC-020` — `TIMEZONE_CONTEXT_REQUIRED`
+- `VNHC-021` — `DEVICE_IDENTITY_MISMATCH`
+- `VNHC-022` — `RAW_PAYLOAD_CHECKSUM_MISMATCH`
+
+Each scenario rejects one raw record at normalization. The machine manifest enforces `25,704 = 25,698 + 6`. Sequence anomalies such as gaps, duplicates, and conflicts still normalize successfully and are assessed separately by DQ.
 
 ## QA and backend integration
 
-The catalog includes cases for Raw ↔ Canonical ↔ DQ ↔ Trip comparison: assigned and unassigned trips, PASS and FLAGGED DQ, timezone-blocked normalization, checksum failure, and visible Mendeley supplemental context. Integration tests validate the D8 QA projection using actual D4–D7 outputs.
+The catalog includes cases for Raw ↔ Canonical ↔ DQ ↔ Trip comparison: assigned and unassigned trips, PASS and FLAGGED DQ, timezone-blocked normalization, checksum failure, and visible Mendeley supplemental context. Human-facing scenario, facility, route, and purpose labels are directly usable by TV3; technical IDs/enums remain unchanged. Integration tests validate the D8 QA projection using actual D4–D7 outputs.
 
 TV2 may consume definitions for persistence and trip-association tests, but this catalog implements neither. TV3 may display the evidence/provenance projections, but the catalog defines no UI or QA decision.
 

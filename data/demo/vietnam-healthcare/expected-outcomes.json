@@ -1,12 +1,59 @@
 {
-  "manifest_version": "1.0.0",
-  "scenario_generator_version": "vietnam-healthcare-demo-v2",
+  "manifest_version": "1.1.0",
+  "scenario_generator_version": "vietnam-healthcare-demo-v2.1",
+  "record_count_reconciliation": {
+    "scope": "SIMULATED_RUNTIME_AND_COMBINED_REFERENCE_CONTEXT",
+    "raw_record_count": 25704,
+    "canonical_record_count": 25698,
+    "normalization_rejected_count": 6,
+    "invariant": "raw_record_count = canonical_record_count + normalization_rejected_count",
+    "rejections_by_scenario": [
+      {
+        "scenario_id": "VNHC-017",
+        "rejected_count": 1,
+        "failure_code": "MISSING_TEMPERATURE",
+        "expected_stage": "NORMALIZATION"
+      },
+      {
+        "scenario_id": "VNHC-018",
+        "rejected_count": 1,
+        "failure_code": "INVALID_TEMPERATURE",
+        "expected_stage": "NORMALIZATION"
+      },
+      {
+        "scenario_id": "VNHC-019",
+        "rejected_count": 1,
+        "failure_code": "INVALID_TIMESTAMP",
+        "expected_stage": "NORMALIZATION"
+      },
+      {
+        "scenario_id": "VNHC-020",
+        "rejected_count": 1,
+        "failure_code": "TIMEZONE_CONTEXT_REQUIRED",
+        "expected_stage": "NORMALIZATION"
+      },
+      {
+        "scenario_id": "VNHC-021",
+        "rejected_count": 1,
+        "failure_code": "DEVICE_IDENTITY_MISMATCH",
+        "expected_stage": "NORMALIZATION"
+      },
+      {
+        "scenario_id": "VNHC-022",
+        "rejected_count": 1,
+        "failure_code": "RAW_PAYLOAD_CHECKSUM_MISMATCH",
+        "expected_stage": "NORMALIZATION"
+      }
+    ]
+  },
   "scenarios": [
     {
       "scenario_id": "VNHC-001",
       "normalization_expected": "PRE_NORMALIZED_PUBLIC_EVIDENCE",
       "dq_status_expected": "PASS",
       "expected_finding_codes": [],
+      "expected_failure_code": null,
+      "expected_stage": "NONE",
       "expected_raw_record_count": 2160,
       "expected_canonical_record_count": 2160,
       "expected_device_count": 1,
@@ -20,6 +67,8 @@
       "normalization_expected": "PRE_NORMALIZED_PUBLIC_EVIDENCE",
       "dq_status_expected": "PASS",
       "expected_finding_codes": [],
+      "expected_failure_code": null,
+      "expected_stage": "NONE",
       "expected_raw_record_count": 2160,
       "expected_canonical_record_count": 2160,
       "expected_device_count": 1,
@@ -33,6 +82,8 @@
       "normalization_expected": "PRE_NORMALIZED_PUBLIC_EVIDENCE",
       "dq_status_expected": "PASS",
       "expected_finding_codes": [],
+      "expected_failure_code": null,
+      "expected_stage": "NONE",
       "expected_raw_record_count": 2160,
       "expected_canonical_record_count": 2160,
       "expected_device_count": 1,
@@ -46,6 +97,8 @@
       "normalization_expected": "PRE_NORMALIZED_PUBLIC_EVIDENCE",
       "dq_status_expected": "PASS",
       "expected_finding_codes": [],
+      "expected_failure_code": null,
+      "expected_stage": "NONE",
       "expected_raw_record_count": 2160,
       "expected_canonical_record_count": 2160,
       "expected_device_count": 1,
@@ -59,6 +112,8 @@
       "normalization_expected": "PRE_NORMALIZED_PUBLIC_EVIDENCE",
       "dq_status_expected": "PASS",
       "expected_finding_codes": [],
+      "expected_failure_code": null,
+      "expected_stage": "NONE",
       "expected_raw_record_count": 2160,
       "expected_canonical_record_count": 2160,
       "expected_device_count": 1,
@@ -72,6 +127,8 @@
       "normalization_expected": "PRE_NORMALIZED_PUBLIC_EVIDENCE",
       "dq_status_expected": "PASS",
       "expected_finding_codes": [],
+      "expected_failure_code": null,
+      "expected_stage": "NONE",
       "expected_raw_record_count": 2160,
       "expected_canonical_record_count": 2160,
       "expected_device_count": 1,
@@ -85,6 +142,8 @@
       "normalization_expected": "PRE_NORMALIZED_PUBLIC_EVIDENCE",
       "dq_status_expected": "PASS",
       "expected_finding_codes": [],
+      "expected_failure_code": null,
+      "expected_stage": "NONE",
       "expected_raw_record_count": 2160,
       "expected_canonical_record_count": 2160,
       "expected_device_count": 1,
@@ -98,6 +157,8 @@
       "normalization_expected": "PRE_NORMALIZED_PUBLIC_EVIDENCE",
       "dq_status_expected": "PASS",
       "expected_finding_codes": [],
+      "expected_failure_code": null,
+      "expected_stage": "NONE",
       "expected_raw_record_count": 2160,
       "expected_canonical_record_count": 2160,
       "expected_device_count": 1,
@@ -111,6 +172,8 @@
       "normalization_expected": "SUCCESS",
       "dq_status_expected": "PASS",
       "expected_finding_codes": [],
+      "expected_failure_code": null,
+      "expected_stage": "NONE",
       "expected_raw_record_count": 3000,
       "expected_canonical_record_count": 3000,
       "expected_device_count": 1,
@@ -126,6 +189,8 @@
       "expected_finding_codes": [
         "DUPLICATE_RECORD"
       ],
+      "expected_failure_code": null,
+      "expected_stage": "DATA_QUALITY",
       "expected_raw_record_count": 2001,
       "expected_canonical_record_count": 2001,
       "expected_device_count": 1,
@@ -141,6 +206,8 @@
       "expected_finding_codes": [
         "CONFLICTING_RECORD"
       ],
+      "expected_failure_code": null,
+      "expected_stage": "DATA_QUALITY",
       "expected_raw_record_count": 2001,
       "expected_canonical_record_count": 2001,
       "expected_device_count": 1,
@@ -156,6 +223,8 @@
       "expected_finding_codes": [
         "OUT_OF_ORDER_RECORD"
       ],
+      "expected_failure_code": null,
+      "expected_stage": "DATA_QUALITY",
       "expected_raw_record_count": 1500,
       "expected_canonical_record_count": 1500,
       "expected_device_count": 1,
@@ -171,6 +240,8 @@
       "expected_finding_codes": [
         "MISSING_INTERVAL"
       ],
+      "expected_failure_code": null,
+      "expected_stage": "DATA_QUALITY",
       "expected_raw_record_count": 1999,
       "expected_canonical_record_count": 1999,
       "expected_device_count": 1,
@@ -186,6 +257,8 @@
       "expected_finding_codes": [
         "MISSING_INTERVAL"
       ],
+      "expected_failure_code": null,
+      "expected_stage": "DATA_QUALITY",
       "expected_raw_record_count": 1998,
       "expected_canonical_record_count": 1998,
       "expected_device_count": 1,
@@ -199,6 +272,8 @@
       "normalization_expected": "SUCCESS",
       "dq_status_expected": "PASS",
       "expected_finding_codes": [],
+      "expected_failure_code": null,
+      "expected_stage": "NONE",
       "expected_raw_record_count": 2200,
       "expected_canonical_record_count": 2200,
       "expected_device_count": 1,
@@ -212,6 +287,8 @@
       "normalization_expected": "SUCCESS",
       "dq_status_expected": "PASS",
       "expected_finding_codes": [],
+      "expected_failure_code": null,
+      "expected_stage": "NONE",
       "expected_raw_record_count": 1800,
       "expected_canonical_record_count": 1800,
       "expected_device_count": 1,
@@ -227,6 +304,8 @@
       "expected_finding_codes": [
         "MISSING_TEMPERATURE"
       ],
+      "expected_failure_code": "MISSING_TEMPERATURE",
+      "expected_stage": "NORMALIZATION",
       "expected_raw_record_count": 1,
       "expected_canonical_record_count": 0,
       "expected_device_count": 1,
@@ -242,6 +321,8 @@
       "expected_finding_codes": [
         "INVALID_TEMPERATURE"
       ],
+      "expected_failure_code": "INVALID_TEMPERATURE",
+      "expected_stage": "NORMALIZATION",
       "expected_raw_record_count": 1,
       "expected_canonical_record_count": 0,
       "expected_device_count": 1,
@@ -257,6 +338,8 @@
       "expected_finding_codes": [
         "INVALID_TIMESTAMP"
       ],
+      "expected_failure_code": "INVALID_TIMESTAMP",
+      "expected_stage": "NORMALIZATION",
       "expected_raw_record_count": 1,
       "expected_canonical_record_count": 0,
       "expected_device_count": 1,
@@ -272,6 +355,8 @@
       "expected_finding_codes": [
         "TIMEZONE_CONTEXT_REQUIRED"
       ],
+      "expected_failure_code": "TIMEZONE_CONTEXT_REQUIRED",
+      "expected_stage": "NORMALIZATION",
       "expected_raw_record_count": 1,
       "expected_canonical_record_count": 0,
       "expected_device_count": 1,
@@ -287,6 +372,8 @@
       "expected_finding_codes": [
         "DEVICE_IDENTITY_MISMATCH"
       ],
+      "expected_failure_code": "DEVICE_IDENTITY_MISMATCH",
+      "expected_stage": "NORMALIZATION",
       "expected_raw_record_count": 1,
       "expected_canonical_record_count": 0,
       "expected_device_count": 1,
@@ -302,6 +389,8 @@
       "expected_finding_codes": [
         "RAW_PAYLOAD_CHECKSUM_MISMATCH"
       ],
+      "expected_failure_code": "RAW_PAYLOAD_CHECKSUM_MISMATCH",
+      "expected_stage": "NORMALIZATION",
       "expected_raw_record_count": 1,
       "expected_canonical_record_count": 0,
       "expected_device_count": 1,
@@ -315,6 +404,8 @@
       "normalization_expected": "SUCCESS",
       "dq_status_expected": "PASS",
       "expected_finding_codes": [],
+      "expected_failure_code": null,
+      "expected_stage": "NONE",
       "expected_raw_record_count": 3000,
       "expected_canonical_record_count": 3000,
       "expected_device_count": 2,
@@ -328,6 +419,8 @@
       "normalization_expected": "SUCCESS",
       "dq_status_expected": "PASS",
       "expected_finding_codes": [],
+      "expected_failure_code": null,
+      "expected_stage": "NONE",
       "expected_raw_record_count": 2400,
       "expected_canonical_record_count": 2400,
       "expected_device_count": 1,
@@ -343,6 +436,8 @@
       "expected_finding_codes": [
         "MISSING_INTERVAL"
       ],
+      "expected_failure_code": null,
+      "expected_stage": "DATA_QUALITY",
       "expected_raw_record_count": 1799,
       "expected_canonical_record_count": 1799,
       "expected_device_count": 1,
@@ -356,6 +451,8 @@
       "normalization_expected": "SUCCESS",
       "dq_status_expected": "PASS",
       "expected_finding_codes": [],
+      "expected_failure_code": null,
+      "expected_stage": "NONE",
       "expected_raw_record_count": 2000,
       "expected_canonical_record_count": 2000,
       "expected_device_count": 2,
@@ -369,6 +466,8 @@
       "normalization_expected": "NOT_APPLICABLE_SPATIAL_REFERENCE",
       "dq_status_expected": "NOT_ASSESSED",
       "expected_finding_codes": [],
+      "expected_failure_code": null,
+      "expected_stage": "NONE",
       "expected_raw_record_count": 0,
       "expected_canonical_record_count": 0,
       "expected_device_count": 0,
@@ -382,6 +481,8 @@
       "normalization_expected": "NOT_APPLICABLE_SPATIAL_REFERENCE",
       "dq_status_expected": "NOT_ASSESSED",
       "expected_finding_codes": [],
+      "expected_failure_code": null,
+      "expected_stage": "NONE",
       "expected_raw_record_count": 0,
       "expected_canonical_record_count": 0,
       "expected_device_count": 0,

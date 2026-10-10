@@ -1,21 +1,29 @@
 {
   "scenario_id": "VNHC-014",
-  "scenario_name": "multi gap — Vietnam healthcare demo",
+  "scenario_name": "TP.HCM → Bình Dương — nhiều khoảng dữ liệu bị thiếu",
   "scenario_family": "SIMULATED_RUNTIME",
-  "description": "Deterministic ColdProof software test scenario with explicitly synthetic Vietnam healthcare logistics context.",
+  "description": "Kịch bản kiểm thử ColdProof xác định, sử dụng hồ sơ MULTI_GAP; ngữ cảnh vận chuyển y tế Việt Nam là dữ liệu demo tổng hợp.",
   "scenario_origin": "SYNTHETIC_DEMO_CONTEXT",
   "product_reference_id": "PROD-DEMO-MEDICINE",
   "route_id": "ROUTE-HCM-BINH-DUONG",
   "business_context": {
-    "batch_id": "BATCH-VNHC-014",
-    "shipment_id": "SHIP-VNHC-014",
-    "trip_id": "TRIP-VNHC-014",
     "origin": "SYNTHETIC_DEMO_CONTEXT",
-    "sender_receiver_relation": {
+    "batch_context": {
+      "batch_id": "BATCH-VNHC-014",
+      "lot_number": "LOT-VNHC-014",
       "origin": "SYNTHETIC_DEMO_CONTEXT"
     },
-    "lot_number": {
-      "value": "LOT-VNHC-014",
+    "shipment_context": {
+      "shipment_id": "SHIP-VNHC-014",
+      "origin": "SYNTHETIC_DEMO_CONTEXT"
+    },
+    "trip_context": {
+      "trip_id": "TRIP-VNHC-014",
+      "origin": "SYNTHETIC_DEMO_CONTEXT"
+    },
+    "sender_receiver_relation": {
+      "sender_location_id": "LOC-HCM",
+      "receiver_location_id": "LOC-BINH-DUONG",
       "origin": "SYNTHETIC_DEMO_CONTEXT"
     },
     "association": {
@@ -25,6 +33,12 @@
     }
   },
   "data_profile": "MULTI_GAP",
+  "test_purposes": [
+    "DATA_QUALITY",
+    "QA_REVIEW"
+  ],
+  "test_severity": "MEDIUM",
+  "test_severity_semantics": "DEMO_TEST_ONLY",
   "labels": [
     "VIETNAM_HEALTHCARE_DEMO",
     "SIMULATED_RUNTIME",
@@ -54,7 +68,7 @@
     "anomaly_injection": {
       "profile": "MULTI_GAP",
       "origin": "SYNTHETIC_TEST_PROFILE",
-      "generator_version": "vietnam-healthcare-demo-v2"
+      "generator_version": "vietnam-healthcare-demo-v2.1"
     },
     "used_for_dq": true,
     "used_for_excursion_calculation": false
@@ -66,6 +80,8 @@
     "expected_finding_codes": [
       "MISSING_INTERVAL"
     ],
+    "expected_failure_code": null,
+    "expected_stage": "DATA_QUALITY",
     "expected_raw_record_count": 1998,
     "expected_canonical_record_count": 1998,
     "expected_device_count": 1,
@@ -76,7 +92,7 @@
     "simulator": "@coldproof/simulated-logger",
     "normalizer": "@coldproof/logger-normalizer",
     "dq_policy": "runtime-dq-v1",
-    "scenario_generator": "vietnam-healthcare-demo-v2"
+    "scenario_generator": "vietnam-healthcare-demo-v2.1"
   },
   "test_profiles": [
     "MULTI_GAP"

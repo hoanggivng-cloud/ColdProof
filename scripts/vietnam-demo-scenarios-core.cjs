@@ -5,8 +5,8 @@ const { readFileSync } = require('node:fs');
 // eslint-disable-next-line @typescript-eslint/no-require-imports
 const path = require('node:path');
 
-const CATALOG_VERSION = '2.0.0';
-const GENERATOR_VERSION = 'vietnam-healthcare-demo-v2';
+const CATALOG_VERSION = '2.1.0';
+const GENERATOR_VERSION = 'vietnam-healthcare-demo-v2.1';
 const ZENODO_DOI = '10.5281/zenodo.15130001';
 const MENDELEY_DOI = '10.17632/sz5dgkz7k8.1';
 const EXPECTED_FINDING_CODES = new Set([
@@ -57,61 +57,121 @@ function loadSourceTables(repositoryRoot) {
 }
 
 const products = [
-  ['PROD-DEMO-VACCINE', 'Demo vaccine reference', 'VACCINE'],
-  ['PROD-DEMO-BIOLOGIC', 'Demo biologic reference', 'BIOLOGIC'],
-  ['PROD-DEMO-DIAGNOSTIC', 'Demo diagnostic reagent reference', 'DIAGNOSTIC_REAGENT'],
-  ['PROD-DEMO-MEDICINE', 'Demo temperature-sensitive medicine reference', 'MEDICINE'],
-  ['PROD-DEMO-REFERENCE', 'Demo controlled-healthcare reference', 'REFERENCE_MATERIAL'],
-].map(([product_id, display_name, product_category]) => ({
-  product_id,
-  display_name,
-  product_category,
-  origin: 'SYNTHETIC_DEMO_CONTEXT',
-  verification_status: 'SYNTHETIC_DEMO_REFERENCE',
-  manufacturer: null,
+  {
+    product_id: 'PROD-DEMO-VACCINE',
+    public_reference_code: 'PROD-REF-VAXIGRIP-TETRA',
+    display_name: 'Vaxigrip Tetra',
+    manufacturer: null,
+    manufacturer_verification_status: 'NOT_RECORDED',
+    source_reference: {
+      publisher: 'Sanofi',
+      title: 'Professional informations — VAXIGRIP TETRA',
+      url_or_identifier: 'https://www.sanofi.com/en/south-africa/professional-informations',
+    },
+  },
+  {
+    product_id: 'PROD-DEMO-BIOLOGIC',
+    public_reference_code: 'PROD-REF-INFLUVAC-TETRA',
+    display_name: 'Influvac Tetra',
+    manufacturer: 'Abbott Biologicals B.V.',
+    manufacturer_verification_status: 'VERIFIED',
+    source_reference: {
+      publisher: 'Singapore National Drug Formulary',
+      title: 'INFLUVAC TETRA product information — SIN15591P',
+      url_or_identifier: 'https://www.ndf.gov.sg/about-drugs/product-information/sin15591p/',
+    },
+  },
+  {
+    product_id: 'PROD-DEMO-DIAGNOSTIC',
+    public_reference_code: 'PROD-REF-GARDASIL-9',
+    display_name: 'Gardasil 9',
+    manufacturer: 'Merck Sharp & Dohme LLC',
+    manufacturer_verification_status: 'VERIFIED',
+    source_reference: {
+      publisher: 'U.S. Food and Drug Administration',
+      title: 'GARDASIL 9',
+      url_or_identifier: 'https://www.fda.gov/vaccines-blood-biologics/vaccines/gardasil-9',
+    },
+  },
+  {
+    product_id: 'PROD-DEMO-MEDICINE',
+    public_reference_code: 'PROD-REF-PREVENAR-13',
+    display_name: 'Prevenar 13',
+    manufacturer: null,
+    manufacturer_verification_status: 'NOT_RECORDED',
+    source_reference: {
+      publisher: 'Pfizer',
+      title: 'Prevenar 13 product information',
+      url_or_identifier: 'https://labeling.pfizer.com/ShowLabeling.aspx?id=15296',
+    },
+  },
+  {
+    product_id: 'PROD-DEMO-REFERENCE',
+    public_reference_code: 'PROD-REF-PREVENAR-20',
+    display_name: 'Prevenar 20',
+    manufacturer: null,
+    manufacturer_verification_status: 'NOT_RECORDED',
+    source_reference: {
+      publisher: 'Pfizer',
+      title: 'Prevenar 20 product information',
+      url_or_identifier: 'https://labeling.pfizer.com/ShowLabeling.aspx?id=17862',
+    },
+  },
+].map((product) => ({
+  ...product,
+  product_category: 'VACCINE',
+  reference_origin: 'PUBLIC_PRODUCT_REFERENCE',
+  verification_status: 'VERIFIED',
+  identity_verification_method: 'OFFICIAL_PUBLIC_SOURCE',
+  identity_verified_on: '2026-10-10',
   storage_claim: null,
-  notes: 'Not a claim about a commercial product or manufacturer.',
+  regulatory_claim: null,
+  notes: 'Danh tính sản phẩm là tham chiếu công khai; mọi lô hàng trong catalog đều là ngữ cảnh demo tổng hợp.',
 }));
 
 const locations = [
-  ['LOC-HCM', 'Ho Chi Minh City pharmaceutical distribution hub — DEMO', 'Ho Chi Minh City'],
-  ['LOC-THU-DUC', 'Thu Duc demo hospital', 'Thu Duc'],
-  ['LOC-BINH-DUONG', 'Binh Duong provincial cold hub — DEMO', 'Binh Duong'],
-  ['LOC-DONG-NAI', 'Dong Nai demo vaccination center', 'Dong Nai'],
-  ['LOC-LONG-AN', 'Long An provincial hub — DEMO', 'Long An'],
-  ['LOC-TIEN-GIANG', 'Tien Giang demo clinic', 'Tien Giang'],
-  ['LOC-CAN-THO', 'Can Tho vaccination center 01 — DEMO', 'Can Tho'],
-  ['LOC-DA-NANG', 'Da Nang central cold hub — DEMO', 'Da Nang'],
-  ['LOC-HUE', 'Hue demo hospital', 'Hue'],
-  ['LOC-HANOI', 'Northern cold warehouse — DEMO', 'Hanoi'],
-  ['LOC-HAI-PHONG', 'Hai Phong demo hospital', 'Hai Phong'],
-  ['LOC-BAC-NINH', 'Bac Ninh demo clinic', 'Bac Ninh'],
-  ['LOC-NGHE-AN', 'Nghe An provincial hub — DEMO', 'Nghe An'],
-].map(([location_id, location_name, province_or_city]) => ({
+  ['LOC-HCM', 'Kho phân phối dược phẩm TP.HCM — DEMO', 'Thành phố Hồ Chí Minh', 'DISTRIBUTION_HUB'],
+  ['LOC-THU-DUC', 'Bệnh viện Demo Thủ Đức', 'Thủ Đức', 'HOSPITAL'],
+  ['LOC-BINH-DUONG', 'Kho lạnh tỉnh Bình Dương — DEMO', 'Bình Dương', 'COLD_STORAGE'],
+  ['LOC-DONG-NAI', 'Trung tâm tiêm chủng Đồng Nai 01 — DEMO', 'Đồng Nai', 'VACCINATION_CENTER'],
+  ['LOC-LONG-AN', 'Trung tâm phân phối tỉnh Long An — DEMO', 'Long An', 'PROVINCIAL_HUB'],
+  ['LOC-TIEN-GIANG', 'Phòng khám Demo Tiền Giang', 'Tiền Giang', 'CLINIC'],
+  ['LOC-CAN-THO', 'Trung tâm tiêm chủng Cần Thơ 01 — DEMO', 'Cần Thơ', 'VACCINATION_CENTER'],
+  ['LOC-DA-NANG', 'Kho lạnh miền Trung tại Đà Nẵng — DEMO', 'Đà Nẵng', 'COLD_STORAGE'],
+  ['LOC-HUE', 'Bệnh viện Demo Huế', 'Huế', 'HOSPITAL'],
+  ['LOC-HANOI', 'Kho lạnh miền Bắc tại Hà Nội — DEMO', 'Hà Nội', 'COLD_STORAGE'],
+  ['LOC-HAI-PHONG', 'Bệnh viện Demo Hải Phòng', 'Hải Phòng', 'HOSPITAL'],
+  ['LOC-BAC-NINH', 'Phòng khám Demo Bắc Ninh', 'Bắc Ninh', 'CLINIC'],
+  ['LOC-NGHE-AN', 'Trung tâm phân phối tỉnh Nghệ An — DEMO', 'Nghệ An', 'PROVINCIAL_HUB'],
+].map(([location_id, display_name, city, facility_type]) => ({
   location_id,
-  location_name,
-  province_or_city,
+  display_name,
+  city,
   country_code: 'VN',
+  facility_type,
   origin: 'SYNTHETIC_DEMO_CONTEXT',
 }));
 
 const routes = [
-  ['ROUTE-HCM-THU-DUC', 'SHORT_URBAN_DELIVERY', ['LOC-HCM', 'LOC-THU-DUC']],
-  ['ROUTE-HCM-BINH-DUONG', 'WAREHOUSE_TO_HOSPITAL', ['LOC-HCM', 'LOC-BINH-DUONG']],
-  ['ROUTE-HCM-DONG-NAI', 'WAREHOUSE_TO_VACCINATION_CENTER', ['LOC-HCM', 'LOC-DONG-NAI']],
-  ['ROUTE-HCM-LONG-AN-CAN-THO', 'MULTI_STOP_ROUTE', ['LOC-HCM', 'LOC-LONG-AN', 'LOC-CAN-THO']],
-  ['ROUTE-LONG-AN-TIEN-GIANG-CAN-THO', 'HANDOVER_ROUTE', ['LOC-LONG-AN', 'LOC-TIEN-GIANG', 'LOC-CAN-THO']],
-  ['ROUTE-DA-NANG-HUE', 'INTER_PROVINCIAL_DELIVERY', ['LOC-DA-NANG', 'LOC-HUE']],
-  ['ROUTE-HANOI-HAI-PHONG', 'CENTRAL_TO_PROVINCIAL_HUB', ['LOC-HANOI', 'LOC-HAI-PHONG']],
-  ['ROUTE-HANOI-BAC-NINH', 'PROVINCIAL_HUB_TO_CLINIC', ['LOC-HANOI', 'LOC-BAC-NINH']],
-  ['ROUTE-HANOI-NGHE-AN', 'LONG_INTER_PROVINCIAL_DELIVERY', ['LOC-HANOI', 'LOC-NGHE-AN']],
-  ['ROUTE-HCM-LONG-AN', 'PROVINCIAL_HUB_TRANSFER', ['LOC-HCM', 'LOC-LONG-AN']],
-  ['ROUTE-CAN-THO-TIEN-GIANG', 'CLINIC_REPLENISHMENT', ['LOC-CAN-THO', 'LOC-TIEN-GIANG']],
-  ['ROUTE-DA-NANG-HUE-HANOI', 'MULTI_HUB_REFERENCE_ROUTE', ['LOC-DA-NANG', 'LOC-HUE', 'LOC-HANOI']],
-].map(([route_id, route_type, stop_location_ids]) => ({
+  ['ROUTE-HCM-THU-DUC', 'SHORT_URBAN_DELIVERY', 'TP.HCM → Thủ Đức', ['LOC-HCM', 'LOC-THU-DUC']],
+  ['ROUTE-HCM-BINH-DUONG', 'WAREHOUSE_TO_HOSPITAL', 'TP.HCM → Bình Dương', ['LOC-HCM', 'LOC-BINH-DUONG']],
+  ['ROUTE-HCM-DONG-NAI', 'WAREHOUSE_TO_VACCINATION_CENTER', 'TP.HCM → Đồng Nai', ['LOC-HCM', 'LOC-DONG-NAI']],
+  ['ROUTE-HCM-LONG-AN-CAN-THO', 'MULTI_STOP_ROUTE', 'TP.HCM → Long An → Cần Thơ', ['LOC-HCM', 'LOC-LONG-AN', 'LOC-CAN-THO']],
+  ['ROUTE-LONG-AN-TIEN-GIANG-CAN-THO', 'HANDOVER_ROUTE', 'Long An → Tiền Giang → Cần Thơ', ['LOC-LONG-AN', 'LOC-TIEN-GIANG', 'LOC-CAN-THO']],
+  ['ROUTE-DA-NANG-HUE', 'INTER_PROVINCIAL_DELIVERY', 'Đà Nẵng → Huế', ['LOC-DA-NANG', 'LOC-HUE']],
+  ['ROUTE-HANOI-HAI-PHONG', 'CENTRAL_TO_PROVINCIAL_HUB', 'Hà Nội → Hải Phòng', ['LOC-HANOI', 'LOC-HAI-PHONG']],
+  ['ROUTE-HANOI-BAC-NINH', 'PROVINCIAL_HUB_TO_CLINIC', 'Hà Nội → Bắc Ninh', ['LOC-HANOI', 'LOC-BAC-NINH']],
+  ['ROUTE-HANOI-NGHE-AN', 'LONG_INTER_PROVINCIAL_DELIVERY', 'Hà Nội → Nghệ An', ['LOC-HANOI', 'LOC-NGHE-AN']],
+  ['ROUTE-HCM-LONG-AN', 'PROVINCIAL_HUB_TRANSFER', 'TP.HCM → Long An', ['LOC-HCM', 'LOC-LONG-AN']],
+  ['ROUTE-CAN-THO-TIEN-GIANG', 'CLINIC_REPLENISHMENT', 'Cần Thơ → Tiền Giang', ['LOC-CAN-THO', 'LOC-TIEN-GIANG']],
+  ['ROUTE-DA-NANG-HUE-HANOI', 'MULTI_HUB_REFERENCE_ROUTE', 'Đà Nẵng → Huế → Hà Nội', ['LOC-DA-NANG', 'LOC-HUE', 'LOC-HANOI']],
+].map(([route_id, route_type, display_label, stopLocationIds]) => ({
   route_id,
   route_type,
-  stop_location_ids,
+  display_label,
+  origin_location_id: stopLocationIds[0],
+  destination_location_id: stopLocationIds.at(-1),
+  waypoint_location_ids: stopLocationIds.slice(1, -1),
   origin: 'SYNTHETIC_DEMO_CONTEXT',
   operational_claim: 'NONE',
 }));
@@ -171,14 +231,76 @@ function manifestEntry(manifest, sourceId) {
   return entry;
 }
 
-function logisticsContext(id, index) {
+const scenarioNames = {
+  'VNHC-001': 'Kho lạnh công cộng SENSOR01 — tuyến TP.HCM → Thủ Đức',
+  'VNHC-002': 'Tuyến dài SENSOR02 — TP.HCM → Bình Dương',
+  'VNHC-003': 'SENSOR08 — mẫu nhiệt độ cao trên tuyến TP.HCM → Đồng Nai',
+  'VNHC-004': 'SENSOR06 — ranh giới bàn giao trên tuyến TP.HCM → Cần Thơ',
+  'VNHC-005': 'SENSOR09 — biến thiên nhiệt quan sát trên tuyến nhiều điểm',
+  'VNHC-006': 'SENSOR04 — tuyến Đà Nẵng → Huế liên tục',
+  'VNHC-007': 'SENSOR07 — tuyến dài Hà Nội → Hải Phòng',
+  'VNHC-008': 'SENSOR03 — biến thiên nhiệt trên tuyến Hà Nội → Bắc Ninh',
+  'VNHC-009': 'Tuyến giao vaccine nội thành — dữ liệu bình thường',
+  'VNHC-010': 'Giao vaccine TP.HCM → Bình Dương — bản ghi trùng lặp',
+  'VNHC-011': 'Chuyến giao vaccine Cần Thơ → Tiền Giang — xung đột cùng thời điểm',
+  'VNHC-012': 'Hà Nội → Hải Phòng — dữ liệu đến sai thứ tự',
+  'VNHC-013': 'TP.HCM → Long An → Cần Thơ — thiếu khoảng dữ liệu logger',
+  'VNHC-014': 'TP.HCM → Bình Dương — nhiều khoảng dữ liệu bị thiếu',
+  'VNHC-015': 'TP.HCM → Đồng Nai — mẫu nhiệt độ cao',
+  'VNHC-016': 'TP.HCM → Long An → Cần Thơ — mẫu nhiệt độ thấp',
+  'VNHC-017': 'Long An → Tiền Giang → Cần Thơ — thiếu nhiệt độ',
+  'VNHC-018': 'Đà Nẵng → Huế — giá trị nhiệt độ không hợp lệ',
+  'VNHC-019': 'Hà Nội → Hải Phòng — dấu thời gian không hợp lệ',
+  'VNHC-020': 'Logger B — thiếu ngữ cảnh múi giờ',
+  'VNHC-021': 'Hà Nội → Nghệ An — sai định danh thiết bị',
+  'VNHC-022': 'TP.HCM → Long An — checksum payload không khớp',
+  'VNHC-023': 'Hai logger dự phòng — ngữ cảnh minh họa C04',
+  'VNHC-024': 'Tuyến bàn giao Đà Nẵng → Huế → Hà Nội — ngữ cảnh C07',
+  'VNHC-025': 'Tuyến có bàn giao và khoảng thiếu — ngữ cảnh C08/C12',
+  'VNHC-026': 'LOGGER_A + LOGGER_B — ngữ cảnh minh họa C05/C10',
+  'VNHC-027': 'So sánh không gian hộp cách nhiệt — C01/C04/C07',
+  'VNHC-028': 'So sánh điều kiện thí nghiệm — C08/C10/C13',
+};
+
+const scenarioRouteOverrides = {
+  'VNHC-009': 'ROUTE-HCM-THU-DUC',
+  'VNHC-010': 'ROUTE-HCM-BINH-DUONG',
+  'VNHC-012': 'ROUTE-HANOI-HAI-PHONG',
+  'VNHC-013': 'ROUTE-HCM-LONG-AN-CAN-THO',
+};
+
+function testMetadata(family, profile) {
+  const blocking = new Set(['MISSING_TEMPERATURE', 'INVALID_TEMPERATURE', 'INVALID_TIMESTAMP', 'TIMEZONE_CONTEXT_REQUIRED', 'DEVICE_IDENTITY_MISMATCH', 'CHECKSUM_MISMATCH']);
+  const flagged = new Set(['DUPLICATE', 'CONFLICT', 'OUT_OF_ORDER', 'GAP', 'MULTI_GAP', 'HANDOVER_WITH_GAP']);
+  if (family === 'MENDELEY_CONTEXT_ONLY') return { test_purposes: ['REFERENCE_CONTEXT', 'FRONTEND_DEMO'], test_severity: 'INFO' };
+  if (family === 'COMBINED_REFERENCE_CONTEXT') return { test_purposes: ['REFERENCE_CONTEXT', 'QA_REVIEW', 'FRONTEND_DEMO'], test_severity: flagged.has(profile) ? 'MEDIUM' : 'INFO' };
+  if (family === 'ZENODO_OBSERVED_BACKED') return { test_purposes: ['PIPELINE', 'TRIP_ASSOCIATION', 'FRONTEND_DEMO'], test_severity: 'INFO' };
+  if (blocking.has(profile)) return { test_purposes: ['NORMALIZATION', 'QA_REVIEW'], test_severity: 'HIGH' };
+  if (flagged.has(profile)) return { test_purposes: ['DATA_QUALITY', 'QA_REVIEW'], test_severity: ['CONFLICT', 'OUT_OF_ORDER', 'MULTI_GAP'].includes(profile) ? 'MEDIUM' : 'LOW' };
+  return { test_purposes: ['PIPELINE', 'FRONTEND_DEMO'], test_severity: 'INFO' };
+}
+
+function logisticsContext(id, index, route) {
   return {
-    batch_id: `BATCH-${id}`,
-    shipment_id: `SHIP-${id}`,
-    trip_id: `TRIP-${id}`,
     origin: 'SYNTHETIC_DEMO_CONTEXT',
-    sender_receiver_relation: { origin: 'SYNTHETIC_DEMO_CONTEXT' },
-    lot_number: { value: `LOT-${id}`, origin: 'SYNTHETIC_DEMO_CONTEXT' },
+    batch_context: {
+      batch_id: `BATCH-${id}`,
+      lot_number: `LOT-${id}`,
+      origin: 'SYNTHETIC_DEMO_CONTEXT',
+    },
+    shipment_context: {
+      shipment_id: `SHIP-${id}`,
+      origin: 'SYNTHETIC_DEMO_CONTEXT',
+    },
+    trip_context: {
+      trip_id: `TRIP-${id}`,
+      origin: 'SYNTHETIC_DEMO_CONTEXT',
+    },
+    sender_receiver_relation: {
+      sender_location_id: route.origin_location_id,
+      receiver_location_id: route.destination_location_id,
+      origin: 'SYNTHETIC_DEMO_CONTEXT',
+    },
     association: {
       status: index % 7 === 0 ? 'UNASSIGNED' : 'ASSIGNED',
       method: index % 7 === 0 ? null : 'IMPORT_CONTEXT',
@@ -188,16 +310,19 @@ function logisticsContext(id, index) {
 }
 
 function baseScenario(id, family, index, profile) {
+  const route = routes.find((candidate) => candidate.route_id === scenarioRouteOverrides[id]) ?? routes[index % routes.length];
   return {
     scenario_id: id,
-    scenario_name: `${profile.replaceAll('_', ' ').toLowerCase()} — Vietnam healthcare demo`,
+    scenario_name: scenarioNames[id],
     scenario_family: family,
-    description: 'Deterministic ColdProof software test scenario with explicitly synthetic Vietnam healthcare logistics context.',
+    description: `Kịch bản kiểm thử ColdProof xác định, sử dụng hồ sơ ${profile}; ngữ cảnh vận chuyển y tế Việt Nam là dữ liệu demo tổng hợp.`,
     scenario_origin: 'SYNTHETIC_DEMO_CONTEXT',
     product_reference_id: products[index % products.length].product_id,
-    route_id: routes[index % routes.length].route_id,
-    business_context: logisticsContext(id, index),
+    route_id: route.route_id,
+    business_context: logisticsContext(id, index, route),
     data_profile: profile,
+    ...testMetadata(family, profile),
+    test_severity_semantics: 'DEMO_TEST_ONLY',
     labels: ['VIETNAM_HEALTHCARE_DEMO', family, profile],
   };
 }
@@ -260,6 +385,8 @@ function expected(profile, rawCount, canonicalCount, deviceCount = 1) {
     normalization_expected: normalization,
     dq_status_expected: dq,
     expected_finding_codes: codes,
+    expected_failure_code: normalization === 'FAILURE' ? codes[0] : null,
+    expected_stage: normalization === 'FAILURE' ? 'NORMALIZATION' : dq === 'FLAGGED' ? 'DATA_QUALITY' : 'NONE',
     expected_raw_record_count: rawCount,
     expected_canonical_record_count: canonicalCount,
     expected_device_count: deviceCount,
@@ -343,6 +470,8 @@ function buildDefinitions(manifest, crosswalk) {
         normalization_expected: 'PRE_NORMALIZED_PUBLIC_EVIDENCE',
         dq_status_expected: 'PASS',
         expected_finding_codes: [],
+        expected_failure_code: null,
+        expected_stage: 'NONE',
         expected_raw_record_count: 2160,
         expected_canonical_record_count: 2160,
         expected_device_count: 1,
@@ -411,6 +540,8 @@ function buildDefinitions(manifest, crosswalk) {
         normalization_expected: 'NOT_APPLICABLE_SPATIAL_REFERENCE',
         dq_status_expected: 'NOT_ASSESSED',
         expected_finding_codes: [],
+        expected_failure_code: null,
+        expected_stage: 'NONE',
         expected_raw_record_count: 0,
         expected_canonical_record_count: 0,
         expected_device_count: 0,
@@ -461,15 +592,36 @@ function buildDefinitions(manifest, crosswalk) {
       mendeley: 'REAL_OBSERVED_EXPERIMENTAL_SPATIAL_CONTEXT_SOURCE',
     },
     synthetic_context_rule: 'Public physical data does not make synthetic shipment relationships real.',
+    test_severity_semantics: 'DEMO_TEST_ONLY_NOT_REGULATORY_OR_PATIENT_RISK',
+  };
+  const runtimeScenarios = scenarios.filter((scenario) => scenario.measurement_source.kind === 'SIMULATED_LOGGER');
+  const rejectionsByScenario = runtimeScenarios
+    .filter((scenario) => scenario.expected.expected_raw_record_count > scenario.expected.expected_canonical_record_count)
+    .map((scenario) => ({
+      scenario_id: scenario.scenario_id,
+      rejected_count: scenario.expected.expected_raw_record_count - scenario.expected.expected_canonical_record_count,
+      failure_code: scenario.expected.expected_failure_code,
+      expected_stage: scenario.expected.expected_stage,
+    }));
+  const recordCountReconciliation = {
+    scope: 'SIMULATED_RUNTIME_AND_COMBINED_REFERENCE_CONTEXT',
+    raw_record_count: runtimeScenarios.reduce((total, scenario) => total + scenario.expected.expected_raw_record_count, 0),
+    canonical_record_count: runtimeScenarios.reduce((total, scenario) => total + scenario.expected.expected_canonical_record_count, 0),
+    normalization_rejected_count: rejectionsByScenario.reduce((total, rejection) => total + rejection.rejected_count, 0),
+    invariant: 'raw_record_count = canonical_record_count + normalization_rejected_count',
+    rejections_by_scenario: rejectionsByScenario,
   };
   const outcomes = {
-    manifest_version: '1.0.0',
+    manifest_version: '1.1.0',
     scenario_generator_version: GENERATOR_VERSION,
+    record_count_reconciliation: recordCountReconciliation,
     scenarios: scenarios.map((scenario) => ({
       scenario_id: scenario.scenario_id,
       normalization_expected: scenario.expected.normalization_expected,
       dq_status_expected: scenario.expected.dq_status_expected,
       expected_finding_codes: scenario.expected.expected_finding_codes,
+      expected_failure_code: scenario.expected.expected_failure_code,
+      expected_stage: scenario.expected.expected_stage,
       expected_raw_record_count: scenario.expected.expected_raw_record_count,
       expected_canonical_record_count: scenario.expected.expected_canonical_record_count,
       expected_device_count: scenario.expected.expected_device_count,
@@ -490,16 +642,39 @@ function validateDefinitions(definitions, manifest, crosswalk, candidates = []) 
   if (new Set(ids).size !== ids.length) errors.push('Scenario IDs must be unique');
   if (catalog.scenario_count !== scenarios.length || JSON.stringify(catalog.scenario_ids) !== JSON.stringify(ids)) errors.push('Catalog index does not match scenarios');
   const productIds = new Set(productCatalog.products.map((product) => product.product_id));
+  const publicReferenceCodes = new Set(productCatalog.products.map((product) => product.public_reference_code));
   const locationIds = new Set(locationCatalog.locations.map((location) => location.location_id));
   const routeIds = new Set(routeCatalog.routes.map((route) => route.route_id));
-  routeCatalog.routes.forEach((route) => route.stop_location_ids.forEach((id) => { if (!locationIds.has(id)) errors.push(`${route.route_id} references unknown location ${id}`); }));
+  const facilityTypes = new Set(['DISTRIBUTION_HUB', 'COLD_STORAGE', 'HOSPITAL', 'VACCINATION_CENTER', 'CLINIC', 'PROVINCIAL_HUB']);
+  const testPurposes = new Set(['PIPELINE', 'NORMALIZATION', 'DATA_QUALITY', 'TRIP_ASSOCIATION', 'QA_REVIEW', 'FRONTEND_DEMO', 'REFERENCE_CONTEXT']);
+  productCatalog.products.forEach((product) => {
+    if (product.reference_origin !== 'PUBLIC_PRODUCT_REFERENCE' || !['VERIFIED', 'REQUIRES_HUMAN_VERIFICATION'].includes(product.verification_status)) errors.push(`${product.product_id} has invalid public-reference provenance`);
+    if (product.verification_status === 'VERIFIED' && (product.identity_verification_method !== 'OFFICIAL_PUBLIC_SOURCE' || !/^\d{4}-\d{2}-\d{2}$/.test(product.identity_verified_on))) errors.push(`${product.product_id} has invalid verification metadata`);
+    if (product.verification_status === 'VERIFIED' && (!product.source_reference?.publisher || !product.source_reference?.title || !product.source_reference?.url_or_identifier)) errors.push(`${product.product_id} is VERIFIED without a source reference`);
+    if (product.manufacturer !== null && product.manufacturer_verification_status !== 'VERIFIED') errors.push(`${product.product_id} has an unsupported manufacturer`);
+    if (['batch_id', 'lot_number', 'shipment_id', 'sender', 'receiver', 'route'].some((field) => Object.hasOwn(product, field))) errors.push(`${product.product_id} mixes product identity with synthetic logistics`);
+  });
+  if (publicReferenceCodes.size !== productCatalog.products.length) errors.push('Public product reference codes must be unique');
+  locationCatalog.locations.forEach((location) => {
+    if (location.origin !== 'SYNTHETIC_DEMO_CONTEXT' || location.country_code !== 'VN' || !facilityTypes.has(location.facility_type) || !location.display_name || !location.city) errors.push(`${location.location_id} has invalid Vietnam demo facility metadata`);
+  });
+  routeCatalog.routes.forEach((route) => {
+    [route.origin_location_id, ...route.waypoint_location_ids, route.destination_location_id].forEach((id) => { if (!locationIds.has(id)) errors.push(`${route.route_id} references unknown location ${id}`); });
+    if (route.origin !== 'SYNTHETIC_DEMO_CONTEXT' || !route.display_label) errors.push(`${route.route_id} has invalid synthetic route metadata`);
+  });
   const familyMinimums = { ZENODO_OBSERVED_BACKED: 8, SIMULATED_RUNTIME: 10, COMBINED_REFERENCE_CONTEXT: 4, MENDELEY_CONTEXT_ONLY: 2 };
   Object.entries(familyMinimums).forEach(([family, minimum]) => { if (scenarios.filter((scenario) => scenario.scenario_family === family).length < minimum) errors.push(`${family} requires at least ${minimum} scenarios`); });
   scenarios.forEach((scenario) => {
     if (!productIds.has(scenario.product_reference_id)) errors.push(`${scenario.scenario_id} references unknown product`);
     if (!routeIds.has(scenario.route_id)) errors.push(`${scenario.scenario_id} references unknown route`);
     if (scenario.scenario_origin !== 'SYNTHETIC_DEMO_CONTEXT' || scenario.business_context.origin !== 'SYNTHETIC_DEMO_CONTEXT') errors.push(`${scenario.scenario_id} has invalid business origin`);
+    const route = routeCatalog.routes.find((candidate) => candidate.route_id === scenario.route_id);
+    const contexts = [scenario.business_context.batch_context, scenario.business_context.shipment_context, scenario.business_context.trip_context, scenario.business_context.sender_receiver_relation];
+    if (contexts.some((context) => context.origin !== 'SYNTHETIC_DEMO_CONTEXT')) errors.push(`${scenario.scenario_id} has non-synthetic logistics context`);
+    if (route && (scenario.business_context.sender_receiver_relation.sender_location_id !== route.origin_location_id || scenario.business_context.sender_receiver_relation.receiver_location_id !== route.destination_location_id)) errors.push(`${scenario.scenario_id} sender/receiver does not match its route`);
     if (scenario.business_context.association.resolver_origin !== 'SYNTHETIC_DEMO_CONTEXT') errors.push(`${scenario.scenario_id} has invalid trip resolver origin`);
+    if (!scenario.test_purposes?.length || scenario.test_purposes.some((purpose) => !testPurposes.has(purpose))) errors.push(`${scenario.scenario_id} has invalid test purpose metadata`);
+    if (!['INFO', 'LOW', 'MEDIUM', 'HIGH'].includes(scenario.test_severity) || scenario.test_severity_semantics !== 'DEMO_TEST_ONLY') errors.push(`${scenario.scenario_id} has invalid demo test severity`);
     scenario.expected.expected_finding_codes.forEach((code) => {
       if (scenario.expected.dq_status_expected !== 'NOT_ASSESSED' && !EXPECTED_FINDING_CODES.has(code)) errors.push(`${scenario.scenario_id} has invalid DQ code ${code}`);
     });
@@ -527,17 +702,28 @@ function validateDefinitions(definitions, manifest, crosswalk, candidates = []) 
       });
     }
     if (scenario.expected.dq_status_expected === 'PASS' && scenario.expected.normalization_expected === 'FAILURE') errors.push(`${scenario.scenario_id} cannot be DQ PASS after normalization failure`);
+    if (scenario.expected.normalization_expected === 'FAILURE' && (scenario.expected.expected_stage !== 'NORMALIZATION' || scenario.expected.dq_status_expected !== 'NOT_ASSESSED' || !scenario.expected.expected_failure_code || scenario.expected.expected_canonical_record_count !== 0)) errors.push(`${scenario.scenario_id} has inconsistent normalization failure semantics`);
+    if (scenario.expected.dq_status_expected === 'FLAGGED' && scenario.expected.expected_stage !== 'DATA_QUALITY') errors.push(`${scenario.scenario_id} has inconsistent DQ failure stage`);
   });
   if (outcomes.scenarios.length !== scenarios.length) errors.push('Expected outcome manifest count mismatch');
+  const reconciliation = outcomes.record_count_reconciliation;
+  if (reconciliation.raw_record_count !== 25704 || reconciliation.canonical_record_count !== 25698 || reconciliation.normalization_rejected_count !== 6 || reconciliation.raw_record_count !== reconciliation.canonical_record_count + reconciliation.normalization_rejected_count || reconciliation.rejections_by_scenario.length !== 6) errors.push('Runtime raw/canonical count reconciliation is invalid');
   return { success: errors.length === 0, errors };
 }
 
 function summaryMarkdown(definitions) {
-  const header = `# Vietnam Healthcare Demo Scenario Catalog v${CATALOG_VERSION}\n\nThis catalog combines real public physical observations with explicitly synthetic Vietnam healthcare/logistics context for software testing. Public physical data does not make synthetic shipment relationships real. Mendeley and Zenodo are never treated as one physical timeline.\n\n| ID | Name | Family | Product | Route | Source | Profile | Expected result | Mendeley context |\n|---|---|---|---|---|---|---|---|---|`;
+  const productById = new Map(definitions.products.products.map((product) => [product.product_id, product]));
+  const routeById = new Map(definitions.routes.routes.map((route) => [route.route_id, route]));
+  const header = `# Danh mục kịch bản demo y tế Việt Nam v${CATALOG_VERSION}\n\nDanh mục kết hợp quan sát vật lý công khai với ngữ cảnh vận chuyển y tế Việt Nam được tạo tổng hợp để kiểm thử phần mềm. Dữ liệu vật lý công khai không biến quan hệ lô hàng tổng hợp thành sự kiện có thật. Mendeley và Zenodo không được xem là cùng một dòng thời gian vật lý.\n\n` +
+    `DQ \`PASS\` chỉ có nghĩa là không phát hiện bất thường chất lượng dữ liệu theo cấu hình hiện tại; không phải kết luận nhiệt độ đạt chuẩn hay tuân thủ.\n\n` +
+    '| ID | Tên kịch bản | Sản phẩm tham chiếu | Tuyến hiển thị | Nguồn / logger | Hồ sơ | Chuẩn hóa | DQ | Trạng thái chuyến | Ngữ cảnh Mendeley | Mục đích kiểm thử |\n' +
+    '|---|---|---|---|---|---|---|---|---|---|---|';
   const rows = definitions.scenarios.map((scenario) => {
     const source = scenario.measurement_source.kind === 'ZENODO_WINDOW' ? `ZENODO/${scenario.measurement_source.sensor_id}` : scenario.measurement_source.kind === 'SIMULATED_LOGGER' ? scenario.measurement_source.logger_configs.map((config) => config.format).join('+') : 'MENDELEY';
     const conditions = (scenario.measurement_source.kind === 'MENDELEY_CONTEXT_ONLY' ? scenario.measurement_source.conditions : scenario.supplemental_context).map((reference) => reference.condition_id).join(', ') || '—';
-    return `| ${scenario.scenario_id} | ${scenario.scenario_name} | ${scenario.scenario_family} | ${scenario.product_reference_id} | ${scenario.route_id} | ${source} | ${scenario.data_profile} | ${scenario.expected.normalization_expected} / ${scenario.expected.dq_status_expected}${scenario.expected.expected_finding_codes.length ? ` (${scenario.expected.expected_finding_codes.join(', ')})` : ''} | ${conditions} |`;
+    const product = productById.get(scenario.product_reference_id);
+    const route = routeById.get(scenario.route_id);
+    return `| ${scenario.scenario_id} | ${scenario.scenario_name} | ${product.display_name} | ${route.display_label} | ${source} | ${scenario.data_profile} | ${scenario.expected.normalization_expected}${scenario.expected.expected_failure_code ? ` (${scenario.expected.expected_failure_code})` : ''} | ${scenario.expected.dq_status_expected}${scenario.expected.expected_finding_codes.length && scenario.expected.expected_stage === 'DATA_QUALITY' ? ` (${scenario.expected.expected_finding_codes.join(', ')})` : ''} | ${scenario.business_context.association.status} / SYNTHETIC_DEMO_CONTEXT | ${conditions} | ${scenario.test_purposes.join(', ')} |`;
   });
   return `${header}\n${rows.join('\n')}\n`;
 }

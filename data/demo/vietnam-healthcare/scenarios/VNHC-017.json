@@ -1,21 +1,29 @@
 {
   "scenario_id": "VNHC-017",
-  "scenario_name": "missing temperature — Vietnam healthcare demo",
+  "scenario_name": "Long An → Tiền Giang → Cần Thơ — thiếu nhiệt độ",
   "scenario_family": "SIMULATED_RUNTIME",
-  "description": "Deterministic ColdProof software test scenario with explicitly synthetic Vietnam healthcare logistics context.",
+  "description": "Kịch bản kiểm thử ColdProof xác định, sử dụng hồ sơ MISSING_TEMPERATURE; ngữ cảnh vận chuyển y tế Việt Nam là dữ liệu demo tổng hợp.",
   "scenario_origin": "SYNTHETIC_DEMO_CONTEXT",
   "product_reference_id": "PROD-DEMO-BIOLOGIC",
   "route_id": "ROUTE-LONG-AN-TIEN-GIANG-CAN-THO",
   "business_context": {
-    "batch_id": "BATCH-VNHC-017",
-    "shipment_id": "SHIP-VNHC-017",
-    "trip_id": "TRIP-VNHC-017",
     "origin": "SYNTHETIC_DEMO_CONTEXT",
-    "sender_receiver_relation": {
+    "batch_context": {
+      "batch_id": "BATCH-VNHC-017",
+      "lot_number": "LOT-VNHC-017",
       "origin": "SYNTHETIC_DEMO_CONTEXT"
     },
-    "lot_number": {
-      "value": "LOT-VNHC-017",
+    "shipment_context": {
+      "shipment_id": "SHIP-VNHC-017",
+      "origin": "SYNTHETIC_DEMO_CONTEXT"
+    },
+    "trip_context": {
+      "trip_id": "TRIP-VNHC-017",
+      "origin": "SYNTHETIC_DEMO_CONTEXT"
+    },
+    "sender_receiver_relation": {
+      "sender_location_id": "LOC-LONG-AN",
+      "receiver_location_id": "LOC-CAN-THO",
       "origin": "SYNTHETIC_DEMO_CONTEXT"
     },
     "association": {
@@ -25,6 +33,12 @@
     }
   },
   "data_profile": "MISSING_TEMPERATURE",
+  "test_purposes": [
+    "NORMALIZATION",
+    "QA_REVIEW"
+  ],
+  "test_severity": "HIGH",
+  "test_severity_semantics": "DEMO_TEST_ONLY",
   "labels": [
     "VIETNAM_HEALTHCARE_DEMO",
     "SIMULATED_RUNTIME",
@@ -49,7 +63,7 @@
     "anomaly_injection": {
       "profile": "MISSING_TEMPERATURE",
       "origin": "SYNTHETIC_TEST_PROFILE",
-      "generator_version": "vietnam-healthcare-demo-v2"
+      "generator_version": "vietnam-healthcare-demo-v2.1"
     },
     "used_for_dq": true,
     "used_for_excursion_calculation": false
@@ -61,6 +75,8 @@
     "expected_finding_codes": [
       "MISSING_TEMPERATURE"
     ],
+    "expected_failure_code": "MISSING_TEMPERATURE",
+    "expected_stage": "NORMALIZATION",
     "expected_raw_record_count": 1,
     "expected_canonical_record_count": 0,
     "expected_device_count": 1,
@@ -71,7 +87,7 @@
     "simulator": "@coldproof/simulated-logger",
     "normalizer": "@coldproof/logger-normalizer",
     "dq_policy": "runtime-dq-v1",
-    "scenario_generator": "vietnam-healthcare-demo-v2"
+    "scenario_generator": "vietnam-healthcare-demo-v2.1"
   },
   "test_profiles": [
     "MISSING_TEMPERATURE"

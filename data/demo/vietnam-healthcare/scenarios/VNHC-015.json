@@ -1,21 +1,29 @@
 {
   "scenario_id": "VNHC-015",
-  "scenario_name": "high temp pattern — Vietnam healthcare demo",
+  "scenario_name": "TP.HCM → Đồng Nai — mẫu nhiệt độ cao",
   "scenario_family": "SIMULATED_RUNTIME",
-  "description": "Deterministic ColdProof software test scenario with explicitly synthetic Vietnam healthcare logistics context.",
+  "description": "Kịch bản kiểm thử ColdProof xác định, sử dụng hồ sơ HIGH_TEMP_PATTERN; ngữ cảnh vận chuyển y tế Việt Nam là dữ liệu demo tổng hợp.",
   "scenario_origin": "SYNTHETIC_DEMO_CONTEXT",
   "product_reference_id": "PROD-DEMO-REFERENCE",
   "route_id": "ROUTE-HCM-DONG-NAI",
   "business_context": {
-    "batch_id": "BATCH-VNHC-015",
-    "shipment_id": "SHIP-VNHC-015",
-    "trip_id": "TRIP-VNHC-015",
     "origin": "SYNTHETIC_DEMO_CONTEXT",
-    "sender_receiver_relation": {
+    "batch_context": {
+      "batch_id": "BATCH-VNHC-015",
+      "lot_number": "LOT-VNHC-015",
       "origin": "SYNTHETIC_DEMO_CONTEXT"
     },
-    "lot_number": {
-      "value": "LOT-VNHC-015",
+    "shipment_context": {
+      "shipment_id": "SHIP-VNHC-015",
+      "origin": "SYNTHETIC_DEMO_CONTEXT"
+    },
+    "trip_context": {
+      "trip_id": "TRIP-VNHC-015",
+      "origin": "SYNTHETIC_DEMO_CONTEXT"
+    },
+    "sender_receiver_relation": {
+      "sender_location_id": "LOC-HCM",
+      "receiver_location_id": "LOC-DONG-NAI",
       "origin": "SYNTHETIC_DEMO_CONTEXT"
     },
     "association": {
@@ -25,6 +33,12 @@
     }
   },
   "data_profile": "HIGH_TEMP_PATTERN",
+  "test_purposes": [
+    "PIPELINE",
+    "FRONTEND_DEMO"
+  ],
+  "test_severity": "INFO",
+  "test_severity_semantics": "DEMO_TEST_ONLY",
   "labels": [
     "VIETNAM_HEALTHCARE_DEMO",
     "SIMULATED_RUNTIME",
@@ -49,7 +63,7 @@
     "anomaly_injection": {
       "profile": "HIGH_TEMP_PATTERN",
       "origin": "SYNTHETIC_TEST_PROFILE",
-      "generator_version": "vietnam-healthcare-demo-v2"
+      "generator_version": "vietnam-healthcare-demo-v2.1"
     },
     "used_for_dq": true,
     "used_for_excursion_calculation": false
@@ -59,6 +73,8 @@
     "normalization_expected": "SUCCESS",
     "dq_status_expected": "PASS",
     "expected_finding_codes": [],
+    "expected_failure_code": null,
+    "expected_stage": "NONE",
     "expected_raw_record_count": 2200,
     "expected_canonical_record_count": 2200,
     "expected_device_count": 1,
@@ -69,7 +85,7 @@
     "simulator": "@coldproof/simulated-logger",
     "normalizer": "@coldproof/logger-normalizer",
     "dq_policy": "runtime-dq-v1",
-    "scenario_generator": "vietnam-healthcare-demo-v2"
+    "scenario_generator": "vietnam-healthcare-demo-v2.1"
   },
   "test_profiles": [
     "HIGH_TEMP_PATTERN"

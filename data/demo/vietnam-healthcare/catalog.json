@@ -1,7 +1,7 @@
 {
   "catalog_id": "VIETNAM_HEALTHCARE_DEMO_SCENARIOS",
-  "catalog_version": "2.0.0",
-  "generator_version": "vietnam-healthcare-demo-v2",
+  "catalog_version": "2.1.0",
+  "generator_version": "vietnam-healthcare-demo-v2.1",
   "status": "DEMO_TEST_DATA",
   "scenario_count": 28,
   "scenario_ids": [
@@ -44,5 +44,6 @@
     "zenodo": "REAL_OBSERVED_TIME_SERIES_SOURCE",
     "mendeley": "REAL_OBSERVED_EXPERIMENTAL_SPATIAL_CONTEXT_SOURCE"
   },
-  "synthetic_context_rule": "Public physical data does not make synthetic shipment relationships real."
+  "synthetic_context_rule": "Public physical data does not make synthetic shipment relationships real.",
+  "test_severity_semantics": "DEMO_TEST_ONLY_NOT_REGULATORY_OR_PATIENT_RISK"
 }

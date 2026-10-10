@@ -1,43 +1,44 @@
 {
-  "catalog_version": "2.0.0",
+  "catalog_version": "2.1.0",
   "routes": [
     {
       "route_id": "ROUTE-HCM-THU-DUC",
       "route_type": "SHORT_URBAN_DELIVERY",
-      "stop_location_ids": [
-        "LOC-HCM",
-        "LOC-THU-DUC"
-      ],
+      "display_label": "TP.HCM → Thủ Đức",
+      "origin_location_id": "LOC-HCM",
+      "destination_location_id": "LOC-THU-DUC",
+      "waypoint_location_ids": [],
       "origin": "SYNTHETIC_DEMO_CONTEXT",
       "operational_claim": "NONE"
     },
     {
       "route_id": "ROUTE-HCM-BINH-DUONG",
       "route_type": "WAREHOUSE_TO_HOSPITAL",
-      "stop_location_ids": [
-        "LOC-HCM",
-        "LOC-BINH-DUONG"
-      ],
+      "display_label": "TP.HCM → Bình Dương",
+      "origin_location_id": "LOC-HCM",
+      "destination_location_id": "LOC-BINH-DUONG",
+      "waypoint_location_ids": [],
       "origin": "SYNTHETIC_DEMO_CONTEXT",
       "operational_claim": "NONE"
     },
     {
       "route_id": "ROUTE-HCM-DONG-NAI",
       "route_type": "WAREHOUSE_TO_VACCINATION_CENTER",
-      "stop_location_ids": [
-        "LOC-HCM",
-        "LOC-DONG-NAI"
-      ],
+      "display_label": "TP.HCM → Đồng Nai",
+      "origin_location_id": "LOC-HCM",
+      "destination_location_id": "LOC-DONG-NAI",
+      "waypoint_location_ids": [],
       "origin": "SYNTHETIC_DEMO_CONTEXT",
       "operational_claim": "NONE"
     },
     {
       "route_id": "ROUTE-HCM-LONG-AN-CAN-THO",
       "route_type": "MULTI_STOP_ROUTE",
-      "stop_location_ids": [
-        "LOC-HCM",
-        "LOC-LONG-AN",
-        "LOC-CAN-THO"
+      "display_label": "TP.HCM → Long An → Cần Thơ",
+      "origin_location_id": "LOC-HCM",
+      "destination_location_id": "LOC-CAN-THO",
+      "waypoint_location_ids": [
+        "LOC-LONG-AN"
       ],
       "origin": "SYNTHETIC_DEMO_CONTEXT",
       "operational_claim": "NONE"
@@ -45,10 +46,11 @@
     {
       "route_id": "ROUTE-LONG-AN-TIEN-GIANG-CAN-THO",
       "route_type": "HANDOVER_ROUTE",
-      "stop_location_ids": [
-        "LOC-LONG-AN",
-        "LOC-TIEN-GIANG",
-        "LOC-CAN-THO"
+      "display_label": "Long An → Tiền Giang → Cần Thơ",
+      "origin_location_id": "LOC-LONG-AN",
+      "destination_location_id": "LOC-CAN-THO",
+      "waypoint_location_ids": [
+        "LOC-TIEN-GIANG"
       ],
       "origin": "SYNTHETIC_DEMO_CONTEXT",
       "operational_claim": "NONE"
@@ -56,70 +58,71 @@
     {
       "route_id": "ROUTE-DA-NANG-HUE",
       "route_type": "INTER_PROVINCIAL_DELIVERY",
-      "stop_location_ids": [
-        "LOC-DA-NANG",
-        "LOC-HUE"
-      ],
+      "display_label": "Đà Nẵng → Huế",
+      "origin_location_id": "LOC-DA-NANG",
+      "destination_location_id": "LOC-HUE",
+      "waypoint_location_ids": [],
       "origin": "SYNTHETIC_DEMO_CONTEXT",
       "operational_claim": "NONE"
     },
     {
       "route_id": "ROUTE-HANOI-HAI-PHONG",
       "route_type": "CENTRAL_TO_PROVINCIAL_HUB",
-      "stop_location_ids": [
-        "LOC-HANOI",
-        "LOC-HAI-PHONG"
-      ],
+      "display_label": "Hà Nội → Hải Phòng",
+      "origin_location_id": "LOC-HANOI",
+      "destination_location_id": "LOC-HAI-PHONG",
+      "waypoint_location_ids": [],
       "origin": "SYNTHETIC_DEMO_CONTEXT",
       "operational_claim": "NONE"
     },
     {
       "route_id": "ROUTE-HANOI-BAC-NINH",
       "route_type": "PROVINCIAL_HUB_TO_CLINIC",
-      "stop_location_ids": [
-        "LOC-HANOI",
-        "LOC-BAC-NINH"
-      ],
+      "display_label": "Hà Nội → Bắc Ninh",
+      "origin_location_id": "LOC-HANOI",
+      "destination_location_id": "LOC-BAC-NINH",
+      "waypoint_location_ids": [],
       "origin": "SYNTHETIC_DEMO_CONTEXT",
       "operational_claim": "NONE"
     },
     {
       "route_id": "ROUTE-HANOI-NGHE-AN",
       "route_type": "LONG_INTER_PROVINCIAL_DELIVERY",
-      "stop_location_ids": [
-        "LOC-HANOI",
-        "LOC-NGHE-AN"
-      ],
+      "display_label": "Hà Nội → Nghệ An",
+      "origin_location_id": "LOC-HANOI",
+      "destination_location_id": "LOC-NGHE-AN",
+      "waypoint_location_ids": [],
       "origin": "SYNTHETIC_DEMO_CONTEXT",
       "operational_claim": "NONE"
     },
     {
       "route_id": "ROUTE-HCM-LONG-AN",
       "route_type": "PROVINCIAL_HUB_TRANSFER",
-      "stop_location_ids": [
-        "LOC-HCM",
-        "LOC-LONG-AN"
-      ],
+      "display_label": "TP.HCM → Long An",
+      "origin_location_id": "LOC-HCM",
+      "destination_location_id": "LOC-LONG-AN",
+      "waypoint_location_ids": [],
       "origin": "SYNTHETIC_DEMO_CONTEXT",
       "operational_claim": "NONE"
     },
     {
       "route_id": "ROUTE-CAN-THO-TIEN-GIANG",
       "route_type": "CLINIC_REPLENISHMENT",
-      "stop_location_ids": [
-        "LOC-CAN-THO",
-        "LOC-TIEN-GIANG"
-      ],
+      "display_label": "Cần Thơ → Tiền Giang",
+      "origin_location_id": "LOC-CAN-THO",
+      "destination_location_id": "LOC-TIEN-GIANG",
+      "waypoint_location_ids": [],
       "origin": "SYNTHETIC_DEMO_CONTEXT",
       "operational_claim": "NONE"
     },
     {
       "route_id": "ROUTE-DA-NANG-HUE-HANOI",
       "route_type": "MULTI_HUB_REFERENCE_ROUTE",
-      "stop_location_ids": [
-        "LOC-DA-NANG",
-        "LOC-HUE",
-        "LOC-HANOI"
+      "display_label": "Đà Nẵng → Huế → Hà Nội",
+      "origin_location_id": "LOC-DA-NANG",
+      "destination_location_id": "LOC-HANOI",
+      "waypoint_location_ids": [
+        "LOC-HUE"
       ],
       "origin": "SYNTHETIC_DEMO_CONTEXT",
       "operational_claim": "NONE"

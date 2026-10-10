@@ -1,95 +1,108 @@
 {
-  "catalog_version": "2.0.0",
+  "catalog_version": "2.1.0",
   "locations": [
     {
       "location_id": "LOC-HCM",
-      "location_name": "Ho Chi Minh City pharmaceutical distribution hub — DEMO",
-      "province_or_city": "Ho Chi Minh City",
+      "display_name": "Kho phân phối dược phẩm TP.HCM — DEMO",
+      "city": "Thành phố Hồ Chí Minh",
       "country_code": "VN",
+      "facility_type": "DISTRIBUTION_HUB",
       "origin": "SYNTHETIC_DEMO_CONTEXT"
     },
     {
       "location_id": "LOC-THU-DUC",
-      "location_name": "Thu Duc demo hospital",
-      "province_or_city": "Thu Duc",
+      "display_name": "Bệnh viện Demo Thủ Đức",
+      "city": "Thủ Đức",
       "country_code": "VN",
+      "facility_type": "HOSPITAL",
       "origin": "SYNTHETIC_DEMO_CONTEXT"
     },
     {
       "location_id": "LOC-BINH-DUONG",
-      "location_name": "Binh Duong provincial cold hub — DEMO",
-      "province_or_city": "Binh Duong",
+      "display_name": "Kho lạnh tỉnh Bình Dương — DEMO",
+      "city": "Bình Dương",
       "country_code": "VN",
+      "facility_type": "COLD_STORAGE",
       "origin": "SYNTHETIC_DEMO_CONTEXT"
     },
     {
       "location_id": "LOC-DONG-NAI",
-      "location_name": "Dong Nai demo vaccination center",
-      "province_or_city": "Dong Nai",
+      "display_name": "Trung tâm tiêm chủng Đồng Nai 01 — DEMO",
+      "city": "Đồng Nai",
       "country_code": "VN",
+      "facility_type": "VACCINATION_CENTER",
       "origin": "SYNTHETIC_DEMO_CONTEXT"
     },
     {
       "location_id": "LOC-LONG-AN",
-      "location_name": "Long An provincial hub — DEMO",
-      "province_or_city": "Long An",
+      "display_name": "Trung tâm phân phối tỉnh Long An — DEMO",
+      "city": "Long An",
       "country_code": "VN",
+      "facility_type": "PROVINCIAL_HUB",
       "origin": "SYNTHETIC_DEMO_CONTEXT"
     },
     {
       "location_id": "LOC-TIEN-GIANG",
-      "location_name": "Tien Giang demo clinic",
-      "province_or_city": "Tien Giang",
+      "display_name": "Phòng khám Demo Tiền Giang",
+      "city": "Tiền Giang",
       "country_code": "VN",
+      "facility_type": "CLINIC",
       "origin": "SYNTHETIC_DEMO_CONTEXT"
     },
     {
       "location_id": "LOC-CAN-THO",
-      "location_name": "Can Tho vaccination center 01 — DEMO",
-      "province_or_city": "Can Tho",
+      "display_name": "Trung tâm tiêm chủng Cần Thơ 01 — DEMO",
+      "city": "Cần Thơ",
       "country_code": "VN",
+      "facility_type": "VACCINATION_CENTER",
       "origin": "SYNTHETIC_DEMO_CONTEXT"
     },
     {
       "location_id": "LOC-DA-NANG",
-      "location_name": "Da Nang central cold hub — DEMO",
-      "province_or_city": "Da Nang",
+      "display_name": "Kho lạnh miền Trung tại Đà Nẵng — DEMO",
+      "city": "Đà Nẵng",
       "country_code": "VN",
+      "facility_type": "COLD_STORAGE",
       "origin": "SYNTHETIC_DEMO_CONTEXT"
     },
     {
       "location_id": "LOC-HUE",
-      "location_name": "Hue demo hospital",
-      "province_or_city": "Hue",
+      "display_name": "Bệnh viện Demo Huế",
+      "city": "Huế",
       "country_code": "VN",
+      "facility_type": "HOSPITAL",
       "origin": "SYNTHETIC_DEMO_CONTEXT"
     },
     {
       "location_id": "LOC-HANOI",
-      "location_name": "Northern cold warehouse — DEMO",
-      "province_or_city": "Hanoi",
+      "display_name": "Kho lạnh miền Bắc tại Hà Nội — DEMO",
+      "city": "Hà Nội",
       "country_code": "VN",
+      "facility_type": "COLD_STORAGE",
       "origin": "SYNTHETIC_DEMO_CONTEXT"
     },
     {
       "location_id": "LOC-HAI-PHONG",
-      "location_name": "Hai Phong demo hospital",
-      "province_or_city": "Hai Phong",
+      "display_name": "Bệnh viện Demo Hải Phòng",
+      "city": "Hải Phòng",
       "country_code": "VN",
+      "facility_type": "HOSPITAL",
       "origin": "SYNTHETIC_DEMO_CONTEXT"
     },
     {
       "location_id": "LOC-BAC-NINH",
-      "location_name": "Bac Ninh demo clinic",
-      "province_or_city": "Bac Ninh",
+      "display_name": "Phòng khám Demo Bắc Ninh",
+      "city": "Bắc Ninh",
       "country_code": "VN",
+      "facility_type": "CLINIC",
       "origin": "SYNTHETIC_DEMO_CONTEXT"
     },
     {
       "location_id": "LOC-NGHE-AN",
-      "location_name": "Nghe An provincial hub — DEMO",
-      "province_or_city": "Nghe An",
+      "display_name": "Trung tâm phân phối tỉnh Nghệ An — DEMO",
+      "city": "Nghệ An",
       "country_code": "VN",
+      "facility_type": "PROVINCIAL_HUB",
       "origin": "SYNTHETIC_DEMO_CONTEXT"
     }
   ]
