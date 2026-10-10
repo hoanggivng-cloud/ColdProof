@@ -1,0 +1,109 @@
+{
+  "catalog_version": "2.1.0",
+  "locations": [
+    {
+      "location_id": "LOC-HCM",
+      "display_name": "Kho phân phối dược phẩm TP.HCM — DEMO",
+      "city": "Thành phố Hồ Chí Minh",
+      "country_code": "VN",
+      "facility_type": "DISTRIBUTION_HUB",
+      "origin": "SYNTHETIC_DEMO_CONTEXT"
+    },
+    {
+      "location_id": "LOC-THU-DUC",
+      "display_name": "Bệnh viện Demo Thủ Đức",
+      "city": "Thủ Đức",
+      "country_code": "VN",
+      "facility_type": "HOSPITAL",
+      "origin": "SYNTHETIC_DEMO_CONTEXT"
+    },
+    {
+      "location_id": "LOC-BINH-DUONG",
+      "display_name": "Kho lạnh tỉnh Bình Dương — DEMO",
+      "city": "Bình Dương",
+      "country_code": "VN",
+      "facility_type": "COLD_STORAGE",
+      "origin": "SYNTHETIC_DEMO_CONTEXT"
+    },
+    {
+      "location_id": "LOC-DONG-NAI",
+      "display_name": "Trung tâm tiêm chủng Đồng Nai 01 — DEMO",
+      "city": "Đồng Nai",
+      "country_code": "VN",
+      "facility_type": "VACCINATION_CENTER",
+      "origin": "SYNTHETIC_DEMO_CONTEXT"
+    },
+    {
+      "location_id": "LOC-LONG-AN",
+      "display_name": "Trung tâm phân phối tỉnh Long An — DEMO",
+      "city": "Long An",
+      "country_code": "VN",
+      "facility_type": "PROVINCIAL_HUB",
+      "origin": "SYNTHETIC_DEMO_CONTEXT"
+    },
+    {
+      "location_id": "LOC-TIEN-GIANG",
+      "display_name": "Phòng khám Demo Tiền Giang",
+      "city": "Tiền Giang",
+      "country_code": "VN",
+      "facility_type": "CLINIC",
+      "origin": "SYNTHETIC_DEMO_CONTEXT"
+    },
+    {
+      "location_id": "LOC-CAN-THO",
+      "display_name": "Trung tâm tiêm chủng Cần Thơ 01 — DEMO",
+      "city": "Cần Thơ",
+      "country_code": "VN",
+      "facility_type": "VACCINATION_CENTER",
+      "origin": "SYNTHETIC_DEMO_CONTEXT"
+    },
+    {
+      "location_id": "LOC-DA-NANG",
+      "display_name": "Kho lạnh miền Trung tại Đà Nẵng — DEMO",
+      "city": "Đà Nẵng",
+      "country_code": "VN",
+      "facility_type": "COLD_STORAGE",
+      "origin": "SYNTHETIC_DEMO_CONTEXT"
+    },
+    {
+      "location_id": "LOC-HUE",
+      "display_name": "Bệnh viện Demo Huế",
+      "city": "Huế",
+      "country_code": "VN",
+      "facility_type": "HOSPITAL",
+      "origin": "SYNTHETIC_DEMO_CONTEXT"
+    },
+    {
+      "location_id": "LOC-HANOI",
+      "display_name": "Kho lạnh miền Bắc tại Hà Nội — DEMO",
+      "city": "Hà Nội",
+      "country_code": "VN",
+      "facility_type": "COLD_STORAGE",
+      "origin": "SYNTHETIC_DEMO_CONTEXT"
+    },
+    {
+      "location_id": "LOC-HAI-PHONG",
+      "display_name": "Bệnh viện Demo Hải Phòng",
+      "city": "Hải Phòng",
+      "country_code": "VN",
+      "facility_type": "HOSPITAL",
+      "origin": "SYNTHETIC_DEMO_CONTEXT"
+    },
+    {
+      "location_id": "LOC-BAC-NINH",
+      "display_name": "Phòng khám Demo Bắc Ninh",
+      "city": "Bắc Ninh",
+      "country_code": "VN",
+      "facility_type": "CLINIC",
+      "origin": "SYNTHETIC_DEMO_CONTEXT"
+    },
+    {
+      "location_id": "LOC-NGHE-AN",
+      "display_name": "Trung tâm phân phối tỉnh Nghệ An — DEMO",
+      "city": "Nghệ An",
+      "country_code": "VN",
+      "facility_type": "PROVINCIAL_HUB",
+      "origin": "SYNTHETIC_DEMO_CONTEXT"
+    }
+  ]
+}

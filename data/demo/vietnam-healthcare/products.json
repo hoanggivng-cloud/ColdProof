@@ -1,0 +1,105 @@
+{
+  "catalog_version": "2.1.0",
+  "products": [
+    {
+      "product_id": "PROD-DEMO-VACCINE",
+      "public_reference_code": "PROD-REF-VAXIGRIP-TETRA",
+      "display_name": "Vaxigrip Tetra",
+      "manufacturer": null,
+      "manufacturer_verification_status": "NOT_RECORDED",
+      "source_reference": {
+        "publisher": "Sanofi",
+        "title": "Professional informations — VAXIGRIP TETRA",
+        "url_or_identifier": "https://www.sanofi.com/en/south-africa/professional-informations"
+      },
+      "product_category": "VACCINE",
+      "reference_origin": "PUBLIC_PRODUCT_REFERENCE",
+      "verification_status": "VERIFIED",
+      "identity_verification_method": "OFFICIAL_PUBLIC_SOURCE",
+      "identity_verified_on": "2026-10-10",
+      "storage_claim": null,
+      "regulatory_claim": null,
+      "notes": "Danh tính sản phẩm là tham chiếu công khai; mọi lô hàng trong catalog đều là ngữ cảnh demo tổng hợp."
+    },
+    {
+      "product_id": "PROD-DEMO-BIOLOGIC",
+      "public_reference_code": "PROD-REF-INFLUVAC-TETRA",
+      "display_name": "Influvac Tetra",
+      "manufacturer": "Abbott Biologicals B.V.",
+      "manufacturer_verification_status": "VERIFIED",
+      "source_reference": {
+        "publisher": "Singapore National Drug Formulary",
+        "title": "INFLUVAC TETRA product information — SIN15591P",
+        "url_or_identifier": "https://www.ndf.gov.sg/about-drugs/product-information/sin15591p/"
+      },
+      "product_category": "VACCINE",
+      "reference_origin": "PUBLIC_PRODUCT_REFERENCE",
+      "verification_status": "VERIFIED",
+      "identity_verification_method": "OFFICIAL_PUBLIC_SOURCE",
+      "identity_verified_on": "2026-10-10",
+      "storage_claim": null,
+      "regulatory_claim": null,
+      "notes": "Danh tính sản phẩm là tham chiếu công khai; mọi lô hàng trong catalog đều là ngữ cảnh demo tổng hợp."
+    },
+    {
+      "product_id": "PROD-DEMO-DIAGNOSTIC",
+      "public_reference_code": "PROD-REF-GARDASIL-9",
+      "display_name": "Gardasil 9",
+      "manufacturer": "Merck Sharp & Dohme LLC",
+      "manufacturer_verification_status": "VERIFIED",
+      "source_reference": {
+        "publisher": "U.S. Food and Drug Administration",
+        "title": "GARDASIL 9",
+        "url_or_identifier": "https://www.fda.gov/vaccines-blood-biologics/vaccines/gardasil-9"
+      },
+      "product_category": "VACCINE",
+      "reference_origin": "PUBLIC_PRODUCT_REFERENCE",
+      "verification_status": "VERIFIED",
+      "identity_verification_method": "OFFICIAL_PUBLIC_SOURCE",
+      "identity_verified_on": "2026-10-10",
+      "storage_claim": null,
+      "regulatory_claim": null,
+      "notes": "Danh tính sản phẩm là tham chiếu công khai; mọi lô hàng trong catalog đều là ngữ cảnh demo tổng hợp."
+    },
+    {
+      "product_id": "PROD-DEMO-MEDICINE",
+      "public_reference_code": "PROD-REF-PREVENAR-13",
+      "display_name": "Prevenar 13",
+      "manufacturer": null,
+      "manufacturer_verification_status": "NOT_RECORDED",
+      "source_reference": {
+        "publisher": "Pfizer",
+        "title": "Prevenar 13 product information",
+        "url_or_identifier": "https://labeling.pfizer.com/ShowLabeling.aspx?id=15296"
+      },
+      "product_category": "VACCINE",
+      "reference_origin": "PUBLIC_PRODUCT_REFERENCE",
+      "verification_status": "VERIFIED",
+      "identity_verification_method": "OFFICIAL_PUBLIC_SOURCE",
+      "identity_verified_on": "2026-10-10",
+      "storage_claim": null,
+      "regulatory_claim": null,
+      "notes": "Danh tính sản phẩm là tham chiếu công khai; mọi lô hàng trong catalog đều là ngữ cảnh demo tổng hợp."
+    },
+    {
+      "product_id": "PROD-DEMO-REFERENCE",
+      "public_reference_code": "PROD-REF-PREVENAR-20",
+      "display_name": "Prevenar 20",
+      "manufacturer": null,
+      "manufacturer_verification_status": "NOT_RECORDED",
+      "source_reference": {
+        "publisher": "Pfizer",
+        "title": "Prevenar 20 product information",
+        "url_or_identifier": "https://labeling.pfizer.com/ShowLabeling.aspx?id=17862"
+      },
+      "product_category": "VACCINE",
+      "reference_origin": "PUBLIC_PRODUCT_REFERENCE",
+      "verification_status": "VERIFIED",
+      "identity_verification_method": "OFFICIAL_PUBLIC_SOURCE",
+      "identity_verified_on": "2026-10-10",
+      "storage_claim": null,
+      "regulatory_claim": null,
+      "notes": "Danh tính sản phẩm là tham chiếu công khai; mọi lô hàng trong catalog đều là ngữ cảnh demo tổng hợp."
+    }
+  ]
+}

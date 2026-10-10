@@ -1,0 +1,101 @@
+{
+  "scenario_id": "VNHC-012",
+  "scenario_name": "Hà Nội → Hải Phòng — dữ liệu đến sai thứ tự",
+  "scenario_family": "SIMULATED_RUNTIME",
+  "description": "Kịch bản kiểm thử ColdProof xác định, sử dụng hồ sơ OUT_OF_ORDER; ngữ cảnh vận chuyển y tế Việt Nam là dữ liệu demo tổng hợp.",
+  "scenario_origin": "SYNTHETIC_DEMO_CONTEXT",
+  "product_reference_id": "PROD-DEMO-BIOLOGIC",
+  "route_id": "ROUTE-HANOI-HAI-PHONG",
+  "business_context": {
+    "origin": "SYNTHETIC_DEMO_CONTEXT",
+    "batch_context": {
+      "batch_id": "BATCH-VNHC-012",
+      "lot_number": "LOT-VNHC-012",
+      "origin": "SYNTHETIC_DEMO_CONTEXT"
+    },
+    "shipment_context": {
+      "shipment_id": "SHIP-VNHC-012",
+      "origin": "SYNTHETIC_DEMO_CONTEXT"
+    },
+    "trip_context": {
+      "trip_id": "TRIP-VNHC-012",
+      "origin": "SYNTHETIC_DEMO_CONTEXT"
+    },
+    "sender_receiver_relation": {
+      "sender_location_id": "LOC-HANOI",
+      "receiver_location_id": "LOC-HAI-PHONG",
+      "origin": "SYNTHETIC_DEMO_CONTEXT"
+    },
+    "association": {
+      "status": "ASSIGNED",
+      "method": "IMPORT_CONTEXT",
+      "resolver_origin": "SYNTHETIC_DEMO_CONTEXT"
+    }
+  },
+  "data_profile": "OUT_OF_ORDER",
+  "test_purposes": [
+    "DATA_QUALITY",
+    "QA_REVIEW"
+  ],
+  "test_severity": "MEDIUM",
+  "test_severity_semantics": "DEMO_TEST_ONLY",
+  "labels": [
+    "VIETNAM_HEALTHCARE_DEMO",
+    "SIMULATED_RUNTIME",
+    "OUT_OF_ORDER"
+  ],
+  "golden": false,
+  "golden_label": null,
+  "measurement_source": {
+    "kind": "SIMULATED_LOGGER",
+    "measurement_origin": "SYNTHETIC",
+    "logger_configs": [
+      {
+        "format": "LOGGER_B",
+        "device_id": "B-VN-012",
+        "seed": 45,
+        "count": 1500,
+        "start_time": "2026-10-10T06:00:00",
+        "cadence_ms": 5000,
+        "measurement_origin": "SYNTHETIC",
+        "format_origin": "VENDOR_INSPIRED",
+        "timezone_context": {
+          "utc_offset": "+07:00",
+          "origin": "NORMALIZATION_CONFIGURATION"
+        }
+      }
+    ],
+    "anomaly_injection": {
+      "profile": "OUT_OF_ORDER",
+      "origin": "SYNTHETIC_TEST_PROFILE",
+      "generator_version": "vietnam-healthcare-demo-v2.1"
+    },
+    "used_for_dq": true,
+    "used_for_excursion_calculation": false
+  },
+  "supplemental_context": [],
+  "expected": {
+    "normalization_expected": "SUCCESS",
+    "dq_status_expected": "FLAGGED",
+    "expected_finding_codes": [
+      "OUT_OF_ORDER_RECORD"
+    ],
+    "expected_failure_code": null,
+    "expected_stage": "DATA_QUALITY",
+    "expected_raw_record_count": 1500,
+    "expected_canonical_record_count": 1500,
+    "expected_device_count": 1,
+    "timezone_context_required": false,
+    "temperature_pattern_is_excursion_conclusion": false
+  },
+  "provenance": {
+    "simulator": "@coldproof/simulated-logger",
+    "normalizer": "@coldproof/logger-normalizer",
+    "dq_policy": "runtime-dq-v1",
+    "scenario_generator": "vietnam-healthcare-demo-v2.1"
+  },
+  "test_profiles": [
+    "OUT_OF_ORDER"
+  ],
+  "qa_display_case": null
+}

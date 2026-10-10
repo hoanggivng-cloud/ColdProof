@@ -1,0 +1,142 @@
+{
+  "scenario_id": "VNHC-023",
+  "scenario_name": "Hai logger dự phòng — ngữ cảnh minh họa C04",
+  "scenario_family": "COMBINED_REFERENCE_CONTEXT",
+  "description": "Kịch bản kiểm thử ColdProof xác định, sử dụng hồ sơ MULTI_DEVICE; ngữ cảnh vận chuyển y tế Việt Nam là dữ liệu demo tổng hợp.",
+  "scenario_origin": "SYNTHETIC_DEMO_CONTEXT",
+  "product_reference_id": "PROD-DEMO-DIAGNOSTIC",
+  "route_id": "ROUTE-CAN-THO-TIEN-GIANG",
+  "business_context": {
+    "origin": "SYNTHETIC_DEMO_CONTEXT",
+    "batch_context": {
+      "batch_id": "BATCH-VNHC-023",
+      "lot_number": "LOT-VNHC-023",
+      "origin": "SYNTHETIC_DEMO_CONTEXT"
+    },
+    "shipment_context": {
+      "shipment_id": "SHIP-VNHC-023",
+      "origin": "SYNTHETIC_DEMO_CONTEXT"
+    },
+    "trip_context": {
+      "trip_id": "TRIP-VNHC-023",
+      "origin": "SYNTHETIC_DEMO_CONTEXT"
+    },
+    "sender_receiver_relation": {
+      "sender_location_id": "LOC-CAN-THO",
+      "receiver_location_id": "LOC-TIEN-GIANG",
+      "origin": "SYNTHETIC_DEMO_CONTEXT"
+    },
+    "association": {
+      "status": "ASSIGNED",
+      "method": "IMPORT_CONTEXT",
+      "resolver_origin": "SYNTHETIC_DEMO_CONTEXT"
+    }
+  },
+  "data_profile": "MULTI_DEVICE",
+  "test_purposes": [
+    "REFERENCE_CONTEXT",
+    "QA_REVIEW",
+    "FRONTEND_DEMO"
+  ],
+  "test_severity": "INFO",
+  "test_severity_semantics": "DEMO_TEST_ONLY",
+  "labels": [
+    "VIETNAM_HEALTHCARE_DEMO",
+    "COMBINED_REFERENCE_CONTEXT",
+    "MULTI_DEVICE"
+  ],
+  "golden": false,
+  "golden_label": null,
+  "measurement_source": {
+    "kind": "SIMULATED_LOGGER",
+    "measurement_origin": "SYNTHETIC",
+    "logger_configs": [
+      {
+        "format": "LOGGER_B",
+        "device_id": "B-VN-023-A",
+        "seed": 61,
+        "count": 1500,
+        "start_time": "2026-10-10T06:00:00",
+        "cadence_ms": 5000,
+        "measurement_origin": "SYNTHETIC",
+        "format_origin": "VENDOR_INSPIRED",
+        "timezone_context": {
+          "utc_offset": "+07:00",
+          "origin": "NORMALIZATION_CONFIGURATION"
+        }
+      },
+      {
+        "format": "LOGGER_B",
+        "device_id": "B-VN-023-B",
+        "seed": 62,
+        "count": 1500,
+        "start_time": "2026-10-10T06:00:00",
+        "cadence_ms": 5000,
+        "measurement_origin": "SYNTHETIC",
+        "format_origin": "VENDOR_INSPIRED",
+        "timezone_context": {
+          "utc_offset": "+07:00",
+          "origin": "NORMALIZATION_CONFIGURATION"
+        }
+      }
+    ],
+    "anomaly_injection": {
+      "profile": "MULTI_DEVICE",
+      "origin": "SYNTHETIC_TEST_PROFILE",
+      "generator_version": "vietnam-healthcare-demo-v2.1"
+    },
+    "used_for_dq": true,
+    "used_for_excursion_calculation": false
+  },
+  "supplemental_context": [
+    {
+      "dataset": "Average temperature in an insulated box",
+      "dataset_id": "sz5dgkz7k8",
+      "doi": "10.17632/sz5dgkz7k8.1",
+      "version": "1",
+      "source_id": "MEN-C04",
+      "source_file": "C04 Temperature Horizontal Side 20CAmb 4CInitial 20mmGap.xlsx",
+      "source_checksum_sha256": "1dcfa387b2e972cdab139a7b8fcca596f922bad7da37182ef7f9d3d179c4c0cd",
+      "condition_id": "C04",
+      "condition_semantics": "EXPERIMENTAL_CONDITION",
+      "semantic_status": "PARTIALLY_VERIFIED",
+      "relation_type": "ILLUSTRATIVE_CONTEXT",
+      "relation_origin": "SYNTHETIC",
+      "used_for_dq": false,
+      "used_for_excursion_calculation": false,
+      "causal_claim": "NONE",
+      "same_time_claim": "NONE",
+      "same_goods_claim": "NONE",
+      "same_environment_claim": "NONE",
+      "timestamp_status": "NOT_APPLICABLE",
+      "device_interpretation": "NONE",
+      "source_manifest_ref": "data/manifests/source_manifest.csv",
+      "crosswalk_ref": "data/scenarios/design/condition-crosswalk.csv"
+    }
+  ],
+  "expected": {
+    "normalization_expected": "SUCCESS",
+    "dq_status_expected": "PASS",
+    "expected_finding_codes": [],
+    "expected_failure_code": null,
+    "expected_stage": "NONE",
+    "expected_raw_record_count": 3000,
+    "expected_canonical_record_count": 3000,
+    "expected_device_count": 2,
+    "timezone_context_required": false,
+    "temperature_pattern_is_excursion_conclusion": false
+  },
+  "provenance": {
+    "primary_origin": "SYNTHETIC",
+    "supplemental_origin": "REAL_PUBLIC_DATA",
+    "relation_origin": "SYNTHETIC",
+    "simulator": "@coldproof/simulated-logger",
+    "normalizer": "@coldproof/logger-normalizer",
+    "dq_policy": "runtime-dq-v1",
+    "scenario_generator": "vietnam-healthcare-demo-v2.1"
+  },
+  "test_profiles": [
+    "MULTI_DEVICE"
+  ],
+  "qa_display_case": "MENDELEY_CONTEXT_VISIBLE_NOT_USED_FOR_DQ"
+}

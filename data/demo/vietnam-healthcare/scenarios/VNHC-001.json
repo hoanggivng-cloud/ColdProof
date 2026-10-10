@@ -1,0 +1,103 @@
+{
+  "scenario_id": "VNHC-001",
+  "scenario_name": "Kho lạnh công cộng SENSOR01 — tuyến TP.HCM → Thủ Đức",
+  "scenario_family": "ZENODO_OBSERVED_BACKED",
+  "description": "Kịch bản kiểm thử ColdProof xác định, sử dụng hồ sơ OBSERVED_CONTINUOUS; ngữ cảnh vận chuyển y tế Việt Nam là dữ liệu demo tổng hợp.",
+  "scenario_origin": "SYNTHETIC_DEMO_CONTEXT",
+  "product_reference_id": "PROD-DEMO-VACCINE",
+  "route_id": "ROUTE-HCM-THU-DUC",
+  "business_context": {
+    "origin": "SYNTHETIC_DEMO_CONTEXT",
+    "batch_context": {
+      "batch_id": "BATCH-VNHC-001",
+      "lot_number": "LOT-VNHC-001",
+      "origin": "SYNTHETIC_DEMO_CONTEXT"
+    },
+    "shipment_context": {
+      "shipment_id": "SHIP-VNHC-001",
+      "origin": "SYNTHETIC_DEMO_CONTEXT"
+    },
+    "trip_context": {
+      "trip_id": "TRIP-VNHC-001",
+      "origin": "SYNTHETIC_DEMO_CONTEXT"
+    },
+    "sender_receiver_relation": {
+      "sender_location_id": "LOC-HCM",
+      "receiver_location_id": "LOC-THU-DUC",
+      "origin": "SYNTHETIC_DEMO_CONTEXT"
+    },
+    "association": {
+      "status": "UNASSIGNED",
+      "method": null,
+      "resolver_origin": "SYNTHETIC_DEMO_CONTEXT"
+    }
+  },
+  "data_profile": "OBSERVED_CONTINUOUS",
+  "test_purposes": [
+    "PIPELINE",
+    "TRIP_ASSOCIATION",
+    "FRONTEND_DEMO"
+  ],
+  "test_severity": "INFO",
+  "test_severity_semantics": "DEMO_TEST_ONLY",
+  "labels": [
+    "VIETNAM_HEALTHCARE_DEMO",
+    "ZENODO_OBSERVED_BACKED",
+    "OBSERVED_CONTINUOUS"
+  ],
+  "golden": false,
+  "golden_label": null,
+  "measurement_source": {
+    "kind": "ZENODO_WINDOW",
+    "dataset": "Temperature and Humidity Time Series of Cold Storage Room Monitoring",
+    "doi": "10.5281/zenodo.15130001",
+    "version": "v1",
+    "source_id": "ZEN-RAW-S01",
+    "source_file": "SENSOR01.CSV",
+    "source_checksum_sha256": "163fc59e1d482b5ff8858d1a61554a61958193f6163575ee55b9731f1ca0c03f",
+    "sensor_id": "SENSOR01",
+    "window": {
+      "start": "2024-09-06T12:00:00",
+      "end": "2024-09-06T15:00:00",
+      "interval_semantics": "[start,end)",
+      "timezone_status": "UNKNOWN_SOURCE_LOCAL",
+      "observation_count": 2160,
+      "first_source_ref": "row:70964",
+      "last_source_ref": "row:73123"
+    },
+    "cadence_ms": 5000,
+    "measurement_origin": "REAL_PUBLIC_DATA",
+    "candidate_id": "ZEN-01-20240906T120000-180M",
+    "candidate_representation_observation_count": 2161,
+    "half_open_window_observation_count": 2160,
+    "selection_method": "evidence-selection-v1-candidate-window",
+    "selection_artifact_ref": "data/scenarios/design/candidate-zenodo-windows.csv",
+    "source_manifest_ref": "data/manifests/source_manifest.csv",
+    "parser_id": "zenodo-cold-storage",
+    "parser_version": "1.0.0",
+    "used_for_dq": true,
+    "used_for_excursion_calculation": false
+  },
+  "supplemental_context": [],
+  "expected": {
+    "normalization_expected": "PRE_NORMALIZED_PUBLIC_EVIDENCE",
+    "dq_status_expected": "PASS",
+    "expected_finding_codes": [],
+    "expected_failure_code": null,
+    "expected_stage": "NONE",
+    "expected_raw_record_count": 2160,
+    "expected_canonical_record_count": 2160,
+    "expected_device_count": 1,
+    "timezone_context_required": false,
+    "temperature_pattern_is_excursion_conclusion": false
+  },
+  "provenance": {
+    "primary_origin": "REAL_PUBLIC_DATA",
+    "logistics_context_origin": "SYNTHETIC_DEMO_CONTEXT",
+    "scenario_generator": "vietnam-healthcare-demo-v2.1"
+  },
+  "test_profiles": [
+    "OBSERVED_CONTINUOUS"
+  ],
+  "qa_display_case": "CANONICAL_VALID_DQ_PASS_TRIP_UNASSIGNED"
+}

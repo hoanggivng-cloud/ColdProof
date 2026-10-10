@@ -1,0 +1,152 @@
+{
+  "scenario_id": "VNHC-028",
+  "scenario_name": "So sánh điều kiện thí nghiệm — C08/C10/C13",
+  "scenario_family": "MENDELEY_CONTEXT_ONLY",
+  "description": "Kịch bản kiểm thử ColdProof xác định, sử dụng hồ sơ SPATIAL_REFERENCE_ONLY; ngữ cảnh vận chuyển y tế Việt Nam là dữ liệu demo tổng hợp.",
+  "scenario_origin": "SYNTHETIC_DEMO_CONTEXT",
+  "product_reference_id": "PROD-DEMO-DIAGNOSTIC",
+  "route_id": "ROUTE-HCM-LONG-AN-CAN-THO",
+  "business_context": {
+    "origin": "SYNTHETIC_DEMO_CONTEXT",
+    "batch_context": {
+      "batch_id": "BATCH-VNHC-028",
+      "lot_number": "LOT-VNHC-028",
+      "origin": "SYNTHETIC_DEMO_CONTEXT"
+    },
+    "shipment_context": {
+      "shipment_id": "SHIP-VNHC-028",
+      "origin": "SYNTHETIC_DEMO_CONTEXT"
+    },
+    "trip_context": {
+      "trip_id": "TRIP-VNHC-028",
+      "origin": "SYNTHETIC_DEMO_CONTEXT"
+    },
+    "sender_receiver_relation": {
+      "sender_location_id": "LOC-HCM",
+      "receiver_location_id": "LOC-CAN-THO",
+      "origin": "SYNTHETIC_DEMO_CONTEXT"
+    },
+    "association": {
+      "status": "ASSIGNED",
+      "method": "IMPORT_CONTEXT",
+      "resolver_origin": "SYNTHETIC_DEMO_CONTEXT"
+    }
+  },
+  "data_profile": "SPATIAL_REFERENCE_ONLY",
+  "test_purposes": [
+    "REFERENCE_CONTEXT",
+    "FRONTEND_DEMO"
+  ],
+  "test_severity": "INFO",
+  "test_severity_semantics": "DEMO_TEST_ONLY",
+  "labels": [
+    "VIETNAM_HEALTHCARE_DEMO",
+    "MENDELEY_CONTEXT_ONLY",
+    "SPATIAL_REFERENCE_ONLY"
+  ],
+  "golden": false,
+  "golden_label": null,
+  "measurement_source": {
+    "kind": "MENDELEY_CONTEXT_ONLY",
+    "runtime_timeline": false,
+    "measurement_origin": "REAL_PUBLIC_DATA",
+    "used_for_dq": false,
+    "used_for_excursion_calculation": false,
+    "conditions": [
+      {
+        "dataset": "Average temperature in an insulated box",
+        "dataset_id": "sz5dgkz7k8",
+        "doi": "10.17632/sz5dgkz7k8.1",
+        "version": "1",
+        "source_id": "MEN-C08",
+        "source_file": "C08 Temperature Horizontal Top 10CAmb 4CInitial 20mmGap.xlsx",
+        "source_checksum_sha256": "16043758da5546d95cb2dc6f7fe715610eb170b6302c5dd76db71779de923242",
+        "condition_id": "C08",
+        "condition_semantics": "EXPERIMENTAL_CONDITION",
+        "semantic_status": "PARTIALLY_VERIFIED",
+        "relation_type": "ILLUSTRATIVE_CONTEXT",
+        "relation_origin": "SYNTHETIC",
+        "used_for_dq": false,
+        "used_for_excursion_calculation": false,
+        "causal_claim": "NONE",
+        "same_time_claim": "NONE",
+        "same_goods_claim": "NONE",
+        "same_environment_claim": "NONE",
+        "timestamp_status": "NOT_APPLICABLE",
+        "device_interpretation": "NONE",
+        "source_manifest_ref": "data/manifests/source_manifest.csv",
+        "crosswalk_ref": "data/scenarios/design/condition-crosswalk.csv"
+      },
+      {
+        "dataset": "Average temperature in an insulated box",
+        "dataset_id": "sz5dgkz7k8",
+        "doi": "10.17632/sz5dgkz7k8.1",
+        "version": "1",
+        "source_id": "MEN-C10",
+        "source_file": "C10 Temperature Horizontal Side 20CAmb 10CInitial 20mmGap.xlsx",
+        "source_checksum_sha256": "9dba80bba7f3635f3f2fc2e4220f2464b2cdf1ed1fb6a8a98c1bec4905a21210",
+        "condition_id": "C10",
+        "condition_semantics": "EXPERIMENTAL_CONDITION",
+        "semantic_status": "PARTIALLY_VERIFIED",
+        "relation_type": "ILLUSTRATIVE_CONTEXT",
+        "relation_origin": "SYNTHETIC",
+        "used_for_dq": false,
+        "used_for_excursion_calculation": false,
+        "causal_claim": "NONE",
+        "same_time_claim": "NONE",
+        "same_goods_claim": "NONE",
+        "same_environment_claim": "NONE",
+        "timestamp_status": "NOT_APPLICABLE",
+        "device_interpretation": "NONE",
+        "source_manifest_ref": "data/manifests/source_manifest.csv",
+        "crosswalk_ref": "data/scenarios/design/condition-crosswalk.csv"
+      },
+      {
+        "dataset": "Average temperature in an insulated box",
+        "dataset_id": "sz5dgkz7k8",
+        "doi": "10.17632/sz5dgkz7k8.1",
+        "version": "1",
+        "source_id": "MEN-C13",
+        "source_file": "C13 Temperature Horizontal Top 20CAmb 4CInitial noGap.xlsx",
+        "source_checksum_sha256": "67b6e3e138e992e8298f5778d14f91df9a24699bb216c0a6b9d4e27d3520ff36",
+        "condition_id": "C13",
+        "condition_semantics": "EXPERIMENTAL_CONDITION",
+        "semantic_status": "PARTIALLY_VERIFIED",
+        "relation_type": "ILLUSTRATIVE_CONTEXT",
+        "relation_origin": "SYNTHETIC",
+        "used_for_dq": false,
+        "used_for_excursion_calculation": false,
+        "causal_claim": "NONE",
+        "same_time_claim": "NONE",
+        "same_goods_claim": "NONE",
+        "same_environment_claim": "NONE",
+        "timestamp_status": "NOT_APPLICABLE",
+        "device_interpretation": "NONE",
+        "source_manifest_ref": "data/manifests/source_manifest.csv",
+        "crosswalk_ref": "data/scenarios/design/condition-crosswalk.csv"
+      }
+    ]
+  },
+  "supplemental_context": [],
+  "expected": {
+    "normalization_expected": "NOT_APPLICABLE_SPATIAL_REFERENCE",
+    "dq_status_expected": "NOT_ASSESSED",
+    "expected_finding_codes": [],
+    "expected_failure_code": null,
+    "expected_stage": "NONE",
+    "expected_raw_record_count": 0,
+    "expected_canonical_record_count": 0,
+    "expected_device_count": 0,
+    "timezone_context_required": false,
+    "temperature_pattern_is_excursion_conclusion": false
+  },
+  "provenance": {
+    "primary_origin": "REAL_PUBLIC_DATA",
+    "logistics_context_origin": "SYNTHETIC_DEMO_CONTEXT",
+    "scenario_generator": "vietnam-healthcare-demo-v2.1"
+  },
+  "test_profiles": [
+    "SPATIAL_REFERENCE_ONLY"
+  ],
+  "qa_display_case": null
+}

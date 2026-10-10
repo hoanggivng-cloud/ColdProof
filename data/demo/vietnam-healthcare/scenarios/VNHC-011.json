@@ -1,0 +1,96 @@
+{
+  "scenario_id": "VNHC-011",
+  "scenario_name": "Chuyến giao vaccine Cần Thơ → Tiền Giang — xung đột cùng thời điểm",
+  "scenario_family": "SIMULATED_RUNTIME",
+  "description": "Kịch bản kiểm thử ColdProof xác định, sử dụng hồ sơ CONFLICT; ngữ cảnh vận chuyển y tế Việt Nam là dữ liệu demo tổng hợp.",
+  "scenario_origin": "SYNTHETIC_DEMO_CONTEXT",
+  "product_reference_id": "PROD-DEMO-VACCINE",
+  "route_id": "ROUTE-CAN-THO-TIEN-GIANG",
+  "business_context": {
+    "origin": "SYNTHETIC_DEMO_CONTEXT",
+    "batch_context": {
+      "batch_id": "BATCH-VNHC-011",
+      "lot_number": "LOT-VNHC-011",
+      "origin": "SYNTHETIC_DEMO_CONTEXT"
+    },
+    "shipment_context": {
+      "shipment_id": "SHIP-VNHC-011",
+      "origin": "SYNTHETIC_DEMO_CONTEXT"
+    },
+    "trip_context": {
+      "trip_id": "TRIP-VNHC-011",
+      "origin": "SYNTHETIC_DEMO_CONTEXT"
+    },
+    "sender_receiver_relation": {
+      "sender_location_id": "LOC-CAN-THO",
+      "receiver_location_id": "LOC-TIEN-GIANG",
+      "origin": "SYNTHETIC_DEMO_CONTEXT"
+    },
+    "association": {
+      "status": "ASSIGNED",
+      "method": "IMPORT_CONTEXT",
+      "resolver_origin": "SYNTHETIC_DEMO_CONTEXT"
+    }
+  },
+  "data_profile": "CONFLICT",
+  "test_purposes": [
+    "DATA_QUALITY",
+    "QA_REVIEW"
+  ],
+  "test_severity": "MEDIUM",
+  "test_severity_semantics": "DEMO_TEST_ONLY",
+  "labels": [
+    "VIETNAM_HEALTHCARE_DEMO",
+    "SIMULATED_RUNTIME",
+    "CONFLICT"
+  ],
+  "golden": true,
+  "golden_label": "GOLDEN_CONFLICT",
+  "measurement_source": {
+    "kind": "SIMULATED_LOGGER",
+    "measurement_origin": "SYNTHETIC",
+    "logger_configs": [
+      {
+        "format": "LOGGER_A",
+        "device_id": "LOGGER-A-VN-011",
+        "seed": 44,
+        "count": 2000,
+        "start_time": "2026-10-10T06:00:00+07:00",
+        "cadence_ms": 5000,
+        "measurement_origin": "SYNTHETIC"
+      }
+    ],
+    "anomaly_injection": {
+      "profile": "CONFLICT",
+      "origin": "SYNTHETIC_TEST_PROFILE",
+      "generator_version": "vietnam-healthcare-demo-v2.1"
+    },
+    "used_for_dq": true,
+    "used_for_excursion_calculation": false
+  },
+  "supplemental_context": [],
+  "expected": {
+    "normalization_expected": "SUCCESS",
+    "dq_status_expected": "FLAGGED",
+    "expected_finding_codes": [
+      "CONFLICTING_RECORD"
+    ],
+    "expected_failure_code": null,
+    "expected_stage": "DATA_QUALITY",
+    "expected_raw_record_count": 2001,
+    "expected_canonical_record_count": 2001,
+    "expected_device_count": 1,
+    "timezone_context_required": false,
+    "temperature_pattern_is_excursion_conclusion": false
+  },
+  "provenance": {
+    "simulator": "@coldproof/simulated-logger",
+    "normalizer": "@coldproof/logger-normalizer",
+    "dq_policy": "runtime-dq-v1",
+    "scenario_generator": "vietnam-healthcare-demo-v2.1"
+  },
+  "test_profiles": [
+    "CONFLICT"
+  ],
+  "qa_display_case": "RAW_CANONICAL_DQ_FLAGGED_TRIP_ASSIGNED"
+}

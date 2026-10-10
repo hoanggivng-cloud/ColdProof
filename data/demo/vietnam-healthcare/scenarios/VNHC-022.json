@@ -1,0 +1,96 @@
+{
+  "scenario_id": "VNHC-022",
+  "scenario_name": "TP.HCM → Long An — checksum payload không khớp",
+  "scenario_family": "SIMULATED_RUNTIME",
+  "description": "Kịch bản kiểm thử ColdProof xác định, sử dụng hồ sơ CHECKSUM_MISMATCH; ngữ cảnh vận chuyển y tế Việt Nam là dữ liệu demo tổng hợp.",
+  "scenario_origin": "SYNTHETIC_DEMO_CONTEXT",
+  "product_reference_id": "PROD-DEMO-BIOLOGIC",
+  "route_id": "ROUTE-HCM-LONG-AN",
+  "business_context": {
+    "origin": "SYNTHETIC_DEMO_CONTEXT",
+    "batch_context": {
+      "batch_id": "BATCH-VNHC-022",
+      "lot_number": "LOT-VNHC-022",
+      "origin": "SYNTHETIC_DEMO_CONTEXT"
+    },
+    "shipment_context": {
+      "shipment_id": "SHIP-VNHC-022",
+      "origin": "SYNTHETIC_DEMO_CONTEXT"
+    },
+    "trip_context": {
+      "trip_id": "TRIP-VNHC-022",
+      "origin": "SYNTHETIC_DEMO_CONTEXT"
+    },
+    "sender_receiver_relation": {
+      "sender_location_id": "LOC-HCM",
+      "receiver_location_id": "LOC-LONG-AN",
+      "origin": "SYNTHETIC_DEMO_CONTEXT"
+    },
+    "association": {
+      "status": "UNASSIGNED",
+      "method": null,
+      "resolver_origin": "SYNTHETIC_DEMO_CONTEXT"
+    }
+  },
+  "data_profile": "CHECKSUM_MISMATCH",
+  "test_purposes": [
+    "NORMALIZATION",
+    "QA_REVIEW"
+  ],
+  "test_severity": "HIGH",
+  "test_severity_semantics": "DEMO_TEST_ONLY",
+  "labels": [
+    "VIETNAM_HEALTHCARE_DEMO",
+    "SIMULATED_RUNTIME",
+    "CHECKSUM_MISMATCH"
+  ],
+  "golden": false,
+  "golden_label": null,
+  "measurement_source": {
+    "kind": "SIMULATED_LOGGER",
+    "measurement_origin": "SYNTHETIC",
+    "logger_configs": [
+      {
+        "format": "LOGGER_A",
+        "device_id": "LOGGER-A-VN-022",
+        "seed": 55,
+        "count": 1,
+        "start_time": "2026-10-10T06:00:00+07:00",
+        "cadence_ms": 5000,
+        "measurement_origin": "SYNTHETIC"
+      }
+    ],
+    "anomaly_injection": {
+      "profile": "CHECKSUM_MISMATCH",
+      "origin": "SYNTHETIC_TEST_PROFILE",
+      "generator_version": "vietnam-healthcare-demo-v2.1"
+    },
+    "used_for_dq": true,
+    "used_for_excursion_calculation": false
+  },
+  "supplemental_context": [],
+  "expected": {
+    "normalization_expected": "FAILURE",
+    "dq_status_expected": "NOT_ASSESSED",
+    "expected_finding_codes": [
+      "RAW_PAYLOAD_CHECKSUM_MISMATCH"
+    ],
+    "expected_failure_code": "RAW_PAYLOAD_CHECKSUM_MISMATCH",
+    "expected_stage": "NORMALIZATION",
+    "expected_raw_record_count": 1,
+    "expected_canonical_record_count": 0,
+    "expected_device_count": 1,
+    "timezone_context_required": false,
+    "temperature_pattern_is_excursion_conclusion": false
+  },
+  "provenance": {
+    "simulator": "@coldproof/simulated-logger",
+    "normalizer": "@coldproof/logger-normalizer",
+    "dq_policy": "runtime-dq-v1",
+    "scenario_generator": "vietnam-healthcare-demo-v2.1"
+  },
+  "test_profiles": [
+    "CHECKSUM_MISMATCH"
+  ],
+  "qa_display_case": "RAW_CHECKSUM_MISMATCH_NO_CANONICAL"
+}

@@ -1,0 +1,49 @@
+{
+  "catalog_id": "VIETNAM_HEALTHCARE_DEMO_SCENARIOS",
+  "catalog_version": "2.1.0",
+  "generator_version": "vietnam-healthcare-demo-v2.1",
+  "status": "DEMO_TEST_DATA",
+  "scenario_count": 28,
+  "scenario_ids": [
+    "VNHC-001",
+    "VNHC-002",
+    "VNHC-003",
+    "VNHC-004",
+    "VNHC-005",
+    "VNHC-006",
+    "VNHC-007",
+    "VNHC-008",
+    "VNHC-009",
+    "VNHC-010",
+    "VNHC-011",
+    "VNHC-012",
+    "VNHC-013",
+    "VNHC-014",
+    "VNHC-015",
+    "VNHC-016",
+    "VNHC-017",
+    "VNHC-018",
+    "VNHC-019",
+    "VNHC-020",
+    "VNHC-021",
+    "VNHC-022",
+    "VNHC-023",
+    "VNHC-024",
+    "VNHC-025",
+    "VNHC-026",
+    "VNHC-027",
+    "VNHC-028"
+  ],
+  "scenario_family_counts": {
+    "ZENODO_OBSERVED_BACKED": 8,
+    "SIMULATED_RUNTIME": 14,
+    "COMBINED_REFERENCE_CONTEXT": 4,
+    "MENDELEY_CONTEXT_ONLY": 2
+  },
+  "public_source_roles": {
+    "zenodo": "REAL_OBSERVED_TIME_SERIES_SOURCE",
+    "mendeley": "REAL_OBSERVED_EXPERIMENTAL_SPATIAL_CONTEXT_SOURCE"
+  },
+  "synthetic_context_rule": "Public physical data does not make synthetic shipment relationships real.",
+  "test_severity_semantics": "DEMO_TEST_ONLY_NOT_REGULATORY_OR_PATIENT_RISK"
+}

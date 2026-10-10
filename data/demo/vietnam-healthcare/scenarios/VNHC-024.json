@@ -1,0 +1,130 @@
+{
+  "scenario_id": "VNHC-024",
+  "scenario_name": "Tuyến bàn giao Đà Nẵng → Huế → Hà Nội — ngữ cảnh C07",
+  "scenario_family": "COMBINED_REFERENCE_CONTEXT",
+  "description": "Kịch bản kiểm thử ColdProof xác định, sử dụng hồ sơ HANDOVER_BOUNDARY; ngữ cảnh vận chuyển y tế Việt Nam là dữ liệu demo tổng hợp.",
+  "scenario_origin": "SYNTHETIC_DEMO_CONTEXT",
+  "product_reference_id": "PROD-DEMO-MEDICINE",
+  "route_id": "ROUTE-DA-NANG-HUE-HANOI",
+  "business_context": {
+    "origin": "SYNTHETIC_DEMO_CONTEXT",
+    "batch_context": {
+      "batch_id": "BATCH-VNHC-024",
+      "lot_number": "LOT-VNHC-024",
+      "origin": "SYNTHETIC_DEMO_CONTEXT"
+    },
+    "shipment_context": {
+      "shipment_id": "SHIP-VNHC-024",
+      "origin": "SYNTHETIC_DEMO_CONTEXT"
+    },
+    "trip_context": {
+      "trip_id": "TRIP-VNHC-024",
+      "origin": "SYNTHETIC_DEMO_CONTEXT"
+    },
+    "sender_receiver_relation": {
+      "sender_location_id": "LOC-DA-NANG",
+      "receiver_location_id": "LOC-HANOI",
+      "origin": "SYNTHETIC_DEMO_CONTEXT"
+    },
+    "association": {
+      "status": "ASSIGNED",
+      "method": "IMPORT_CONTEXT",
+      "resolver_origin": "SYNTHETIC_DEMO_CONTEXT"
+    },
+    "handover_boundaries": [
+      {
+        "timestamp": "2026-10-10T07:00:00+07:00",
+        "origin": "SYNTHETIC_DEMO_CONTEXT",
+        "thermal_event_termination_semantics": "NONE"
+      }
+    ]
+  },
+  "data_profile": "HANDOVER_BOUNDARY",
+  "test_purposes": [
+    "REFERENCE_CONTEXT",
+    "QA_REVIEW",
+    "FRONTEND_DEMO"
+  ],
+  "test_severity": "INFO",
+  "test_severity_semantics": "DEMO_TEST_ONLY",
+  "labels": [
+    "VIETNAM_HEALTHCARE_DEMO",
+    "COMBINED_REFERENCE_CONTEXT",
+    "HANDOVER_BOUNDARY"
+  ],
+  "golden": false,
+  "golden_label": null,
+  "measurement_source": {
+    "kind": "SIMULATED_LOGGER",
+    "measurement_origin": "SYNTHETIC",
+    "logger_configs": [
+      {
+        "format": "LOGGER_A",
+        "device_id": "LOGGER-A-VN-024",
+        "seed": 63,
+        "count": 2400,
+        "start_time": "2026-10-10T06:00:00+07:00",
+        "cadence_ms": 5000,
+        "measurement_origin": "SYNTHETIC"
+      }
+    ],
+    "anomaly_injection": {
+      "profile": "HANDOVER_BOUNDARY",
+      "origin": "SYNTHETIC_TEST_PROFILE",
+      "generator_version": "vietnam-healthcare-demo-v2.1"
+    },
+    "used_for_dq": true,
+    "used_for_excursion_calculation": false
+  },
+  "supplemental_context": [
+    {
+      "dataset": "Average temperature in an insulated box",
+      "dataset_id": "sz5dgkz7k8",
+      "doi": "10.17632/sz5dgkz7k8.1",
+      "version": "1",
+      "source_id": "MEN-C07",
+      "source_file": "C07 Temperature Horizontal Side 30CAmb 4CInitial 20mmGap.xlsx",
+      "source_checksum_sha256": "d68ecab8ab7f22a9947631e636924009c5165017305195ef67f86eed49b77845",
+      "condition_id": "C07",
+      "condition_semantics": "EXPERIMENTAL_CONDITION",
+      "semantic_status": "PARTIALLY_VERIFIED",
+      "relation_type": "ILLUSTRATIVE_CONTEXT",
+      "relation_origin": "SYNTHETIC",
+      "used_for_dq": false,
+      "used_for_excursion_calculation": false,
+      "causal_claim": "NONE",
+      "same_time_claim": "NONE",
+      "same_goods_claim": "NONE",
+      "same_environment_claim": "NONE",
+      "timestamp_status": "NOT_APPLICABLE",
+      "device_interpretation": "NONE",
+      "source_manifest_ref": "data/manifests/source_manifest.csv",
+      "crosswalk_ref": "data/scenarios/design/condition-crosswalk.csv"
+    }
+  ],
+  "expected": {
+    "normalization_expected": "SUCCESS",
+    "dq_status_expected": "PASS",
+    "expected_finding_codes": [],
+    "expected_failure_code": null,
+    "expected_stage": "NONE",
+    "expected_raw_record_count": 2400,
+    "expected_canonical_record_count": 2400,
+    "expected_device_count": 1,
+    "timezone_context_required": false,
+    "temperature_pattern_is_excursion_conclusion": false
+  },
+  "provenance": {
+    "primary_origin": "SYNTHETIC",
+    "supplemental_origin": "REAL_PUBLIC_DATA",
+    "relation_origin": "SYNTHETIC",
+    "simulator": "@coldproof/simulated-logger",
+    "normalizer": "@coldproof/logger-normalizer",
+    "dq_policy": "runtime-dq-v1",
+    "scenario_generator": "vietnam-healthcare-demo-v2.1"
+  },
+  "test_profiles": [
+    "HANDOVER_BOUNDARY"
+  ],
+  "qa_display_case": null
+}
