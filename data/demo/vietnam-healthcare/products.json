@@ -1,0 +1,55 @@
+{
+  "catalog_version": "2.0.0",
+  "products": [
+    {
+      "product_id": "PROD-DEMO-VACCINE",
+      "display_name": "Demo vaccine reference",
+      "product_category": "VACCINE",
+      "origin": "SYNTHETIC_DEMO_CONTEXT",
+      "verification_status": "SYNTHETIC_DEMO_REFERENCE",
+      "manufacturer": null,
+      "storage_claim": null,
+      "notes": "Not a claim about a commercial product or manufacturer."
+    },
+    {
+      "product_id": "PROD-DEMO-BIOLOGIC",
+      "display_name": "Demo biologic reference",
+      "product_category": "BIOLOGIC",
+      "origin": "SYNTHETIC_DEMO_CONTEXT",
+      "verification_status": "SYNTHETIC_DEMO_REFERENCE",
+      "manufacturer": null,
+      "storage_claim": null,
+      "notes": "Not a claim about a commercial product or manufacturer."
+    },
+    {
+      "product_id": "PROD-DEMO-DIAGNOSTIC",
+      "display_name": "Demo diagnostic reagent reference",
+      "product_category": "DIAGNOSTIC_REAGENT",
+      "origin": "SYNTHETIC_DEMO_CONTEXT",
+      "verification_status": "SYNTHETIC_DEMO_REFERENCE",
+      "manufacturer": null,
+      "storage_claim": null,
+      "notes": "Not a claim about a commercial product or manufacturer."
+    },
+    {
+      "product_id": "PROD-DEMO-MEDICINE",
+      "display_name": "Demo temperature-sensitive medicine reference",
+      "product_category": "MEDICINE",
+      "origin": "SYNTHETIC_DEMO_CONTEXT",
+      "verification_status": "SYNTHETIC_DEMO_REFERENCE",
+      "manufacturer": null,
+      "storage_claim": null,
+      "notes": "Not a claim about a commercial product or manufacturer."
+    },
+    {
+      "product_id": "PROD-DEMO-REFERENCE",
+      "display_name": "Demo controlled-healthcare reference",
+      "product_category": "REFERENCE_MATERIAL",
+      "origin": "SYNTHETIC_DEMO_CONTEXT",
+      "verification_status": "SYNTHETIC_DEMO_REFERENCE",
+      "manufacturer": null,
+      "storage_claim": null,
+      "notes": "Not a claim about a commercial product or manufacturer."
+    }
+  ]
+}

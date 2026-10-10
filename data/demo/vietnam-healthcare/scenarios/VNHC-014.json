@@ -1,0 +1,85 @@
+{
+  "scenario_id": "VNHC-014",
+  "scenario_name": "multi gap — Vietnam healthcare demo",
+  "scenario_family": "SIMULATED_RUNTIME",
+  "description": "Deterministic ColdProof software test scenario with explicitly synthetic Vietnam healthcare logistics context.",
+  "scenario_origin": "SYNTHETIC_DEMO_CONTEXT",
+  "product_reference_id": "PROD-DEMO-MEDICINE",
+  "route_id": "ROUTE-HCM-BINH-DUONG",
+  "business_context": {
+    "batch_id": "BATCH-VNHC-014",
+    "shipment_id": "SHIP-VNHC-014",
+    "trip_id": "TRIP-VNHC-014",
+    "origin": "SYNTHETIC_DEMO_CONTEXT",
+    "sender_receiver_relation": {
+      "origin": "SYNTHETIC_DEMO_CONTEXT"
+    },
+    "lot_number": {
+      "value": "LOT-VNHC-014",
+      "origin": "SYNTHETIC_DEMO_CONTEXT"
+    },
+    "association": {
+      "status": "ASSIGNED",
+      "method": "IMPORT_CONTEXT",
+      "resolver_origin": "SYNTHETIC_DEMO_CONTEXT"
+    }
+  },
+  "data_profile": "MULTI_GAP",
+  "labels": [
+    "VIETNAM_HEALTHCARE_DEMO",
+    "SIMULATED_RUNTIME",
+    "MULTI_GAP"
+  ],
+  "golden": false,
+  "golden_label": null,
+  "measurement_source": {
+    "kind": "SIMULATED_LOGGER",
+    "measurement_origin": "SYNTHETIC",
+    "logger_configs": [
+      {
+        "format": "LOGGER_B",
+        "device_id": "B-VN-014",
+        "seed": 47,
+        "count": 2000,
+        "start_time": "2026-10-10T06:00:00",
+        "cadence_ms": 5000,
+        "measurement_origin": "SYNTHETIC",
+        "format_origin": "VENDOR_INSPIRED",
+        "timezone_context": {
+          "utc_offset": "+07:00",
+          "origin": "NORMALIZATION_CONFIGURATION"
+        }
+      }
+    ],
+    "anomaly_injection": {
+      "profile": "MULTI_GAP",
+      "origin": "SYNTHETIC_TEST_PROFILE",
+      "generator_version": "vietnam-healthcare-demo-v2"
+    },
+    "used_for_dq": true,
+    "used_for_excursion_calculation": false
+  },
+  "supplemental_context": [],
+  "expected": {
+    "normalization_expected": "SUCCESS",
+    "dq_status_expected": "FLAGGED",
+    "expected_finding_codes": [
+      "MISSING_INTERVAL"
+    ],
+    "expected_raw_record_count": 1998,
+    "expected_canonical_record_count": 1998,
+    "expected_device_count": 1,
+    "timezone_context_required": false,
+    "temperature_pattern_is_excursion_conclusion": false
+  },
+  "provenance": {
+    "simulator": "@coldproof/simulated-logger",
+    "normalizer": "@coldproof/logger-normalizer",
+    "dq_policy": "runtime-dq-v1",
+    "scenario_generator": "vietnam-healthcare-demo-v2"
+  },
+  "test_profiles": [
+    "MULTI_GAP"
+  ],
+  "qa_display_case": null
+}

@@ -1,0 +1,128 @@
+{
+  "catalog_version": "2.0.0",
+  "routes": [
+    {
+      "route_id": "ROUTE-HCM-THU-DUC",
+      "route_type": "SHORT_URBAN_DELIVERY",
+      "stop_location_ids": [
+        "LOC-HCM",
+        "LOC-THU-DUC"
+      ],
+      "origin": "SYNTHETIC_DEMO_CONTEXT",
+      "operational_claim": "NONE"
+    },
+    {
+      "route_id": "ROUTE-HCM-BINH-DUONG",
+      "route_type": "WAREHOUSE_TO_HOSPITAL",
+      "stop_location_ids": [
+        "LOC-HCM",
+        "LOC-BINH-DUONG"
+      ],
+      "origin": "SYNTHETIC_DEMO_CONTEXT",
+      "operational_claim": "NONE"
+    },
+    {
+      "route_id": "ROUTE-HCM-DONG-NAI",
+      "route_type": "WAREHOUSE_TO_VACCINATION_CENTER",
+      "stop_location_ids": [
+        "LOC-HCM",
+        "LOC-DONG-NAI"
+      ],
+      "origin": "SYNTHETIC_DEMO_CONTEXT",
+      "operational_claim": "NONE"
+    },
+    {
+      "route_id": "ROUTE-HCM-LONG-AN-CAN-THO",
+      "route_type": "MULTI_STOP_ROUTE",
+      "stop_location_ids": [
+        "LOC-HCM",
+        "LOC-LONG-AN",
+        "LOC-CAN-THO"
+      ],
+      "origin": "SYNTHETIC_DEMO_CONTEXT",
+      "operational_claim": "NONE"
+    },
+    {
+      "route_id": "ROUTE-LONG-AN-TIEN-GIANG-CAN-THO",
+      "route_type": "HANDOVER_ROUTE",
+      "stop_location_ids": [
+        "LOC-LONG-AN",
+        "LOC-TIEN-GIANG",
+        "LOC-CAN-THO"
+      ],
+      "origin": "SYNTHETIC_DEMO_CONTEXT",
+      "operational_claim": "NONE"
+    },
+    {
+      "route_id": "ROUTE-DA-NANG-HUE",
+      "route_type": "INTER_PROVINCIAL_DELIVERY",
+      "stop_location_ids": [
+        "LOC-DA-NANG",
+        "LOC-HUE"
+      ],
+      "origin": "SYNTHETIC_DEMO_CONTEXT",
+      "operational_claim": "NONE"
+    },
+    {
+      "route_id": "ROUTE-HANOI-HAI-PHONG",
+      "route_type": "CENTRAL_TO_PROVINCIAL_HUB",
+      "stop_location_ids": [
+        "LOC-HANOI",
+        "LOC-HAI-PHONG"
+      ],
+      "origin": "SYNTHETIC_DEMO_CONTEXT",
+      "operational_claim": "NONE"
+    },
+    {
+      "route_id": "ROUTE-HANOI-BAC-NINH",
+      "route_type": "PROVINCIAL_HUB_TO_CLINIC",
+      "stop_location_ids": [
+        "LOC-HANOI",
+        "LOC-BAC-NINH"
+      ],
+      "origin": "SYNTHETIC_DEMO_CONTEXT",
+      "operational_claim": "NONE"
+    },
+    {
+      "route_id": "ROUTE-HANOI-NGHE-AN",
+      "route_type": "LONG_INTER_PROVINCIAL_DELIVERY",
+      "stop_location_ids": [
+        "LOC-HANOI",
+        "LOC-NGHE-AN"
+      ],
+      "origin": "SYNTHETIC_DEMO_CONTEXT",
+      "operational_claim": "NONE"
+    },
+    {
+      "route_id": "ROUTE-HCM-LONG-AN",
+      "route_type": "PROVINCIAL_HUB_TRANSFER",
+      "stop_location_ids": [
+        "LOC-HCM",
+        "LOC-LONG-AN"
+      ],
+      "origin": "SYNTHETIC_DEMO_CONTEXT",
+      "operational_claim": "NONE"
+    },
+    {
+      "route_id": "ROUTE-CAN-THO-TIEN-GIANG",
+      "route_type": "CLINIC_REPLENISHMENT",
+      "stop_location_ids": [
+        "LOC-CAN-THO",
+        "LOC-TIEN-GIANG"
+      ],
+      "origin": "SYNTHETIC_DEMO_CONTEXT",
+      "operational_claim": "NONE"
+    },
+    {
+      "route_id": "ROUTE-DA-NANG-HUE-HANOI",
+      "route_type": "MULTI_HUB_REFERENCE_ROUTE",
+      "stop_location_ids": [
+        "LOC-DA-NANG",
+        "LOC-HUE",
+        "LOC-HANOI"
+      ],
+      "origin": "SYNTHETIC_DEMO_CONTEXT",
+      "operational_claim": "NONE"
+    }
+  ]
+}

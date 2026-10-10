@@ -1,0 +1,83 @@
+{
+  "scenario_id": "VNHC-016",
+  "scenario_name": "low temp pattern — Vietnam healthcare demo",
+  "scenario_family": "SIMULATED_RUNTIME",
+  "description": "Deterministic ColdProof software test scenario with explicitly synthetic Vietnam healthcare logistics context.",
+  "scenario_origin": "SYNTHETIC_DEMO_CONTEXT",
+  "product_reference_id": "PROD-DEMO-VACCINE",
+  "route_id": "ROUTE-HCM-LONG-AN-CAN-THO",
+  "business_context": {
+    "batch_id": "BATCH-VNHC-016",
+    "shipment_id": "SHIP-VNHC-016",
+    "trip_id": "TRIP-VNHC-016",
+    "origin": "SYNTHETIC_DEMO_CONTEXT",
+    "sender_receiver_relation": {
+      "origin": "SYNTHETIC_DEMO_CONTEXT"
+    },
+    "lot_number": {
+      "value": "LOT-VNHC-016",
+      "origin": "SYNTHETIC_DEMO_CONTEXT"
+    },
+    "association": {
+      "status": "ASSIGNED",
+      "method": "IMPORT_CONTEXT",
+      "resolver_origin": "SYNTHETIC_DEMO_CONTEXT"
+    }
+  },
+  "data_profile": "LOW_TEMP_PATTERN",
+  "labels": [
+    "VIETNAM_HEALTHCARE_DEMO",
+    "SIMULATED_RUNTIME",
+    "LOW_TEMP_PATTERN"
+  ],
+  "golden": false,
+  "golden_label": null,
+  "measurement_source": {
+    "kind": "SIMULATED_LOGGER",
+    "measurement_origin": "SYNTHETIC",
+    "logger_configs": [
+      {
+        "format": "LOGGER_B",
+        "device_id": "B-VN-016",
+        "seed": 49,
+        "count": 1800,
+        "start_time": "2026-10-10T06:00:00",
+        "cadence_ms": 5000,
+        "measurement_origin": "SYNTHETIC",
+        "format_origin": "VENDOR_INSPIRED",
+        "timezone_context": {
+          "utc_offset": "+07:00",
+          "origin": "NORMALIZATION_CONFIGURATION"
+        }
+      }
+    ],
+    "anomaly_injection": {
+      "profile": "LOW_TEMP_PATTERN",
+      "origin": "SYNTHETIC_TEST_PROFILE",
+      "generator_version": "vietnam-healthcare-demo-v2"
+    },
+    "used_for_dq": true,
+    "used_for_excursion_calculation": false
+  },
+  "supplemental_context": [],
+  "expected": {
+    "normalization_expected": "SUCCESS",
+    "dq_status_expected": "PASS",
+    "expected_finding_codes": [],
+    "expected_raw_record_count": 1800,
+    "expected_canonical_record_count": 1800,
+    "expected_device_count": 1,
+    "timezone_context_required": false,
+    "temperature_pattern_is_excursion_conclusion": false
+  },
+  "provenance": {
+    "simulator": "@coldproof/simulated-logger",
+    "normalizer": "@coldproof/logger-normalizer",
+    "dq_policy": "runtime-dq-v1",
+    "scenario_generator": "vietnam-healthcare-demo-v2"
+  },
+  "test_profiles": [
+    "LOW_TEMP_PATTERN"
+  ],
+  "qa_display_case": null
+}

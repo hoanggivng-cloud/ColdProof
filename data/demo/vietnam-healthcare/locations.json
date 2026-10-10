@@ -1,0 +1,96 @@
+{
+  "catalog_version": "2.0.0",
+  "locations": [
+    {
+      "location_id": "LOC-HCM",
+      "location_name": "Ho Chi Minh City pharmaceutical distribution hub — DEMO",
+      "province_or_city": "Ho Chi Minh City",
+      "country_code": "VN",
+      "origin": "SYNTHETIC_DEMO_CONTEXT"
+    },
+    {
+      "location_id": "LOC-THU-DUC",
+      "location_name": "Thu Duc demo hospital",
+      "province_or_city": "Thu Duc",
+      "country_code": "VN",
+      "origin": "SYNTHETIC_DEMO_CONTEXT"
+    },
+    {
+      "location_id": "LOC-BINH-DUONG",
+      "location_name": "Binh Duong provincial cold hub — DEMO",
+      "province_or_city": "Binh Duong",
+      "country_code": "VN",
+      "origin": "SYNTHETIC_DEMO_CONTEXT"
+    },
+    {
+      "location_id": "LOC-DONG-NAI",
+      "location_name": "Dong Nai demo vaccination center",
+      "province_or_city": "Dong Nai",
+      "country_code": "VN",
+      "origin": "SYNTHETIC_DEMO_CONTEXT"
+    },
+    {
+      "location_id": "LOC-LONG-AN",
+      "location_name": "Long An provincial hub — DEMO",
+      "province_or_city": "Long An",
+      "country_code": "VN",
+      "origin": "SYNTHETIC_DEMO_CONTEXT"
+    },
+    {
+      "location_id": "LOC-TIEN-GIANG",
+      "location_name": "Tien Giang demo clinic",
+      "province_or_city": "Tien Giang",
+      "country_code": "VN",
+      "origin": "SYNTHETIC_DEMO_CONTEXT"
+    },
+    {
+      "location_id": "LOC-CAN-THO",
+      "location_name": "Can Tho vaccination center 01 — DEMO",
+      "province_or_city": "Can Tho",
+      "country_code": "VN",
+      "origin": "SYNTHETIC_DEMO_CONTEXT"
+    },
+    {
+      "location_id": "LOC-DA-NANG",
+      "location_name": "Da Nang central cold hub — DEMO",
+      "province_or_city": "Da Nang",
+      "country_code": "VN",
+      "origin": "SYNTHETIC_DEMO_CONTEXT"
+    },
+    {
+      "location_id": "LOC-HUE",
+      "location_name": "Hue demo hospital",
+      "province_or_city": "Hue",
+      "country_code": "VN",
+      "origin": "SYNTHETIC_DEMO_CONTEXT"
+    },
+    {
+      "location_id": "LOC-HANOI",
+      "location_name": "Northern cold warehouse — DEMO",
+      "province_or_city": "Hanoi",
+      "country_code": "VN",
+      "origin": "SYNTHETIC_DEMO_CONTEXT"
+    },
+    {
+      "location_id": "LOC-HAI-PHONG",
+      "location_name": "Hai Phong demo hospital",
+      "province_or_city": "Hai Phong",
+      "country_code": "VN",
+      "origin": "SYNTHETIC_DEMO_CONTEXT"
+    },
+    {
+      "location_id": "LOC-BAC-NINH",
+      "location_name": "Bac Ninh demo clinic",
+      "province_or_city": "Bac Ninh",
+      "country_code": "VN",
+      "origin": "SYNTHETIC_DEMO_CONTEXT"
+    },
+    {
+      "location_id": "LOC-NGHE-AN",
+      "location_name": "Nghe An provincial hub — DEMO",
+      "province_or_city": "Nghe An",
+      "country_code": "VN",
+      "origin": "SYNTHETIC_DEMO_CONTEXT"
+    }
+  ]
+}

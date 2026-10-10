@@ -1,0 +1,80 @@
+{
+  "scenario_id": "VNHC-010",
+  "scenario_name": "duplicate — Vietnam healthcare demo",
+  "scenario_family": "SIMULATED_RUNTIME",
+  "description": "Deterministic ColdProof software test scenario with explicitly synthetic Vietnam healthcare logistics context.",
+  "scenario_origin": "SYNTHETIC_DEMO_CONTEXT",
+  "product_reference_id": "PROD-DEMO-REFERENCE",
+  "route_id": "ROUTE-HCM-LONG-AN",
+  "business_context": {
+    "batch_id": "BATCH-VNHC-010",
+    "shipment_id": "SHIP-VNHC-010",
+    "trip_id": "TRIP-VNHC-010",
+    "origin": "SYNTHETIC_DEMO_CONTEXT",
+    "sender_receiver_relation": {
+      "origin": "SYNTHETIC_DEMO_CONTEXT"
+    },
+    "lot_number": {
+      "value": "LOT-VNHC-010",
+      "origin": "SYNTHETIC_DEMO_CONTEXT"
+    },
+    "association": {
+      "status": "ASSIGNED",
+      "method": "IMPORT_CONTEXT",
+      "resolver_origin": "SYNTHETIC_DEMO_CONTEXT"
+    }
+  },
+  "data_profile": "DUPLICATE",
+  "labels": [
+    "VIETNAM_HEALTHCARE_DEMO",
+    "SIMULATED_RUNTIME",
+    "DUPLICATE"
+  ],
+  "golden": true,
+  "golden_label": "GOLDEN_DUPLICATE",
+  "measurement_source": {
+    "kind": "SIMULATED_LOGGER",
+    "measurement_origin": "SYNTHETIC",
+    "logger_configs": [
+      {
+        "format": "LOGGER_A",
+        "device_id": "LOGGER-A-VN-010",
+        "seed": 43,
+        "count": 2000,
+        "start_time": "2026-10-10T06:00:00+07:00",
+        "cadence_ms": 5000,
+        "measurement_origin": "SYNTHETIC"
+      }
+    ],
+    "anomaly_injection": {
+      "profile": "DUPLICATE",
+      "origin": "SYNTHETIC_TEST_PROFILE",
+      "generator_version": "vietnam-healthcare-demo-v2"
+    },
+    "used_for_dq": true,
+    "used_for_excursion_calculation": false
+  },
+  "supplemental_context": [],
+  "expected": {
+    "normalization_expected": "SUCCESS",
+    "dq_status_expected": "FLAGGED",
+    "expected_finding_codes": [
+      "DUPLICATE_RECORD"
+    ],
+    "expected_raw_record_count": 2001,
+    "expected_canonical_record_count": 2001,
+    "expected_device_count": 1,
+    "timezone_context_required": false,
+    "temperature_pattern_is_excursion_conclusion": false
+  },
+  "provenance": {
+    "simulator": "@coldproof/simulated-logger",
+    "normalizer": "@coldproof/logger-normalizer",
+    "dq_policy": "runtime-dq-v1",
+    "scenario_generator": "vietnam-healthcare-demo-v2"
+  },
+  "test_profiles": [
+    "DUPLICATE"
+  ],
+  "qa_display_case": null
+}

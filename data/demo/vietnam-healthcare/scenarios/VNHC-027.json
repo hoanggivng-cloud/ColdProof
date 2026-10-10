@@ -1,0 +1,136 @@
+{
+  "scenario_id": "VNHC-027",
+  "scenario_name": "spatial reference only — Vietnam healthcare demo",
+  "scenario_family": "MENDELEY_CONTEXT_ONLY",
+  "description": "Deterministic ColdProof software test scenario with explicitly synthetic Vietnam healthcare logistics context.",
+  "scenario_origin": "SYNTHETIC_DEMO_CONTEXT",
+  "product_reference_id": "PROD-DEMO-BIOLOGIC",
+  "route_id": "ROUTE-HCM-DONG-NAI",
+  "business_context": {
+    "batch_id": "BATCH-VNHC-027",
+    "shipment_id": "SHIP-VNHC-027",
+    "trip_id": "TRIP-VNHC-027",
+    "origin": "SYNTHETIC_DEMO_CONTEXT",
+    "sender_receiver_relation": {
+      "origin": "SYNTHETIC_DEMO_CONTEXT"
+    },
+    "lot_number": {
+      "value": "LOT-VNHC-027",
+      "origin": "SYNTHETIC_DEMO_CONTEXT"
+    },
+    "association": {
+      "status": "ASSIGNED",
+      "method": "IMPORT_CONTEXT",
+      "resolver_origin": "SYNTHETIC_DEMO_CONTEXT"
+    }
+  },
+  "data_profile": "SPATIAL_REFERENCE_ONLY",
+  "labels": [
+    "VIETNAM_HEALTHCARE_DEMO",
+    "MENDELEY_CONTEXT_ONLY",
+    "SPATIAL_REFERENCE_ONLY"
+  ],
+  "golden": false,
+  "golden_label": null,
+  "measurement_source": {
+    "kind": "MENDELEY_CONTEXT_ONLY",
+    "runtime_timeline": false,
+    "measurement_origin": "REAL_PUBLIC_DATA",
+    "used_for_dq": false,
+    "used_for_excursion_calculation": false,
+    "conditions": [
+      {
+        "dataset": "Average temperature in an insulated box",
+        "dataset_id": "sz5dgkz7k8",
+        "doi": "10.17632/sz5dgkz7k8.1",
+        "version": "1",
+        "source_id": "MEN-C01",
+        "source_file": "C01 Temperature Horizontal Side Empty.xlsx",
+        "source_checksum_sha256": "6aae5132ab245bb6a9d831bb96c856e2587bf2c8a87944b25965749e362a6efc",
+        "condition_id": "C01",
+        "condition_semantics": "EXPERIMENTAL_CONDITION",
+        "semantic_status": "PARTIALLY_VERIFIED",
+        "relation_type": "ILLUSTRATIVE_CONTEXT",
+        "relation_origin": "SYNTHETIC",
+        "used_for_dq": false,
+        "used_for_excursion_calculation": false,
+        "causal_claim": "NONE",
+        "same_time_claim": "NONE",
+        "same_goods_claim": "NONE",
+        "same_environment_claim": "NONE",
+        "timestamp_status": "NOT_APPLICABLE",
+        "device_interpretation": "NONE",
+        "source_manifest_ref": "data/manifests/source_manifest.csv",
+        "crosswalk_ref": "data/scenarios/design/condition-crosswalk.csv"
+      },
+      {
+        "dataset": "Average temperature in an insulated box",
+        "dataset_id": "sz5dgkz7k8",
+        "doi": "10.17632/sz5dgkz7k8.1",
+        "version": "1",
+        "source_id": "MEN-C04",
+        "source_file": "C04 Temperature Horizontal Side 20CAmb 4CInitial 20mmGap.xlsx",
+        "source_checksum_sha256": "1dcfa387b2e972cdab139a7b8fcca596f922bad7da37182ef7f9d3d179c4c0cd",
+        "condition_id": "C04",
+        "condition_semantics": "EXPERIMENTAL_CONDITION",
+        "semantic_status": "PARTIALLY_VERIFIED",
+        "relation_type": "ILLUSTRATIVE_CONTEXT",
+        "relation_origin": "SYNTHETIC",
+        "used_for_dq": false,
+        "used_for_excursion_calculation": false,
+        "causal_claim": "NONE",
+        "same_time_claim": "NONE",
+        "same_goods_claim": "NONE",
+        "same_environment_claim": "NONE",
+        "timestamp_status": "NOT_APPLICABLE",
+        "device_interpretation": "NONE",
+        "source_manifest_ref": "data/manifests/source_manifest.csv",
+        "crosswalk_ref": "data/scenarios/design/condition-crosswalk.csv"
+      },
+      {
+        "dataset": "Average temperature in an insulated box",
+        "dataset_id": "sz5dgkz7k8",
+        "doi": "10.17632/sz5dgkz7k8.1",
+        "version": "1",
+        "source_id": "MEN-C07",
+        "source_file": "C07 Temperature Horizontal Side 30CAmb 4CInitial 20mmGap.xlsx",
+        "source_checksum_sha256": "d68ecab8ab7f22a9947631e636924009c5165017305195ef67f86eed49b77845",
+        "condition_id": "C07",
+        "condition_semantics": "EXPERIMENTAL_CONDITION",
+        "semantic_status": "PARTIALLY_VERIFIED",
+        "relation_type": "ILLUSTRATIVE_CONTEXT",
+        "relation_origin": "SYNTHETIC",
+        "used_for_dq": false,
+        "used_for_excursion_calculation": false,
+        "causal_claim": "NONE",
+        "same_time_claim": "NONE",
+        "same_goods_claim": "NONE",
+        "same_environment_claim": "NONE",
+        "timestamp_status": "NOT_APPLICABLE",
+        "device_interpretation": "NONE",
+        "source_manifest_ref": "data/manifests/source_manifest.csv",
+        "crosswalk_ref": "data/scenarios/design/condition-crosswalk.csv"
+      }
+    ]
+  },
+  "supplemental_context": [],
+  "expected": {
+    "normalization_expected": "NOT_APPLICABLE_SPATIAL_REFERENCE",
+    "dq_status_expected": "NOT_ASSESSED",
+    "expected_finding_codes": [],
+    "expected_raw_record_count": 0,
+    "expected_canonical_record_count": 0,
+    "expected_device_count": 0,
+    "timezone_context_required": false,
+    "temperature_pattern_is_excursion_conclusion": false
+  },
+  "provenance": {
+    "primary_origin": "REAL_PUBLIC_DATA",
+    "logistics_context_origin": "SYNTHETIC_DEMO_CONTEXT",
+    "scenario_generator": "vietnam-healthcare-demo-v2"
+  },
+  "test_profiles": [
+    "SPATIAL_REFERENCE_ONLY"
+  ],
+  "qa_display_case": null
+}

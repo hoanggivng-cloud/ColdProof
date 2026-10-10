@@ -1,0 +1,394 @@
+{
+  "manifest_version": "1.0.0",
+  "scenario_generator_version": "vietnam-healthcare-demo-v2",
+  "scenarios": [
+    {
+      "scenario_id": "VNHC-001",
+      "normalization_expected": "PRE_NORMALIZED_PUBLIC_EVIDENCE",
+      "dq_status_expected": "PASS",
+      "expected_finding_codes": [],
+      "expected_raw_record_count": 2160,
+      "expected_canonical_record_count": 2160,
+      "expected_device_count": 1,
+      "timezone_context_required": false,
+      "trip_context_origin": "SYNTHETIC_DEMO_CONTEXT",
+      "measurement_origin": "REAL_PUBLIC_DATA",
+      "supplemental_context_origin": "NONE"
+    },
+    {
+      "scenario_id": "VNHC-002",
+      "normalization_expected": "PRE_NORMALIZED_PUBLIC_EVIDENCE",
+      "dq_status_expected": "PASS",
+      "expected_finding_codes": [],
+      "expected_raw_record_count": 2160,
+      "expected_canonical_record_count": 2160,
+      "expected_device_count": 1,
+      "timezone_context_required": false,
+      "trip_context_origin": "SYNTHETIC_DEMO_CONTEXT",
+      "measurement_origin": "REAL_PUBLIC_DATA",
+      "supplemental_context_origin": "NONE"
+    },
+    {
+      "scenario_id": "VNHC-003",
+      "normalization_expected": "PRE_NORMALIZED_PUBLIC_EVIDENCE",
+      "dq_status_expected": "PASS",
+      "expected_finding_codes": [],
+      "expected_raw_record_count": 2160,
+      "expected_canonical_record_count": 2160,
+      "expected_device_count": 1,
+      "timezone_context_required": false,
+      "trip_context_origin": "SYNTHETIC_DEMO_CONTEXT",
+      "measurement_origin": "REAL_PUBLIC_DATA",
+      "supplemental_context_origin": "NONE"
+    },
+    {
+      "scenario_id": "VNHC-004",
+      "normalization_expected": "PRE_NORMALIZED_PUBLIC_EVIDENCE",
+      "dq_status_expected": "PASS",
+      "expected_finding_codes": [],
+      "expected_raw_record_count": 2160,
+      "expected_canonical_record_count": 2160,
+      "expected_device_count": 1,
+      "timezone_context_required": false,
+      "trip_context_origin": "SYNTHETIC_DEMO_CONTEXT",
+      "measurement_origin": "REAL_PUBLIC_DATA",
+      "supplemental_context_origin": "NONE"
+    },
+    {
+      "scenario_id": "VNHC-005",
+      "normalization_expected": "PRE_NORMALIZED_PUBLIC_EVIDENCE",
+      "dq_status_expected": "PASS",
+      "expected_finding_codes": [],
+      "expected_raw_record_count": 2160,
+      "expected_canonical_record_count": 2160,
+      "expected_device_count": 1,
+      "timezone_context_required": false,
+      "trip_context_origin": "SYNTHETIC_DEMO_CONTEXT",
+      "measurement_origin": "REAL_PUBLIC_DATA",
+      "supplemental_context_origin": "NONE"
+    },
+    {
+      "scenario_id": "VNHC-006",
+      "normalization_expected": "PRE_NORMALIZED_PUBLIC_EVIDENCE",
+      "dq_status_expected": "PASS",
+      "expected_finding_codes": [],
+      "expected_raw_record_count": 2160,
+      "expected_canonical_record_count": 2160,
+      "expected_device_count": 1,
+      "timezone_context_required": false,
+      "trip_context_origin": "SYNTHETIC_DEMO_CONTEXT",
+      "measurement_origin": "REAL_PUBLIC_DATA",
+      "supplemental_context_origin": "NONE"
+    },
+    {
+      "scenario_id": "VNHC-007",
+      "normalization_expected": "PRE_NORMALIZED_PUBLIC_EVIDENCE",
+      "dq_status_expected": "PASS",
+      "expected_finding_codes": [],
+      "expected_raw_record_count": 2160,
+      "expected_canonical_record_count": 2160,
+      "expected_device_count": 1,
+      "timezone_context_required": false,
+      "trip_context_origin": "SYNTHETIC_DEMO_CONTEXT",
+      "measurement_origin": "REAL_PUBLIC_DATA",
+      "supplemental_context_origin": "NONE"
+    },
+    {
+      "scenario_id": "VNHC-008",
+      "normalization_expected": "PRE_NORMALIZED_PUBLIC_EVIDENCE",
+      "dq_status_expected": "PASS",
+      "expected_finding_codes": [],
+      "expected_raw_record_count": 2160,
+      "expected_canonical_record_count": 2160,
+      "expected_device_count": 1,
+      "timezone_context_required": false,
+      "trip_context_origin": "SYNTHETIC_DEMO_CONTEXT",
+      "measurement_origin": "REAL_PUBLIC_DATA",
+      "supplemental_context_origin": "NONE"
+    },
+    {
+      "scenario_id": "VNHC-009",
+      "normalization_expected": "SUCCESS",
+      "dq_status_expected": "PASS",
+      "expected_finding_codes": [],
+      "expected_raw_record_count": 3000,
+      "expected_canonical_record_count": 3000,
+      "expected_device_count": 1,
+      "timezone_context_required": false,
+      "trip_context_origin": "SYNTHETIC_DEMO_CONTEXT",
+      "measurement_origin": "SYNTHETIC",
+      "supplemental_context_origin": "NONE"
+    },
+    {
+      "scenario_id": "VNHC-010",
+      "normalization_expected": "SUCCESS",
+      "dq_status_expected": "FLAGGED",
+      "expected_finding_codes": [
+        "DUPLICATE_RECORD"
+      ],
+      "expected_raw_record_count": 2001,
+      "expected_canonical_record_count": 2001,
+      "expected_device_count": 1,
+      "timezone_context_required": false,
+      "trip_context_origin": "SYNTHETIC_DEMO_CONTEXT",
+      "measurement_origin": "SYNTHETIC",
+      "supplemental_context_origin": "NONE"
+    },
+    {
+      "scenario_id": "VNHC-011",
+      "normalization_expected": "SUCCESS",
+      "dq_status_expected": "FLAGGED",
+      "expected_finding_codes": [
+        "CONFLICTING_RECORD"
+      ],
+      "expected_raw_record_count": 2001,
+      "expected_canonical_record_count": 2001,
+      "expected_device_count": 1,
+      "timezone_context_required": false,
+      "trip_context_origin": "SYNTHETIC_DEMO_CONTEXT",
+      "measurement_origin": "SYNTHETIC",
+      "supplemental_context_origin": "NONE"
+    },
+    {
+      "scenario_id": "VNHC-012",
+      "normalization_expected": "SUCCESS",
+      "dq_status_expected": "FLAGGED",
+      "expected_finding_codes": [
+        "OUT_OF_ORDER_RECORD"
+      ],
+      "expected_raw_record_count": 1500,
+      "expected_canonical_record_count": 1500,
+      "expected_device_count": 1,
+      "timezone_context_required": false,
+      "trip_context_origin": "SYNTHETIC_DEMO_CONTEXT",
+      "measurement_origin": "SYNTHETIC",
+      "supplemental_context_origin": "NONE"
+    },
+    {
+      "scenario_id": "VNHC-013",
+      "normalization_expected": "SUCCESS",
+      "dq_status_expected": "FLAGGED",
+      "expected_finding_codes": [
+        "MISSING_INTERVAL"
+      ],
+      "expected_raw_record_count": 1999,
+      "expected_canonical_record_count": 1999,
+      "expected_device_count": 1,
+      "timezone_context_required": false,
+      "trip_context_origin": "SYNTHETIC_DEMO_CONTEXT",
+      "measurement_origin": "SYNTHETIC",
+      "supplemental_context_origin": "NONE"
+    },
+    {
+      "scenario_id": "VNHC-014",
+      "normalization_expected": "SUCCESS",
+      "dq_status_expected": "FLAGGED",
+      "expected_finding_codes": [
+        "MISSING_INTERVAL"
+      ],
+      "expected_raw_record_count": 1998,
+      "expected_canonical_record_count": 1998,
+      "expected_device_count": 1,
+      "timezone_context_required": false,
+      "trip_context_origin": "SYNTHETIC_DEMO_CONTEXT",
+      "measurement_origin": "SYNTHETIC",
+      "supplemental_context_origin": "NONE"
+    },
+    {
+      "scenario_id": "VNHC-015",
+      "normalization_expected": "SUCCESS",
+      "dq_status_expected": "PASS",
+      "expected_finding_codes": [],
+      "expected_raw_record_count": 2200,
+      "expected_canonical_record_count": 2200,
+      "expected_device_count": 1,
+      "timezone_context_required": false,
+      "trip_context_origin": "SYNTHETIC_DEMO_CONTEXT",
+      "measurement_origin": "SYNTHETIC",
+      "supplemental_context_origin": "NONE"
+    },
+    {
+      "scenario_id": "VNHC-016",
+      "normalization_expected": "SUCCESS",
+      "dq_status_expected": "PASS",
+      "expected_finding_codes": [],
+      "expected_raw_record_count": 1800,
+      "expected_canonical_record_count": 1800,
+      "expected_device_count": 1,
+      "timezone_context_required": false,
+      "trip_context_origin": "SYNTHETIC_DEMO_CONTEXT",
+      "measurement_origin": "SYNTHETIC",
+      "supplemental_context_origin": "NONE"
+    },
+    {
+      "scenario_id": "VNHC-017",
+      "normalization_expected": "FAILURE",
+      "dq_status_expected": "NOT_ASSESSED",
+      "expected_finding_codes": [
+        "MISSING_TEMPERATURE"
+      ],
+      "expected_raw_record_count": 1,
+      "expected_canonical_record_count": 0,
+      "expected_device_count": 1,
+      "timezone_context_required": false,
+      "trip_context_origin": "SYNTHETIC_DEMO_CONTEXT",
+      "measurement_origin": "SYNTHETIC",
+      "supplemental_context_origin": "NONE"
+    },
+    {
+      "scenario_id": "VNHC-018",
+      "normalization_expected": "FAILURE",
+      "dq_status_expected": "NOT_ASSESSED",
+      "expected_finding_codes": [
+        "INVALID_TEMPERATURE"
+      ],
+      "expected_raw_record_count": 1,
+      "expected_canonical_record_count": 0,
+      "expected_device_count": 1,
+      "timezone_context_required": false,
+      "trip_context_origin": "SYNTHETIC_DEMO_CONTEXT",
+      "measurement_origin": "SYNTHETIC",
+      "supplemental_context_origin": "NONE"
+    },
+    {
+      "scenario_id": "VNHC-019",
+      "normalization_expected": "FAILURE",
+      "dq_status_expected": "NOT_ASSESSED",
+      "expected_finding_codes": [
+        "INVALID_TIMESTAMP"
+      ],
+      "expected_raw_record_count": 1,
+      "expected_canonical_record_count": 0,
+      "expected_device_count": 1,
+      "timezone_context_required": false,
+      "trip_context_origin": "SYNTHETIC_DEMO_CONTEXT",
+      "measurement_origin": "SYNTHETIC",
+      "supplemental_context_origin": "NONE"
+    },
+    {
+      "scenario_id": "VNHC-020",
+      "normalization_expected": "FAILURE",
+      "dq_status_expected": "NOT_ASSESSED",
+      "expected_finding_codes": [
+        "TIMEZONE_CONTEXT_REQUIRED"
+      ],
+      "expected_raw_record_count": 1,
+      "expected_canonical_record_count": 0,
+      "expected_device_count": 1,
+      "timezone_context_required": true,
+      "trip_context_origin": "SYNTHETIC_DEMO_CONTEXT",
+      "measurement_origin": "SYNTHETIC",
+      "supplemental_context_origin": "NONE"
+    },
+    {
+      "scenario_id": "VNHC-021",
+      "normalization_expected": "FAILURE",
+      "dq_status_expected": "NOT_ASSESSED",
+      "expected_finding_codes": [
+        "DEVICE_IDENTITY_MISMATCH"
+      ],
+      "expected_raw_record_count": 1,
+      "expected_canonical_record_count": 0,
+      "expected_device_count": 1,
+      "timezone_context_required": false,
+      "trip_context_origin": "SYNTHETIC_DEMO_CONTEXT",
+      "measurement_origin": "SYNTHETIC",
+      "supplemental_context_origin": "NONE"
+    },
+    {
+      "scenario_id": "VNHC-022",
+      "normalization_expected": "FAILURE",
+      "dq_status_expected": "NOT_ASSESSED",
+      "expected_finding_codes": [
+        "RAW_PAYLOAD_CHECKSUM_MISMATCH"
+      ],
+      "expected_raw_record_count": 1,
+      "expected_canonical_record_count": 0,
+      "expected_device_count": 1,
+      "timezone_context_required": false,
+      "trip_context_origin": "SYNTHETIC_DEMO_CONTEXT",
+      "measurement_origin": "SYNTHETIC",
+      "supplemental_context_origin": "NONE"
+    },
+    {
+      "scenario_id": "VNHC-023",
+      "normalization_expected": "SUCCESS",
+      "dq_status_expected": "PASS",
+      "expected_finding_codes": [],
+      "expected_raw_record_count": 3000,
+      "expected_canonical_record_count": 3000,
+      "expected_device_count": 2,
+      "timezone_context_required": false,
+      "trip_context_origin": "SYNTHETIC_DEMO_CONTEXT",
+      "measurement_origin": "SYNTHETIC",
+      "supplemental_context_origin": "REAL_PUBLIC_DATA_WITH_SYNTHETIC_RELATION"
+    },
+    {
+      "scenario_id": "VNHC-024",
+      "normalization_expected": "SUCCESS",
+      "dq_status_expected": "PASS",
+      "expected_finding_codes": [],
+      "expected_raw_record_count": 2400,
+      "expected_canonical_record_count": 2400,
+      "expected_device_count": 1,
+      "timezone_context_required": false,
+      "trip_context_origin": "SYNTHETIC_DEMO_CONTEXT",
+      "measurement_origin": "SYNTHETIC",
+      "supplemental_context_origin": "REAL_PUBLIC_DATA_WITH_SYNTHETIC_RELATION"
+    },
+    {
+      "scenario_id": "VNHC-025",
+      "normalization_expected": "SUCCESS",
+      "dq_status_expected": "FLAGGED",
+      "expected_finding_codes": [
+        "MISSING_INTERVAL"
+      ],
+      "expected_raw_record_count": 1799,
+      "expected_canonical_record_count": 1799,
+      "expected_device_count": 1,
+      "timezone_context_required": false,
+      "trip_context_origin": "SYNTHETIC_DEMO_CONTEXT",
+      "measurement_origin": "SYNTHETIC",
+      "supplemental_context_origin": "REAL_PUBLIC_DATA_WITH_SYNTHETIC_RELATION"
+    },
+    {
+      "scenario_id": "VNHC-026",
+      "normalization_expected": "SUCCESS",
+      "dq_status_expected": "PASS",
+      "expected_finding_codes": [],
+      "expected_raw_record_count": 2000,
+      "expected_canonical_record_count": 2000,
+      "expected_device_count": 2,
+      "timezone_context_required": false,
+      "trip_context_origin": "SYNTHETIC_DEMO_CONTEXT",
+      "measurement_origin": "SYNTHETIC",
+      "supplemental_context_origin": "REAL_PUBLIC_DATA_WITH_SYNTHETIC_RELATION"
+    },
+    {
+      "scenario_id": "VNHC-027",
+      "normalization_expected": "NOT_APPLICABLE_SPATIAL_REFERENCE",
+      "dq_status_expected": "NOT_ASSESSED",
+      "expected_finding_codes": [],
+      "expected_raw_record_count": 0,
+      "expected_canonical_record_count": 0,
+      "expected_device_count": 0,
+      "timezone_context_required": false,
+      "trip_context_origin": "SYNTHETIC_DEMO_CONTEXT",
+      "measurement_origin": "REAL_PUBLIC_DATA",
+      "supplemental_context_origin": "NONE"
+    },
+    {
+      "scenario_id": "VNHC-028",
+      "normalization_expected": "NOT_APPLICABLE_SPATIAL_REFERENCE",
+      "dq_status_expected": "NOT_ASSESSED",
+      "expected_finding_codes": [],
+      "expected_raw_record_count": 0,
+      "expected_canonical_record_count": 0,
+      "expected_device_count": 0,
+      "timezone_context_required": false,
+      "trip_context_origin": "SYNTHETIC_DEMO_CONTEXT",
+      "measurement_origin": "REAL_PUBLIC_DATA",
+      "supplemental_context_origin": "NONE"
+    }
+  ]
+}

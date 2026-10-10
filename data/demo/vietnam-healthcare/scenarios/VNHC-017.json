@@ -1,0 +1,80 @@
+{
+  "scenario_id": "VNHC-017",
+  "scenario_name": "missing temperature — Vietnam healthcare demo",
+  "scenario_family": "SIMULATED_RUNTIME",
+  "description": "Deterministic ColdProof software test scenario with explicitly synthetic Vietnam healthcare logistics context.",
+  "scenario_origin": "SYNTHETIC_DEMO_CONTEXT",
+  "product_reference_id": "PROD-DEMO-BIOLOGIC",
+  "route_id": "ROUTE-LONG-AN-TIEN-GIANG-CAN-THO",
+  "business_context": {
+    "batch_id": "BATCH-VNHC-017",
+    "shipment_id": "SHIP-VNHC-017",
+    "trip_id": "TRIP-VNHC-017",
+    "origin": "SYNTHETIC_DEMO_CONTEXT",
+    "sender_receiver_relation": {
+      "origin": "SYNTHETIC_DEMO_CONTEXT"
+    },
+    "lot_number": {
+      "value": "LOT-VNHC-017",
+      "origin": "SYNTHETIC_DEMO_CONTEXT"
+    },
+    "association": {
+      "status": "ASSIGNED",
+      "method": "IMPORT_CONTEXT",
+      "resolver_origin": "SYNTHETIC_DEMO_CONTEXT"
+    }
+  },
+  "data_profile": "MISSING_TEMPERATURE",
+  "labels": [
+    "VIETNAM_HEALTHCARE_DEMO",
+    "SIMULATED_RUNTIME",
+    "MISSING_TEMPERATURE"
+  ],
+  "golden": false,
+  "golden_label": null,
+  "measurement_source": {
+    "kind": "SIMULATED_LOGGER",
+    "measurement_origin": "SYNTHETIC",
+    "logger_configs": [
+      {
+        "format": "LOGGER_A",
+        "device_id": "LOGGER-A-VN-017",
+        "seed": 50,
+        "count": 1,
+        "start_time": "2026-10-10T06:00:00+07:00",
+        "cadence_ms": 5000,
+        "measurement_origin": "SYNTHETIC"
+      }
+    ],
+    "anomaly_injection": {
+      "profile": "MISSING_TEMPERATURE",
+      "origin": "SYNTHETIC_TEST_PROFILE",
+      "generator_version": "vietnam-healthcare-demo-v2"
+    },
+    "used_for_dq": true,
+    "used_for_excursion_calculation": false
+  },
+  "supplemental_context": [],
+  "expected": {
+    "normalization_expected": "FAILURE",
+    "dq_status_expected": "NOT_ASSESSED",
+    "expected_finding_codes": [
+      "MISSING_TEMPERATURE"
+    ],
+    "expected_raw_record_count": 1,
+    "expected_canonical_record_count": 0,
+    "expected_device_count": 1,
+    "timezone_context_required": false,
+    "temperature_pattern_is_excursion_conclusion": false
+  },
+  "provenance": {
+    "simulator": "@coldproof/simulated-logger",
+    "normalizer": "@coldproof/logger-normalizer",
+    "dq_policy": "runtime-dq-v1",
+    "scenario_generator": "vietnam-healthcare-demo-v2"
+  },
+  "test_profiles": [
+    "MISSING_TEMPERATURE"
+  ],
+  "qa_display_case": null
+}
