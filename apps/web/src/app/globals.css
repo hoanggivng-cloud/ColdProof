@@ -524,3 +524,11 @@ tbody tr:hover td { background: #F9FAFB; }
 }
 
 @media (max-width: 480px) { .auth-panel { padding: var(--space-5); } }
+
+/* Force prevent horizontal overflow */
+html, body { overflow-x: hidden; width: 100vw; max-width: 100%; }
+
+@media (max-width: 768px) {
+  .topbar { grid-template-columns: 1fr auto; }
+  .topbar-user .user-info { display: none !important; }
+}
