@@ -9,8 +9,8 @@ export function toRole(value: string): Role | null {
 }
 export const roleLabels: Record<Role, string> = { OPERATOR: 'Operator', QA_REVIEWER: 'QA Reviewer', ADMIN: 'Admin' };
 export const demoAccounts: { role: Role; email: string }[] = [
-  { role: 'OPERATOR', email: 'operator@coldproof.local' },
-  { role: 'QA_REVIEWER', email: 'qa@coldproof.local' },
-  { role: 'ADMIN', email: 'admin@coldproof.local' },
+  { role: 'OPERATOR', email: 'operator@gmail.com' },
+  { role: 'QA_REVIEWER', email: 'qa@gmail.com' },
+  { role: 'ADMIN', email: 'admin@gmail.com' },
 ];
 export const isDemo = () => process.env.NEXT_PUBLIC_APP_ENV === 'demo' || process.env.NODE_ENV !== 'production';

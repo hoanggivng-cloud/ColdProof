@@ -84,7 +84,7 @@ export function RegisterForm() {
             autoFocus
             required
             disabled={pending}
-            placeholder="duoc-vien@coldproof.local"
+            placeholder="duoc-vien@gmail.com"
           />
         </Field>
         <Field id="register-role" label="Vai trò hệ thống" hint="Phân quyền tài khoản trong chuỗi lạnh">

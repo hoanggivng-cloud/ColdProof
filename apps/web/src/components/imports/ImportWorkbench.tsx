@@ -37,9 +37,9 @@ export function ImportWorkbench() {
     setFile(value);
   };
   const loadDemo = async () => {
-    setLoading(true); setError(''); clearPreview();
+    setLoading(true); setError(''); setPage(0); setFlaggedOnly(false);
     try { setPreview(await getDemoImportPreview()); }
-    catch { setError('Không tải được dữ liệu xem trước mô phỏng. Thử lại bằng nút xem mẫu.'); }
+    catch { setError('Không tải được dữ liệu xem trước mô phỏng.'); }
     finally { setLoading(false); }
   };
 
@@ -49,20 +49,21 @@ export function ImportWorkbench() {
         const job = (await writeRecord('imports', 'POST', { source_id: sourceId, parser_id: 'format-a', parser_version: '0.1.0' })) as Record<string, unknown>;
         setMessage(`Tạo import job thành công (ID: ${String(job.id)}). Job metadata only; BullMQ worker is TODO.`);
         setResult(true);
+        await loadDemo();
     } catch (err) {
         setError(err instanceof Error ? err.message : 'Không thể tạo import job');
     }
   };
 
   const rows = preview?.rows.filter(row => !flaggedOnly || row.flag !== 'VALID') ?? [];
-  return <section aria-label="Import dữ liệu logger">
+  return <section aria-label="Import dữ liệu logger" className="space-y-6">
     <Alert title="Dữ liệu mô phỏng">File chọn tại máy chưa được upload hoặc parse. Dữ liệu xem trước lấy từ fixture riêng, không phải nội dung file bạn chọn.</Alert>
     {error && <Alert tone="error">{error}</Alert>}
     <div className="import-grid">
       <Panel title="01. Chọn file logger"><div className="import-dropzone" onDragOver={event => event.preventDefault()} onDrop={event => { event.preventDefault(); if (ready) choose(event.dataTransfer.files[0]); }}><p>Kéo thả file xuất từ logger. CSV / TSV / TXT, chỉ chọn tại trình duyệt.</p><Field id="import-file" label="Chọn file nhiệt độ"><input id="import-file" ref={input} type="file" accept=".csv,.tsv,.txt" disabled={!ready} onChange={event => choose(event.target.files?.[0])} /></Field></div>
-        {!file ? <p>Chưa chọn file nhiệt độ.</p> : <div className="attachment-row"><span className="number">{file.name} · {(file.size / 1024).toFixed(1)} KB</span><Badge tone="warning">Chưa upload / parse</Badge><Button variant="text" onClick={() => { choose(); if (input.current) input.current.value = ''; }}>Bỏ file</Button></div>}
+        {!file ? <p>Chưa chọn file nhiệt độ.</p> : <div className="attachment-row"><span className="number">{file.name} · {(file.size / 1024).toFixed(1)} KB</span>{result ? <Badge tone="success">Đã ghi nhận Job</Badge> : <Badge tone="warning">Chưa upload / parse</Badge>}<Button variant="text" onClick={() => { choose(); if (input.current) input.current.value = ''; }}>Bỏ file</Button></div>}
         <ul className="page-meta"><li>Lô trong form: {shipment ? <strong className="number">{shipment.lot}</strong> : <strong>Chưa chuẩn bị lô</strong>}</li><li>Thiết bị: {deviceIds.length ? <strong className="number">{deviceIds.join(', ')}</strong> : <strong>Chưa gán</strong>}</li></ul>
-        <div className="form-footer"><Button disabled={!ready || !file} onClick={createImportJob}>Kiểm tra file trên server</Button><Button primary={ready && !preview} disabled={!ready || loading} onClick={loadDemo}>Xem mẫu Import mô phỏng</Button></div>
+        <div className="form-footer"><Button primary disabled={!ready || !file} onClick={createImportJob}>Kiểm tra file trên server</Button></div>
       </Panel>
       <Panel title="02. Kiểm tra và mapping"><p>Format, múi giờ, đơn vị và thiết bị của bộ dữ liệu.</p>
         {!preview ? <p>Chưa có kết quả kiểm tra. Chọn xem mẫu để kiểm tra bố cục.</p> : <><dl className="workflow-summary"><dt>File mẫu</dt><dd className="number">{preview.file_name}</dd><dt>Format</dt><dd>{preview.format}</dd><dt>Múi giờ gốc</dt><dd>{preview.timezone}</dd><dt>Đơn vị</dt><dd>{preview.unit}</dd><dt>Thiết bị trong mẫu</dt><dd className="number">{preview.device_id}</dd><dt>Profile trong mẫu</dt><dd className="number">{preview.profile_id} · {preview.lower}–{preview.upper}°C</dd></dl><Alert>Các cờ kiểm tra được dựng sẵn trong mẫu (mô phỏng). Chưa kiểm tra schema, serial hoặc checksum file đã chọn.</Alert>{!deviceIds.includes(preview.device_id) && <Alert tone="warning" title="Thiết bị không khớp">Thiết bị trong mẫu không nằm trong lựa chọn của lô. Không tự gán mẫu vào thiết bị khác.</Alert>}</>}

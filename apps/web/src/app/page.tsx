@@ -1,8 +1,87 @@
+'use client';
 import { PageHeader } from '../components/layout/PageHeader';
 import { Panel } from '../components/ui/Panel';
 import { Button } from '../components/ui/Button';
-import { ApiRecords } from '../components/ApiRecords';
-import { WorkflowProgress } from '../components/shipment/ShipmentWorkflow';
+import { useSession } from '../components/auth/SessionProvider';
+import { roleLabels } from '../lib/session';
+
 export default function Home() {
-  return <><PageHeader title="ColdProof" description="Theo dõi dữ liệu và quy trình bằng chứng chuỗi lạnh"><Button href="/batches/new" primary>Tạo Shipment</Button></PageHeader><WorkflowProgress current={-1} /><div className="grid"><Panel title="Vận hành Shipment"><p>Tạo lô, gán thiết bị và xem dữ liệu nhiệt độ.</p><div className="actions"><Button href="/batches">Xem danh sách lô</Button><Button href="/imports">Nhập dữ liệu</Button></div></Panel><Panel title="QA & hồ sơ"><p>Xem sự cố và bằng chứng để người kiểm tra đánh giá.</p><div className="actions"><Button href="/qa">Xem QA review</Button><Button href="/reports">Xem hồ sơ</Button></div></Panel></div><section className="panel"><h2>Kết nối API server</h2><ApiRecords path="health" columns={[["status", "Trạng thái"], ["readiness", "Sẵn sàng"]]} /></section></>;
+  const { user, loading } = useSession();
+
+  if (loading) return <div className="empty-state">Đang tải...</div>;
+  if (!user) return null; // Proxy middleware redirects to login
+
+  return (
+    <>
+      <PageHeader 
+        title={`Xin chào, ${user.email.split('@')[0]}!`} 
+        description={`Bạn đang đăng nhập với vai trò ${roleLabels[user.role]}. Dưới đây là các tác vụ dành cho bạn.`} 
+      />
+      
+      <div className="grid" style={{ gap: '24px', gridTemplateColumns: 'repeat(auto-fit, minmax(300px, 1fr))' }}>
+        
+        {/* OPERATOR & ADMIN */}
+        {(user.role === 'OPERATOR' || user.role === 'ADMIN') && (
+          <>
+            <Panel title="📦 Quản lý Lô hàng (Shipment)">
+              <p style={{ minHeight: '40px' }}>Khởi tạo lô hàng mới, gán thiết bị theo dõi nhiệt độ và quản lý các lô hàng đang vận chuyển.</p>
+              <div className="actions" style={{ marginTop: 'auto', display: 'flex', gap: '12px' }}>
+                <Button href="/batches/new" primary>+ Khởi tạo lô mới</Button>
+                <Button href="/batches">Xem danh sách</Button>
+              </div>
+            </Panel>
+
+            <Panel title="📥 Nhập Dữ liệu Thiết bị">
+              <p style={{ minHeight: '40px' }}>Tải lên file dữ liệu nhiệt độ từ thiết bị Logger để hệ thống phân tích và phát hiện sự cố.</p>
+              <div className="actions" style={{ marginTop: 'auto' }}>
+                <Button href="/imports" primary>Import Dữ liệu</Button>
+              </div>
+            </Panel>
+          </>
+        )}
+
+        {/* QA_REVIEWER & ADMIN */}
+        {(user.role === 'QA_REVIEWER' || user.role === 'ADMIN') && (
+          <>
+            <Panel title="🚨 Phê duyệt Sự cố (QA Review)">
+              <p style={{ minHeight: '40px' }}>Kiểm tra và đưa ra quyết định phê duyệt đối với các lô hàng có phát hiện vượt ngưỡng nhiệt độ.</p>
+              <div className="actions" style={{ marginTop: 'auto' }}>
+                <Button href="/qa" primary>Xử lý Sự cố</Button>
+              </div>
+            </Panel>
+
+            <Panel title="📄 Hồ sơ Bằng chứng">
+              <p style={{ minHeight: '40px' }}>Trích xuất, xem và tải xuống các báo cáo bằng chứng nhiệt độ (PDF) có chữ ký điện tử.</p>
+              <div className="actions" style={{ marginTop: 'auto' }}>
+                <Button href="/reports">Xem Hồ sơ</Button>
+              </div>
+            </Panel>
+          </>
+        )}
+      </div>
+
+      <div style={{ marginTop: '32px' }}>
+        <Panel title="Quy trình Vận hành Chuẩn (SOP)">
+          <div style={{ display: 'grid', gridTemplateColumns: 'repeat(auto-fit, minmax(200px, 1fr))', gap: '16px', paddingTop: '8px' }}>
+             <div style={{ padding: '16px', background: '#F9FAFB', borderRadius: '8px', borderLeft: '4px solid #1F3A68' }}>
+                <strong style={{ color: '#111827' }}>Bước 1: Tạo Lô</strong>
+                <p style={{ fontSize: '13px', margin: '8px 0 0', color: '#6B7280' }}>Operator tạo lô mới và gán thiết bị (Logger).</p>
+             </div>
+             <div style={{ padding: '16px', background: '#F9FAFB', borderRadius: '8px', borderLeft: '4px solid #1F3A68' }}>
+                <strong style={{ color: '#111827' }}>Bước 2: Import</strong>
+                <p style={{ fontSize: '13px', margin: '8px 0 0', color: '#6B7280' }}>Operator tải file nhiệt độ lên để phân tích.</p>
+             </div>
+             <div style={{ padding: '16px', background: '#F9FAFB', borderRadius: '8px', borderLeft: '4px solid #B54708' }}>
+                <strong style={{ color: '#111827' }}>Bước 3: QA Duyệt</strong>
+                <p style={{ fontSize: '13px', margin: '8px 0 0', color: '#6B7280' }}>QA kiểm tra các đoạn vượt ngưỡng và ra quyết định.</p>
+             </div>
+             <div style={{ padding: '16px', background: '#F9FAFB', borderRadius: '8px', borderLeft: '4px solid #10B981' }}>
+                <strong style={{ color: '#111827' }}>Bước 4: Hồ sơ</strong>
+                <p style={{ fontSize: '13px', margin: '8px 0 0', color: '#6B7280' }}>Hệ thống sinh báo cáo PDF làm bằng chứng.</p>
+             </div>
+          </div>
+        </Panel>
+      </div>
+    </>
+  );
 }
