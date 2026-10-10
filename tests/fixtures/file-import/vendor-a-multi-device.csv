@@ -1,0 +1,3 @@
+device_id,recorded_at,temperature_c,humidity_percent
+LOGGER-A-019-A,2026-10-10T14:30:00+07:00,5.4,72.1
+LOGGER-A-019-B,2026-10-10T14:30:00+07:00,8.2,68.0

@@ -20,6 +20,8 @@ export interface XlsxCell {
   column: number;
   row: number;
   value?: string;
+  /** Formula source is exposed for rejection; this reader never evaluates it. */
+  formula?: string;
 }
 
 export interface XlsxSheet {
@@ -180,6 +182,7 @@ function parseCells(sheetXml: string, strings: readonly string[]): XlsxCell[] {
 
     const type = attribute(attributes, 't');
     const rawValue = /<v\b[^>]*>([\s\S]*?)<\/v>/.exec(body)?.[1];
+    const rawFormula = /<f\b[^>]*>([\s\S]*?)<\/f>/.exec(body)?.[1];
     let value: string | undefined;
     if (type === 'inlineStr') {
       value = textNodes(body);
@@ -198,6 +201,7 @@ function parseCells(sheetXml: string, strings: readonly string[]): XlsxCell[] {
       column: columnNumber(reference),
       row: Number(rowText),
       ...(value !== undefined ? { value } : {}),
+      ...(rawFormula !== undefined ? { formula: decodeXml(rawFormula) } : {}),
     });
   }
   return cells;
