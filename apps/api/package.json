@@ -15,6 +15,7 @@
   "dependencies": {
     "@coldproof/canonical-schema": "workspace:*",
     "@coldproof/parser-contracts": "workspace:*",
+    "@coldproof/runtime-data-quality": "workspace:*",
     "@coldproof/scenario-schema": "workspace:*",
     "@coldproof/shared-types": "workspace:*",
     "@nestjs/common": "^11.1.9",

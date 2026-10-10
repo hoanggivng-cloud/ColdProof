@@ -66,6 +66,9 @@ importers:
       '@coldproof/parser-contracts':
         specifier: workspace:*
         version: link:../../packages/parser-contracts
+      '@coldproof/runtime-data-quality':
+        specifier: workspace:*
+        version: link:../../packages/runtime-data-quality
       '@coldproof/scenario-schema':
         specifier: workspace:*
         version: link:../../packages/scenario-schema

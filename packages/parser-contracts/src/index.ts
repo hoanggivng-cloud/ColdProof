@@ -301,3 +301,191 @@ export interface ParserAdapter {
   canParse(input: FileMetadata, sample: Buffer): DetectionResult;
   parse(input: RawAsset): AsyncIterable<ParsedRecord>;
 }
+
+/** File-import formats supported by the D10 compatibility layer. */
+export const FileImportSourceFormatSchema = z.enum([
+  'VENDOR_A_CSV',
+  'VENDOR_B_CSV',
+  'VENDOR_C_XLSX',
+  'ZENODO_CSV',
+  'MENDELEY_XLSX',
+  'UNKNOWN',
+]);
+export type FileImportSourceFormat = z.infer<typeof FileImportSourceFormatSchema>;
+
+export const FileImportTimezoneContextSchema = z
+  .object({
+    utc_offset: timezoneOffset,
+    origin: z.enum(['DEVICE_CONFIGURATION', 'FILE_IMPORT_CONFIGURATION']),
+  })
+  .strict();
+export type FileImportTimezoneContext = z.infer<
+  typeof FileImportTimezoneContextSchema
+>;
+
+/**
+ * Immutable file-level evidence envelope. TV2 owns storage and constructs this
+ * value after upload; TV1 validates and interprets the exact supplied bytes.
+ */
+export const RawFileImportSchema = z
+  .object({
+    import_id: nonEmptyText,
+    original_filename: nonEmptyText,
+    received_at: z.string().datetime({ offset: true }),
+    content_sha256: checksumSha256,
+    file_size_bytes: z.number().int().nonnegative(),
+    media_type: nonEmptyText,
+    source_format: FileImportSourceFormatSchema,
+    origin: MeasurementOriginSchema,
+    format_origin: z.literal('VENDOR_INSPIRED').optional(),
+    adapter_hint: nonEmptyText.optional(),
+    timezone_context: FileImportTimezoneContextSchema.optional(),
+    upload_metadata: z
+      .object({
+        transport: z.literal('FILE_IMPORT'),
+        original_name_encoding: z.literal('UTF-8'),
+        request_ref: nonEmptyText.optional(),
+      })
+      .strict(),
+    content: z.instanceof(Buffer),
+  })
+  .strict();
+export type RawFileImport = z.infer<typeof RawFileImportSchema>;
+
+export const FileImportIssueCodeSchema = z.enum([
+  'INVALID_FILE_IMPORT_CONTRACT',
+  'FILE_CHECKSUM_MISMATCH',
+  'FILE_SIZE_MISMATCH',
+  'FILE_LIMIT_EXCEEDED',
+  'ROW_LIMIT_EXCEEDED',
+  'UNSUPPORTED_FILE_FORMAT',
+  'NO_COMPATIBLE_ADAPTER',
+  'MISSING_REQUIRED_COLUMN',
+  'MALFORMED_CSV_ROW',
+  'CORRUPTED_WORKBOOK',
+  'UNSUPPORTED_SHEET_STRUCTURE',
+  'AMBIGUOUS_SHEET_SELECTION',
+  'FORMULA_MEASUREMENT_UNSUPPORTED',
+  'HEADER_ONLY_FILE',
+  'EMPTY_FILE',
+  'REPEATED_HEADER_ROW',
+  'INVALID_TIMESTAMP',
+  'TIMEZONE_CONTEXT_REQUIRED',
+  'MISSING_TEMPERATURE',
+  'INVALID_TEMPERATURE',
+  'DEVICE_IDENTITY_MISMATCH',
+  'CANONICAL_VALIDATION_FAILED',
+]);
+export type FileImportIssueCode = z.infer<typeof FileImportIssueCodeSchema>;
+
+export const FileImportIssueSchema = z
+  .object({
+    code: FileImportIssueCodeSchema,
+    message: nonEmptyText,
+    field: nonEmptyText.optional(),
+  })
+  .strict();
+export type FileImportIssue = z.infer<typeof FileImportIssueSchema>;
+
+export const FileRowRejectionSchema = z
+  .object({
+    code: FileImportIssueCodeSchema,
+    message: nonEmptyText,
+    source_row_number: z.number().int().positive(),
+    sheet_name: nonEmptyText.optional(),
+    source_row_or_ref: nonEmptyText,
+    field: nonEmptyText.optional(),
+    raw_value: z.unknown().optional(),
+  })
+  .strict();
+export type FileRowRejection = z.infer<typeof FileRowRejectionSchema>;
+
+export const FileImportCountsSchema = z
+  .object({
+    physical_rows: z.number().int().nonnegative(),
+    structural_rows: z.number().int().nonnegative(),
+    candidate_data_rows: z.number().int().nonnegative(),
+    canonical_rows: z.number().int().nonnegative(),
+    rejected_data_rows: z.number().int().nonnegative(),
+  })
+  .strict()
+  .superRefine((value, context) => {
+    if (value.physical_rows !== value.structural_rows + value.candidate_data_rows) {
+      context.addIssue({
+        code: z.ZodIssueCode.custom,
+        message: 'physical_rows must equal structural_rows + candidate_data_rows',
+        path: ['physical_rows'],
+      });
+    }
+    if (value.candidate_data_rows !== value.canonical_rows + value.rejected_data_rows) {
+      context.addIssue({
+        code: z.ZodIssueCode.custom,
+        message: 'candidate_data_rows must equal canonical_rows + rejected_data_rows',
+        path: ['candidate_data_rows'],
+      });
+    }
+  });
+export type FileImportCounts = z.infer<typeof FileImportCountsSchema>;
+
+const FileImportResultBaseSchema = z.object({
+  import_id: nonEmptyText,
+  original_filename: nonEmptyText,
+  source_format: FileImportSourceFormatSchema,
+  content_sha256: checksumSha256,
+  adapter_id: nonEmptyText,
+  adapter_version: nonEmptyText,
+  counts: FileImportCountsSchema,
+  row_rejections: z.array(FileRowRejectionSchema),
+  warnings: z.array(nonEmptyText),
+  canonical_measurements: z.array(CanonicalTimeSeriesMeasurementSchema),
+});
+
+export const FileImportResultSchema = z
+  .discriminatedUnion('file_status', [
+    FileImportResultBaseSchema.extend({
+      file_status: z.literal('ACCEPTED'),
+      fatal_issues: z.array(FileImportIssueSchema).length(0),
+    }).strict(),
+    FileImportResultBaseSchema.extend({
+      file_status: z.literal('ACCEPTED_WITH_REJECTIONS'),
+      fatal_issues: z.array(FileImportIssueSchema).length(0),
+    }).strict(),
+    FileImportResultBaseSchema.extend({
+      file_status: z.literal('FILE_REJECTED'),
+      fatal_issues: z.array(FileImportIssueSchema).min(1),
+    }).strict(),
+  ])
+  .superRefine((value, context) => {
+    if (value.canonical_measurements.length !== value.counts.canonical_rows) {
+      context.addIssue({
+        code: z.ZodIssueCode.custom,
+        message: 'canonical_measurements length must equal counts.canonical_rows',
+        path: ['canonical_measurements'],
+      });
+    }
+    if (value.row_rejections.length !== value.counts.rejected_data_rows) {
+      context.addIssue({
+        code: z.ZodIssueCode.custom,
+        message: 'row_rejections length must equal counts.rejected_data_rows',
+        path: ['row_rejections'],
+      });
+    }
+    if (value.file_status === 'ACCEPTED' && value.row_rejections.length !== 0) {
+      context.addIssue({
+        code: z.ZodIssueCode.custom,
+        message: 'ACCEPTED imports cannot contain row rejections',
+        path: ['file_status'],
+      });
+    }
+    if (
+      value.file_status === 'ACCEPTED_WITH_REJECTIONS' &&
+      value.row_rejections.length === 0
+    ) {
+      context.addIssue({
+        code: z.ZodIssueCode.custom,
+        message: 'ACCEPTED_WITH_REJECTIONS requires at least one row rejection',
+        path: ['file_status'],
+      });
+    }
+  });
+export type FileImportResult = z.infer<typeof FileImportResultSchema>;
