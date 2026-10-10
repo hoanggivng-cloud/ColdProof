@@ -23,6 +23,12 @@ export const LoggerTimestampSemantics = z.enum([
 export type LoggerTimestampSemantics = z.infer<typeof LoggerTimestampSemantics>;
 
 export const LoggerDataQualityCode = z.enum([
+  'RAW_PAYLOAD_CHECKSUM_MISMATCH',
+  'MALFORMED_JSON_PAYLOAD',
+  'PAYLOAD_FORMAT_MISMATCH',
+  'DEVICE_IDENTITY_MISMATCH',
+  'INVALID_TIMEZONE_CONTEXT',
+  'CANONICAL_VALIDATION_FAILED',
   'INVALID_TIMESTAMP',
   'TIMEZONE_CONTEXT_REQUIRED',
   'MISSING_TEMPERATURE',
