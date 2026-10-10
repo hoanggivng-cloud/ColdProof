@@ -1,38 +1,51 @@
 import { PrismaClient, MeasurementOrigin, BusinessContextOrigin, ImportStatus } from '@prisma/client';
 
+import * as crypto from 'crypto';
+
+function hashPassword(password: string): string {
+  const salt = crypto.randomBytes(16).toString('hex');
+  const hash = crypto.scryptSync(password, salt, 64).toString('hex');
+  return `${salt}:${hash}`;
+}
+
 const prisma = new PrismaClient();
 
 async function main() {
   console.log('--- Seeding ColdProof Database ---');
 
+  const defaultPasswordHash = hashPassword('ColdProof2026!');
+
   // 1. Users
   const adminUser = await prisma.user.upsert({
     where: { email: 'admin@coldproof.local' },
-    update: { role: 'ADMIN' },
+    update: { role: 'ADMIN', password_hash: defaultPasswordHash },
     create: {
       id: '00000000-0000-0000-0000-000000000001',
       email: 'admin@coldproof.local',
       role: 'ADMIN',
+      password_hash: defaultPasswordHash,
     },
   });
 
   const operatorUser = await prisma.user.upsert({
     where: { email: 'operator@coldproof.local' },
-    update: { role: 'OPERATOR' },
+    update: { role: 'OPERATOR', password_hash: defaultPasswordHash },
     create: {
       id: '00000000-0000-0000-0000-000000000002',
       email: 'operator@coldproof.local',
       role: 'OPERATOR',
+      password_hash: defaultPasswordHash,
     },
   });
 
   const qaUser = await prisma.user.upsert({
     where: { email: 'qa@coldproof.local' },
-    update: { role: 'QA_REVIEWER' },
+    update: { role: 'QA_REVIEWER', password_hash: defaultPasswordHash },
     create: {
       id: '00000000-0000-0000-0000-000000000003',
       email: 'qa@coldproof.local',
       role: 'QA_REVIEWER',
+      password_hash: defaultPasswordHash,
     },
   });
 

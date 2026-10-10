@@ -84,6 +84,7 @@ async function main() {
         ID: u.id.slice(0, 8) + '...',
         Email: u.email,
         Role: u.role,
+        'Mật khẩu (Scrypt)': u.password_hash ? '🔒 Đã mã hóa' : '❌ Chưa đặt',
         Created: u.created_at.toISOString().replace('T', ' ').slice(0, 19),
       }))
     );

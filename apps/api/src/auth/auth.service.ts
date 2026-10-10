@@ -1,6 +1,7 @@
 import { ConflictException, Injectable, UnauthorizedException } from '@nestjs/common';
 import { PrismaService } from '../common/prisma.service';
 import { LoginDto, RegisterDto } from './auth.dto';
+import { hashPassword, verifyPassword } from './password.util';
 import * as crypto from 'crypto';
 
 @Injectable()
@@ -16,12 +17,25 @@ export class AuthService {
   }
 
   async login(dto: LoginDto) {
-    const user = await this.prisma.user.findUnique({
+    const user = (await this.prisma.user.findUnique({
       where: { email: dto.email },
-    });
+    })) as any;
 
     if (!user) {
       throw new UnauthorizedException(`User with email ${dto.email} not found`);
+    }
+
+    if (user.password_hash) {
+      if (dto.password) {
+        if (!verifyPassword(dto.password, user.password_hash)) {
+          throw new UnauthorizedException('Email hoặc mật khẩu không đúng');
+        }
+      } else {
+        const isDevOrTest = process.env.NODE_ENV !== 'production';
+        if (!isDevOrTest) {
+          throw new UnauthorizedException('Mật khẩu không được để trống');
+        }
+      }
     }
 
     const payload = {
@@ -59,10 +73,12 @@ export class AuthService {
 
     const allowedRoles = ['OPERATOR', 'QA_REVIEWER', 'VIEWER', 'DATA_ENGINEER'];
     const assignedRole = dto.role && allowedRoles.includes(dto.role) ? dto.role : 'OPERATOR';
+    const passwordHash = dto.password ? hashPassword(dto.password) : null;
 
     const user = await this.prisma.user.create({
       data: {
         email: dto.email,
+        password_hash: passwordHash,
         role: assignedRole,
       },
     });
@@ -102,7 +118,15 @@ export class AuthService {
 
   async me(userId?: string) {
     const id = userId ?? '00000000-0000-0000-0000-000000000003';
-    const user = await this.prisma.user.findUnique({ where: { id } });
+    const user = await this.prisma.user.findUnique({
+      where: { id },
+      select: {
+        id: true,
+        email: true,
+        role: true,
+        created_at: true,
+      },
+    });
     if (!user) throw new UnauthorizedException('Not authenticated');
     return user;
   }
