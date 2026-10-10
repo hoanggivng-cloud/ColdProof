@@ -24,6 +24,7 @@
     "db:migrate": "dotenv -e .env -- pnpm --filter @coldproof/api db:migrate",
     "db:validate": "dotenv -e .env.example -- pnpm --filter @coldproof/api db:validate",
     "db:seed": "dotenv -e .env -- pnpm --filter @coldproof/api db:seed",
+    "db:inspect": "node scripts/inspect-db.mjs",
     "infra:up": "docker compose up -d",
     "infra:down": "docker compose down"
   },

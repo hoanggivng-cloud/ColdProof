@@ -1,6 +1,7 @@
-import { Injectable, NotFoundException } from '@nestjs/common';
+import { ConflictException, Injectable, NotFoundException } from '@nestjs/common';
+import { BusinessContextOrigin } from '@prisma/client';
 import { PrismaService } from '../common/prisma.service';
-import { TimelineEventDto } from './batches.dto';
+import { CreateBatchDto, TimelineEventDto } from './batches.dto';
 import * as crypto from 'crypto';
 
 @Injectable()
@@ -57,6 +58,49 @@ export class BatchesService {
     );
 
     return results;
+  }
+
+  async create(dto: CreateBatchDto) {
+    const existing = await this.prisma.batch.findUnique({ where: { id: dto.id } });
+    if (existing) {
+      throw new ConflictException(`Batch with ID '${dto.id}' already exists.`);
+    }
+
+    const origin = dto.business_context_origin === 'REAL' ? BusinessContextOrigin.REAL : BusinessContextOrigin.SYNTHETIC;
+    const batch = await this.prisma.batch.create({
+      data: {
+        id: dto.id,
+        scenario_id: dto.scenario_id,
+        profile_id: dto.profile_id ?? 'DEMO_2_8C',
+        lower_threshold: dto.lower_threshold ?? 2.0,
+        upper_threshold: dto.upper_threshold ?? 8.0,
+        business_context_origin: origin,
+      },
+    });
+
+    if (dto.device_ids && dto.device_ids.length > 0) {
+      for (let i = 0; i < dto.device_ids.length; i++) {
+        await this.prisma.segment.create({
+          data: {
+            id: `LEG-${dto.id}-0${i + 1}`,
+            batch_id: batch.id,
+            selector: `transit_segment_${i + 1}`,
+            business_context_origin: origin,
+          },
+        });
+      }
+    }
+
+    await this.prisma.auditEvent.create({
+      data: {
+        action: 'BATCH_CREATED',
+        entity_type: 'batches',
+        entity_id: batch.id,
+        payload: { id: batch.id, profile_id: batch.profile_id },
+      },
+    });
+
+    return batch;
   }
 
   async findOne(id: string) {

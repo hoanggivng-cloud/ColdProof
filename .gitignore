@@ -14,3 +14,10 @@ data/observed/**
 !data/observed/**/.gitkeep
 !data/observed/**/README.md
 .cache/
+
+# AI Agent Rules and Internal Prompts
+AGENTS.md
+agents/
+*.agent.*
+.cursorrules
+.windsurfrules
