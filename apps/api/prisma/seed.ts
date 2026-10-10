@@ -8,7 +8,7 @@ async function main() {
   // 1. Users
   const adminUser = await prisma.user.upsert({
     where: { email: 'admin@coldproof.local' },
-    update: {},
+    update: { role: 'ADMIN' },
     create: {
       id: '00000000-0000-0000-0000-000000000001',
       email: 'admin@coldproof.local',
@@ -18,17 +18,17 @@ async function main() {
 
   const operatorUser = await prisma.user.upsert({
     where: { email: 'operator@coldproof.local' },
-    update: {},
+    update: { role: 'OPERATOR' },
     create: {
       id: '00000000-0000-0000-0000-000000000002',
       email: 'operator@coldproof.local',
-      role: 'DATA_ENGINEER',
+      role: 'OPERATOR',
     },
   });
 
   const qaUser = await prisma.user.upsert({
     where: { email: 'qa@coldproof.local' },
-    update: {},
+    update: { role: 'QA_REVIEWER' },
     create: {
       id: '00000000-0000-0000-0000-000000000003',
       email: 'qa@coldproof.local',
@@ -36,17 +36,12 @@ async function main() {
     },
   });
 
-  const viewerUser = await prisma.user.upsert({
-    where: { email: 'viewer@coldproof.local' },
-    update: {},
-    create: {
-      id: '00000000-0000-0000-0000-000000000004',
-      email: 'viewer@coldproof.local',
-      role: 'VIEWER',
-    },
+  // Clean up any legacy viewer users if they exist
+  await prisma.user.deleteMany({
+    where: { role: { notIn: ['ADMIN', 'OPERATOR', 'QA_REVIEWER'] } },
   });
 
-  console.log(`Created/verified users: ${adminUser.email}, ${operatorUser.email}, ${qaUser.email}, ${viewerUser.email}`);
+  console.log(`Created/verified users: ${adminUser.email}, ${operatorUser.email}, ${qaUser.email}`);
 
   // 2. Source Assets (Zenodo & Mendeley)
   // Note: source_assets has immutability trigger on UPDATE/DELETE, so check existence first.

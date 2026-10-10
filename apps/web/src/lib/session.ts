@@ -3,10 +3,8 @@ export const USER_COOKIE = 'cp_user';
 export type Role = 'OPERATOR' | 'QA_REVIEWER' | 'ADMIN';
 export interface SessionUser { email: string; role: Role; serverRole: string }
 
-/** Backend seed still uses DATA_ENGINEER for the operator account; AGENTS.md names the role OPERATOR. */
 export function toRole(value: string): Role | null {
-  if (value === 'ADMIN' || value === 'QA_REVIEWER') return value;
-  if (value === 'OPERATOR' || value === 'DATA_ENGINEER') return 'OPERATOR';
+  if (value === 'ADMIN' || value === 'QA_REVIEWER' || value === 'OPERATOR') return value;
   return null;
 }
 export const roleLabels: Record<Role, string> = { OPERATOR: 'Operator', QA_REVIEWER: 'QA Reviewer', ADMIN: 'Admin' };
