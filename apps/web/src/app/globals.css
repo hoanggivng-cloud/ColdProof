@@ -349,3 +349,32 @@ kbd { padding: 0 var(--space-1); border: 1px solid var(--color-border); border-r
 .skeleton * {
   visibility: hidden;
 }
+
+/* Spinner & Loading States */
+.spinner {
+  display: inline-block;
+  width: 16px;
+  height: 16px;
+  border: 2px solid currentColor;
+  border-right-color: transparent;
+  border-radius: 50%;
+  animation: spin 0.75s linear infinite;
+  margin-right: var(--space-2);
+}
+@keyframes spin {
+  to { transform: rotate(360deg); }
+}
+.page-loading-bar {
+  position: fixed;
+  top: 0;
+  left: 0;
+  height: 3px;
+  background-color: var(--color-on-dark-muted);
+  animation: loader-progress 2s cubic-bezier(0.4, 0, 0.2, 1) infinite;
+  z-index: 9999;
+}
+@keyframes loader-progress {
+  0% { width: 0; transform: translateX(0); }
+  50% { width: 50vw; transform: translateX(25vw); }
+  100% { width: 100vw; transform: translateX(100vw); }
+}

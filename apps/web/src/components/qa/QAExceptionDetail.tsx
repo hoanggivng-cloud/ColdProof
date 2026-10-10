@@ -81,7 +81,7 @@ export function QAExceptionDetail({ id }: { id: string }) {
             </div>
             {submitError && <Alert tone="error">{submitError}</Alert>}
             <div className="form-footer mt-4">
-                <Button type="submit" primary disabled={submitting}>{submitting ? 'Đang gửi...' : 'Gửi đánh giá'}</Button>
+                <Button type="submit" primary loading={submitting}>Gửi đánh giá</Button>
             </div>
           </form>
       </Panel>
