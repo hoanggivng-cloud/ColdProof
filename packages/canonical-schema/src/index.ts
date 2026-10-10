@@ -26,6 +26,7 @@ const sourceProvenanceShape = {
 const canonicalTimeSeriesShape = {
   record_id: text,
   record_type: z.literal(RecordType.enum.TIMESERIES),
+  raw_ingest_id: text.optional(),
   timestamp: z.string().datetime({ offset: true }),
   temperature_c: z.number().finite().optional(),
   humidity_pct: z.number().min(0).max(100).optional(),
