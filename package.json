@@ -18,6 +18,7 @@
     "test:integration": "pnpm test -- tests/integration",
     "test:e2e": "playwright test",
     "openapi:generate": "node apps/api/scripts/export-openapi.mjs",
+    "logger:simulate": "node scripts/simulate-logger.mjs",
     "data:setup": "node scripts/setup-data.mjs",
     "data:bundle": "node scripts/build-frozen-data-bundle.mjs",
     "data:restore": "node scripts/restore-data.mjs",
