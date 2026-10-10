@@ -308,10 +308,6 @@ kbd { padding: 0 var(--space-1); border: 1px solid var(--color-border); border-r
   .import-grid { grid-template-columns: 1fr; }
 }
 @media (max-width: 760px) {
-  .topbar { height: auto; flex-wrap: wrap; gap: var(--space-2); padding: var(--space-2) var(--space-4); }
-  .topbar-menu { order: 3; flex-basis: 100%; overflow-x: auto; white-space: nowrap; -webkit-overflow-scrolling: touch; padding-bottom: var(--space-2); scrollbar-width: none; }
-  .topbar-menu::-webkit-scrollbar { display: none; }
-  .topbar-user { margin-left: auto; }
   .app-main { padding: var(--space-4); }
   .env-strip { padding: var(--space-1) var(--space-4); }
   .page-header { align-items: flex-start; flex-direction: column; }
@@ -394,4 +390,98 @@ tbody tr:hover { background-color: var(--color-surface); }
 /* Table enhancements */
 .table-scroll { border: 1px solid var(--color-border); border-radius: var(--radius-md); overflow-x: auto; background: var(--color-bg); }
 .table-scroll table { min-width: 100%; border-collapse: separate; border-spacing: 0; }
+
+
+/* ====== B2B SAAS UI/UX REDESIGN OVERRIDES ====== */
+/* Spacing & Typography Polish */
+body { background: #F3F4F6; color: #111827; }
+.app-main { max-width: 1200px; margin: 0 auto; padding: var(--space-6) var(--space-4); width: 100%; }
+
+/* Topbar Redesign */
+.topbar {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  background-color: #0E1E3A;
+  padding: 0 var(--space-6);
+  height: 64px;
+  box-shadow: 0 4px 6px -1px rgba(0, 0, 0, 0.1);
+  position: sticky;
+  top: 0;
+  z-index: 50;
+  border-bottom: none;
+}
+.topbar-brand { font-size: var(--text-xl); font-weight: 700; color: #FFFFFF; letter-spacing: -0.02em; flex-shrink: 0; }
+.topbar-brand:hover { color: #E2E8F0; }
+
+.topbar-menu {
+  display: flex;
+  align-items: center;
+  gap: var(--space-4);
+  margin-left: var(--space-8);
+  flex: 1;
+}
+.topbar-menu a {
+  color: #94A3B8;
+  font-weight: 500;
+  padding: var(--space-2) var(--space-3);
+  border-radius: var(--radius-md);
+  transition: all 0.2s ease;
+  border-bottom: none;
+}
+.topbar-menu a:hover { color: #FFFFFF; background: rgba(255, 255, 255, 0.1); }
+.topbar-menu a[aria-current="page"] { color: #FFFFFF; background: rgba(255, 255, 255, 0.15); font-weight: 600; border-bottom: none; }
+
+.topbar-user { display: flex; align-items: center; gap: var(--space-4); color: #E2E8F0; }
+.topbar-user strong { color: #FFFFFF; font-weight: 600; padding: 2px 8px; background: rgba(255,255,255,0.1); border-radius: 4px; font-size: var(--text-xs); text-transform: uppercase; letter-spacing: 0.05em; }
+.topbar-user .button { background: rgba(255,255,255,0.1); border: 1px solid rgba(255,255,255,0.2); color: white; height: 32px; padding: 0 12px; }
+.topbar-user .button:hover { background: rgba(255,255,255,0.2); }
+
+/* Env Strip Redesign */
+.env-strip { background: #B54708; color: white; text-align: center; font-size: 11px; font-weight: 700; letter-spacing: 0.1em; padding: 6px; text-transform: uppercase; box-shadow: inset 0 -1px 0 rgba(0,0,0,0.1); }
+
+/* Beautiful Panels (Cards) */
+.panel {
+  background: #FFFFFF;
+  border: 1px solid #E5E7EB;
+  border-radius: var(--radius-lg);
+  padding: var(--space-6);
+  box-shadow: 0 1px 3px 0 rgba(0, 0, 0, 0.1), 0 1px 2px -1px rgba(0, 0, 0, 0.1);
+  transition: transform 0.2s ease, box-shadow 0.2s ease;
+}
+.panel:hover { box-shadow: 0 4px 6px -1px rgba(0, 0, 0, 0.1), 0 2px 4px -2px rgba(0, 0, 0, 0.1); transform: translateY(-1px); }
+
+/* Primary Buttons */
+.button.primary { background: #1F3A68; color: white; border: none; font-weight: 600; box-shadow: 0 1px 2px rgba(0,0,0,0.1); }
+.button.primary:hover { background: #172E54; box-shadow: 0 4px 6px rgba(0,0,0,0.1); transform: translateY(-1px); }
+.button.primary:active { transform: translateY(0); }
+
+/* Elegant Table Header */
+th { background: #F9FAFB; color: #4B5563; font-weight: 600; font-size: 12px; text-transform: uppercase; letter-spacing: 0.05em; padding: 12px 16px; border-bottom: 2px solid #E5E7EB; }
+td { padding: 12px 16px; color: #1F2937; border-bottom: 1px solid #F3F4F6; }
+tbody tr:hover td { background: #F9FAFB; }
+
+/* Page Header */
+.page-header h1 { font-size: 28px; font-weight: 700; color: #111827; letter-spacing: -0.02em; }
+.page-header p { color: #6B7280; margin-top: 4px; font-size: 15px; }
+
+/* Modern Mobile Responsive Layout */
+@media (max-width: 800px) {
+  .app-main { padding: var(--space-4) var(--space-2); }
+  .topbar { padding: var(--space-3); height: auto; flex-direction: column; align-items: stretch; gap: var(--space-3); }
+  .topbar-brand { font-size: 20px; text-align: center; }
+  .topbar-menu { margin: 0; padding-bottom: 8px; overflow-x: auto; white-space: nowrap; -webkit-overflow-scrolling: touch; justify-content: flex-start; scrollbar-width: none; }
+  .topbar-menu::-webkit-scrollbar { display: none; }
+  .topbar-user { flex-direction: column; text-align: center; gap: 8px; padding-top: 8px; border-top: 1px solid rgba(255,255,255,0.1); }
+  .panel { padding: var(--space-4); }
+  .page-header { flex-direction: column; align-items: flex-start; text-align: center; }
+  .page-header h1 { font-size: 24px; width: 100%; }
+  .page-header p { width: 100%; }
+  .page-header .actions { width: 100%; justify-content: center; margin-top: 12px; }
+  .page-header .actions .button { width: 100%; }
+}
+
+.panel h2 { font-size: 18px; font-weight: 600; margin-bottom: 8px; color: #111827; }
+.panel p { color: #6B7280; font-size: 14px; margin-bottom: 24px; }
+.panel .actions { display: flex; gap: 12px; }
 
