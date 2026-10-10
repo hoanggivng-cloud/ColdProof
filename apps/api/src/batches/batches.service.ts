@@ -1,6 +1,7 @@
 import { Injectable, NotFoundException } from '@nestjs/common';
 import { PrismaService } from '../common/prisma.service';
 import { TimelineEventDto } from './batches.dto';
+import { CreateBatchDto } from './create-batch.dto';
 import * as crypto from 'crypto';
 
 @Injectable()
@@ -13,6 +14,21 @@ export class BatchesService {
       status: 'READY',
       message: 'Batch evidence workflow active. Batch-centric timeline and measurements available.',
     };
+  }
+
+  async create(dto: CreateBatchDto) {
+    const count = await this.prisma.batch.count();
+    const id = `CP-BATCH-${String(count + 1).padStart(3, '0')}`;
+    const batch = await this.prisma.batch.create({
+      data: {
+        id,
+        scenario_id: dto.scenario_id,
+        profile_id: dto.profile_id,
+        lower_threshold: dto.lower_threshold,
+        upper_threshold: dto.upper_threshold,
+      },
+    });
+    return batch;
   }
 
   async findAll() {

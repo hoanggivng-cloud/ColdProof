@@ -11,6 +11,7 @@ import { PageHeader } from '../layout/PageHeader';
 import { AssignLoggerDialog } from './AssignLoggerDialog';
 import { useShipmentWorkflow, WorkflowProgress } from './ShipmentWorkflow';
 import { RecordHandoverDialog } from './RecordHandoverDialog';
+import { writeRecord } from '../../services/api-client';
 
 export function ShipmentSetup({ presets, devices }: { presets: TemperaturePreset[]; devices: SetupDevice[] }) {
   const workflow = useShipmentWorkflow();
@@ -21,9 +22,12 @@ export function ShipmentSetup({ presets, devices }: { presets: TemperaturePreset
   const [selected, setSelected] = useState(workflow.shipment ? workflow.deviceIds : initialSelection);
   const [handoverOpen, setHandoverOpen] = useState(false);
   const [assign, setAssign] = useState(false), [issues, setIssues] = useState<string[]>([]), [message, setMessage] = useState('');
+  const [submitting, setSubmitting] = useState(false);
+  
   const profile = presets.find(item => item.id === profileId);
   const reset = () => { workflow.reset(); setRestored(null); setFormVersion(value => value + 1); setProfileId(presets[0]?.id ?? ''); setSelected(initialSelection); setIssues([]); setMessage(''); setAssign(false); setHandoverOpen(false); };
-  const submit = (event: FormEvent<HTMLFormElement>) => {
+  
+  const submit = async (event: FormEvent<HTMLFormElement>) => {
     event.preventDefault();
     const values = new FormData(event.currentTarget), errors: string[] = [];
     const names: [string, string][] = [['product', 'Sản phẩm'], ['lot', 'Mã lô'], ['origin', 'Điểm xuất phát'], ['destination', 'Điểm nhận'], ['start', 'Thời gian bắt đầu'], ['end', 'Thời gian kết thúc'], ['reference', 'Mã vận đơn'], ['sop', 'Phiên bản SOP']];
@@ -32,17 +36,33 @@ export function ShipmentSetup({ presets, devices }: { presets: TemperaturePreset
     if (start && end && end <= start) errors.push('Thời gian kết thúc phải sau thời gian bắt đầu.');
     if (!profile) errors.push('Cần chọn profile nhiệt độ.');
     if (!selected.length) errors.push('Cần chọn ít nhất một thiết bị.');
-    setIssues(errors); setMessage(errors.length ? '' : 'Thông tin hợp lệ. Server chưa có API tạo lô/gán thiết bị; chưa lưu hoặc tạo Shipment.');
+    setIssues(errors);
     if (!errors.length) {
-      const get = (key: string) => String(values.get(key) ?? '').trim();
-      workflow.prepare({ product: get('product'), lot: get('lot'), transport: get('transport'), origin: get('origin'), destination: get('destination'), start, end, reference: get('reference'), sop: get('sop'), notes: get('notes'), profileId, originType: 'SYNTHETIC' }, selected);
+      setSubmitting(true);
+      try {
+        const get = (key: string) => String(values.get(key) ?? '').trim();
+        const shipmentData = { product: get('product'), lot: get('lot'), transport: get('transport'), origin: get('origin'), destination: get('destination'), start, end, reference: get('reference'), sop: get('sop'), notes: get('notes'), profileId, originType: 'SYNTHETIC' as const };
+        const batch = (await writeRecord('batches', 'POST', {
+            profile_id: profileId,
+            lower_threshold: profile?.lower,
+            upper_threshold: profile?.upper,
+            device_ids: selected,
+        })) as Record<string, unknown>;
+        setMessage(`Tạo lô thành công (ID: ${String(batch.id)}). Đã lưu vào server.`);
+        workflow.prepare({ ...shipmentData, lot: String(batch.id) }, selected);
+      } catch (err) {
+        setMessage(err instanceof Error ? err.message : 'Tạo lô thất bại.');
+      } finally {
+        setSubmitting(false);
+      }
     }
   };
+
   const field = (id: string, label: string, control: ReactNode, className?: string, hint?: string) => <Field id={id} label={label} className={className} hint={hint}>{control}</Field>;
   return <><PageHeader title="Tạo Shipment" breadcrumb={[{ href: '/batches', label: 'Lô hàng' }, { label: 'Tạo Shipment' }]} description="Nhập thông tin lô, chọn profile nhiệt độ và gán thiết bị."><Button href="/batches">Xem danh sách lô</Button></PageHeader>
     <WorkflowProgress />
     <RoleGate roles={['OPERATOR', 'ADMIN']} fallback={<Alert tone="warning" title="Không có quyền tạo Shipment">Tạo Shipment cần vai trò Operator hoặc Admin. Vai trò hiện tại chỉ xem lô và hồ sơ.</Alert>}>
-    <Alert title="Dữ liệu mô phỏng">Profile và thiết bị là fixture SYNTHETIC. Chưa có API tạo lô hoặc lưu bản nháp.</Alert>
+    <Alert title="Dữ liệu mô phỏng">Profile và thiết bị là fixture SYNTHETIC. API tạo lô mô phỏng đã được kết nối.</Alert>
     {issues.length > 0 && <Alert tone="error" title={`${issues.length} thông tin cần kiểm tra`}><ul>{issues.map(issue => <li key={issue}>{issue}</li>)}</ul></Alert>}
     <form key={formVersion} noValidate onSubmit={submit} onReset={reset} onChange={event => {
       if (!(event.target instanceof HTMLElement) || event.target.closest('dialog')) return;
@@ -74,7 +94,7 @@ export function ShipmentSetup({ presets, devices }: { presets: TemperaturePreset
         {field('shipment-sop', 'Phiên bản SOP *', <input id="shipment-sop" name="sop" defaultValue={restored?.sop ?? ''} required maxLength={100} />, 'span-two')}
         {field('shipment-notes', 'Ghi chú / hướng dẫn xử lý', <textarea id="shipment-notes" name="notes" defaultValue={restored?.notes ?? ''} rows={3} maxLength={500} aria-describedby="shipment-notes-hint" />, 'span-full', 'Tối đa 500 ký tự')}
       </div></section>
-      <div className="panel form-footer"><p>Chưa tạo lô hoặc ghi audit trên server.</p><div className="actions"><Button variant="text" href="/batches">Hủy</Button><Button onClick={() => setMessage('Server chưa hỗ trợ lưu bản nháp. Dữ liệu chỉ ở form trong tab hiện tại.')}>Lưu bản nháp</Button>{!workflow.shipment && <Button primary type="submit">Tạo Shipment</Button>}{workflow.shipment && !workflow.devicesConfirmed && <Button primary onClick={() => setAssign(true)}>Tiếp tục: Gán thiết bị</Button>}{workflow.shipment && workflow.devicesConfirmed && !workflow.handover && <Button primary onClick={() => setHandoverOpen(true)}>Tiếp tục: Ghi nhận bàn giao</Button>}{workflow.handover && <Button primary href="/imports">Tiếp tục sang Import</Button>}</div></div>
+      <div className="panel form-footer"><p>Tạo lô và ghi audit trên server.</p><div className="actions"><Button variant="text" href="/batches">Hủy</Button>{!workflow.shipment && <Button primary type="submit" disabled={submitting}>{submitting ? 'Đang tạo...' : 'Tạo Shipment'}</Button>}{workflow.shipment && !workflow.devicesConfirmed && <Button primary onClick={() => setAssign(true)}>Tiếp tục: Gán thiết bị</Button>}{workflow.shipment && workflow.devicesConfirmed && !workflow.handover && <Button primary onClick={() => setHandoverOpen(true)}>Tiếp tục: Ghi nhận bàn giao</Button>}{workflow.handover && <Button primary href="/imports">Tiếp tục sang Import</Button>}</div></div>
       {message && <Alert role="status">{message}</Alert>}
     </form>
     <section className="panel"><div className="section-heading"><div><h2>05. Ghi nhận bàn giao</h2><p>Hoàn thành thông tin Shipment và xác nhận thiết bị trước bước này</p></div><Button disabled={!workflow.shipment || !workflow.devicesConfirmed} onClick={() => setHandoverOpen(true)}>{workflow.handover ? 'Chỉnh sửa bàn giao' : 'Ghi nhận bàn giao'}</Button></div>

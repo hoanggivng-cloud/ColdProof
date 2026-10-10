@@ -1,5 +1,5 @@
 'use client';
-import { useRef, useState } from 'react';
+import { useRef, useState, useEffect } from 'react';
 import { Alert } from '../ui/Alert';
 import { Badge, type BadgeTone } from '../ui/Badge';
 import { Button } from '../ui/Button';
@@ -9,10 +9,12 @@ import { Table } from '../ui/Table';
 import { useShipmentWorkflow } from '../shipment/ShipmentWorkflow';
 import { getDemoImportPreview } from '../../services/import-preview';
 import type { ImportPreview } from '../../types/import-preview';
+import { writeRecord, readRecords } from '../../services/api-client';
 
 const flags = { VALID: 'Bản ghi mẫu hợp lệ', EXCURSION_LOW: 'Sự cố nhiệt độ mẫu', PARSE_TIMESTAMP_ERROR: 'Thiếu timestamp', DUPLICATE_TIMESTAMP: 'Timestamp trùng' };
 const flagTones: Record<keyof typeof flags, BadgeTone> = { VALID: 'neutral', EXCURSION_LOW: 'danger', PARSE_TIMESTAMP_ERROR: 'danger', DUPLICATE_TIMESTAMP: 'warning' };
 const timeFormat = new Intl.DateTimeFormat('vi-VN', { timeZone: 'Asia/Ho_Chi_Minh', dateStyle: 'short', timeStyle: 'medium' });
+
 export function ImportWorkbench() {
   const { shipment, deviceIds, devicesConfirmed, handover } = useShipmentWorkflow();
   const ready = Boolean(shipment && devicesConfirmed && handover);
@@ -21,6 +23,12 @@ export function ImportWorkbench() {
   const [preview, setPreview] = useState<ImportPreview | null>(null), [loading, setLoading] = useState(false);
   const [flaggedOnly, setFlaggedOnly] = useState(false), [page, setPage] = useState(0), [result, setResult] = useState(false);
   const [message, setMessage] = useState('');
+  const [sources, setSources] = useState<Record<string, unknown>[]>([]);
+
+  useEffect(() => {
+    readRecords('sources').then(data => setSources(data as Record<string, unknown>[])).catch(() => {});
+  }, []);
+
   const clearPreview = () => { setPreview(null); setResult(false); setPage(0); setFlaggedOnly(false); setMessage(''); };
   const choose = (value?: File) => {
     clearPreview(); setFile(null); setError('');
@@ -34,6 +42,18 @@ export function ImportWorkbench() {
     catch { setError('Không tải được dữ liệu xem trước mô phỏng. Thử lại bằng nút xem mẫu.'); }
     finally { setLoading(false); }
   };
+
+  const createImportJob = async () => {
+    try {
+        const sourceId = sources.length > 0 ? String(sources[0].id) : '00000000-0000-0000-0000-000000000000';
+        const job = (await writeRecord('imports', 'POST', { source_id: sourceId, parser_id: 'format-a', parser_version: '0.1.0' })) as Record<string, unknown>;
+        setMessage(`Tạo import job thành công (ID: ${String(job.id)}). Job metadata only; BullMQ worker is TODO.`);
+        setResult(true);
+    } catch (err) {
+        setError(err instanceof Error ? err.message : 'Không thể tạo import job');
+    }
+  };
+
   const rows = preview?.rows.filter(row => !flaggedOnly || row.flag !== 'VALID') ?? [];
   return <section aria-label="Import dữ liệu logger">
     <Alert title="Dữ liệu mô phỏng">File chọn tại máy chưa được upload hoặc parse. Dữ liệu xem trước lấy từ fixture riêng, không phải nội dung file bạn chọn.</Alert>
@@ -42,7 +62,7 @@ export function ImportWorkbench() {
       <Panel title="01. Chọn file logger"><div className="import-dropzone" onDragOver={event => event.preventDefault()} onDrop={event => { event.preventDefault(); if (ready) choose(event.dataTransfer.files[0]); }}><p>Kéo thả file xuất từ logger. CSV / TSV / TXT, chỉ chọn tại trình duyệt.</p><Field id="import-file" label="Chọn file nhiệt độ"><input id="import-file" ref={input} type="file" accept=".csv,.tsv,.txt" disabled={!ready} onChange={event => choose(event.target.files?.[0])} /></Field></div>
         {!file ? <p>Chưa chọn file nhiệt độ.</p> : <div className="attachment-row"><span className="number">{file.name} · {(file.size / 1024).toFixed(1)} KB</span><Badge tone="warning">Chưa upload / parse</Badge><Button variant="text" onClick={() => { choose(); if (input.current) input.current.value = ''; }}>Bỏ file</Button></div>}
         <ul className="page-meta"><li>Lô trong form: {shipment ? <strong className="number">{shipment.lot}</strong> : <strong>Chưa chuẩn bị lô</strong>}</li><li>Thiết bị: {deviceIds.length ? <strong className="number">{deviceIds.join(', ')}</strong> : <strong>Chưa gán</strong>}</li></ul>
-        <div className="form-footer"><Button disabled={!ready || !file} onClick={() => setMessage('Server chưa có worker upload/parse hoàn chỉnh và lô chưa được lưu. Chưa gửi file hoặc tạo import job.')}>Kiểm tra file trên server</Button><Button primary={ready && !preview} disabled={!ready || loading} onClick={loadDemo}>Xem mẫu Import mô phỏng</Button></div>
+        <div className="form-footer"><Button disabled={!ready || !file} onClick={createImportJob}>Kiểm tra file trên server</Button><Button primary={ready && !preview} disabled={!ready || loading} onClick={loadDemo}>Xem mẫu Import mô phỏng</Button></div>
       </Panel>
       <Panel title="02. Kiểm tra và mapping"><p>Format, múi giờ, đơn vị và thiết bị của bộ dữ liệu.</p>
         {!preview ? <p>Chưa có kết quả kiểm tra. Chọn xem mẫu để kiểm tra bố cục.</p> : <><dl className="workflow-summary"><dt>File mẫu</dt><dd className="number">{preview.file_name}</dd><dt>Format</dt><dd>{preview.format}</dd><dt>Múi giờ gốc</dt><dd>{preview.timezone}</dd><dt>Đơn vị</dt><dd>{preview.unit}</dd><dt>Thiết bị trong mẫu</dt><dd className="number">{preview.device_id}</dd><dt>Profile trong mẫu</dt><dd className="number">{preview.profile_id} · {preview.lower}–{preview.upper}°C</dd></dl><Alert>Các cờ kiểm tra được dựng sẵn trong mẫu (mô phỏng). Chưa kiểm tra schema, serial hoặc checksum file đã chọn.</Alert>{!deviceIds.includes(preview.device_id) && <Alert tone="warning" title="Thiết bị không khớp">Thiết bị trong mẫu không nằm trong lựa chọn của lô. Không tự gán mẫu vào thiết bị khác.</Alert>}</>}

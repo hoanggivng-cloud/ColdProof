@@ -1,6 +1,7 @@
-import { Controller, Get, Param, Post } from '@nestjs/common';
+import { Controller, Get, Param, Post, Body } from '@nestjs/common';
 import { ApiOkResponse, ApiOperation, ApiTags, ApiParam } from '@nestjs/swagger';
 import { BatchesService } from './batches.service';
+import { CreateBatchDto } from './create-batch.dto';
 import {
   BatchesStatusDto,
   BatchSummaryDto,
@@ -26,6 +27,12 @@ export class BatchesController {
   @ApiOperation({ summary: 'List all demo batches with health indicators' })
   findAll() {
     return this.service.findAll();
+  }
+
+  @Post()
+  @ApiOperation({ summary: 'Create a new batch' })
+  create(@Body() dto: CreateBatchDto) {
+    return this.service.create(dto);
   }
 
   @Get(':id')
