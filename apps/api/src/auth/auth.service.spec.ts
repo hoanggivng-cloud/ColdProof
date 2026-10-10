@@ -1,5 +1,87 @@
+import { Test, TestingModule } from '@nestjs/testing';
 import { AuthService } from './auth.service';
-describe('Auth scaffold', () => {
-  it.todo('Implement auth service behavior against its DTO and shared contract');
+import { PrismaService } from '../common/prisma.service';
+import { UnauthorizedException } from '@nestjs/common';
+
+describe('AuthService', () => {
+  let service: AuthService;
+  let prisma: PrismaService;
+
+  const mockUser = {
+    id: '1',
+    email: 'operator@coldproof.local',
+    role: 'OPERATOR',
+    created_at: new Date(),
+  };
+
+  beforeEach(async () => {
+    const module: TestingModule = await Test.createTestingModule({
+      providers: [
+        AuthService,
+        {
+          provide: PrismaService,
+          useValue: {
+            user: {
+              findUnique: jest.fn().mockImplementation(({ where }) => {
+                if (where.email === mockUser.email || where.id === mockUser.id) {
+                  return Promise.resolve(mockUser);
+                }
+                return Promise.resolve(null);
+              }),
+            },
+          },
+        },
+      ],
+    }).compile();
+
+    service = module.get<AuthService>(AuthService);
+    prisma = module.get<PrismaService>(PrismaService);
+  });
+
+  it('should be defined', () => {
+    expect(service).toBeDefined();
+  });
+
+  describe('status', () => {
+    it('should return service status', () => {
+      expect(service.status()).toEqual({
+        module: 'auth',
+        status: 'READY',
+        message: 'Authentication and RBAC active for Operator, QA Reviewer, and Admin.',
+      });
+    });
+  });
+
+  describe('login', () => {
+    it('should return token and user details for valid email', async () => {
+      const result = await service.login({ email: 'operator@coldproof.local', password: 'password' });
+      expect(result).toHaveProperty('access_token');
+      expect(result.user).toEqual({
+        id: mockUser.id,
+        email: mockUser.email,
+        role: mockUser.role,
+      });
+
+      // Verify token payload (just simple check)
+      const decodedPayload = JSON.parse(Buffer.from(result.access_token, 'base64').toString('utf-8'));
+      expect(decodedPayload.sub).toBe(mockUser.id);
+      expect(decodedPayload.email).toBe(mockUser.email);
+      expect(decodedPayload.role).toBe(mockUser.role);
+    });
+
+    it('should throw UnauthorizedException for invalid email', async () => {
+      await expect(service.login({ email: 'unknown@local', password: 'pwd' })).rejects.toThrow(UnauthorizedException);
+    });
+  });
+
+  describe('me', () => {
+    it('should return the user by id', async () => {
+      const result = await service.me('1');
+      expect(result).toEqual(mockUser);
+    });
+
+    it('should throw UnauthorizedException if user not found', async () => {
+      await expect(service.me('999')).rejects.toThrow(UnauthorizedException);
+    });
+  });
 });
-export type ExpectedService = AuthService;

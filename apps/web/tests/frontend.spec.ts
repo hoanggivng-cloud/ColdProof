@@ -44,7 +44,7 @@ test('screens require a session and login sends users back to the requested scre
     attempts += 1;
     if (attempts === 1) return route.fulfill({ status: 401, json: { message: 'Email hoặc mật khẩu không đúng' } });
     await context.addCookies(session('OPERATOR'));
-    return route.fulfill({ json: { user: { email: 'operator@coldproof.local', role: 'OPERATOR', serverRole: 'DATA_ENGINEER' } } });
+    return route.fulfill({ json: { user: { email: 'operator@coldproof.local', role: 'OPERATOR', serverRole: 'OPERATOR' } } });
   });
   await page.goto('/login?next=%2Fbatches');
   await page.getByLabel('Email').fill('operator@coldproof.local');

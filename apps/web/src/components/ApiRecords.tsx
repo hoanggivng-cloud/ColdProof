@@ -39,7 +39,30 @@ export function ApiRecords({ path, columns, label, batchLinks = false, collectio
     return () => controller.abort();
   }, [path, attempt, collection]);
   const retry = () => { setState({ rows: [], error: '', loading: true }); setAttempt(value => value + 1); };
-  if (state.loading) return <p role="status">Đang tải dữ liệu từ server…</p>;
+  if (state.loading) {
+    return (
+      <Table label={label}>
+        <thead>
+          <tr>
+            {columns.map(([key, text]) => (
+              <th key={key} scope="col">{text}</th>
+            ))}
+          </tr>
+        </thead>
+        <tbody>
+          {[...Array(5)].map((_, i) => (
+            <tr key={i}>
+              {columns.map(([key]) => (
+                <td key={key}>
+                  <div className="skeleton" style={{ height: '20px', width: `${Math.floor(Math.random() * 40) + 40}%` }} />
+                </td>
+              ))}
+            </tr>
+          ))}
+        </tbody>
+      </Table>
+    );
+  }
   const numeric = new Set(columns.map(([key]) => key).filter(key => state.rows.some(row => typeof row[key] === 'number')));
   const message = state.rows.length && warning ? warning(state.rows) : null;
   const link = linkColumn ?? (batchLinks ? { key: 'id', href: (value: string) => `/batches/${encodeURIComponent(value)}` } : undefined);
@@ -54,6 +77,6 @@ export function ApiRecords({ path, columns, label, batchLinks = false, collectio
         : (key.endsWith('_at') || key === 'timestamp') && typeof value === 'string' && Number.isFinite(Date.parse(value)) ? <time dateTime={value}>{time.format(new Date(value))}</time>
         : formatCell(value);
       return <td key={key} className={numeric.has(key) ? 'number' : undefined}>{content}</td>;
-    })}</tr>) : <tr><td colSpan={columns.length}>{state.error ? 'Chưa có dữ liệu.' : emptyText}</td></tr>}</tbody></Table>
+    })}</tr>) : <tr><td colSpan={columns.length}><div className="empty-state"><svg xmlns="http://www.w3.org/2000/svg" width="32" height="32" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="1.5" strokeLinecap="round" strokeLinejoin="round" className="empty-icon"><rect width="18" height="18" x="3" y="3" rx="2"/><path d="M3 9h18"/><path d="m9 16 3-3 3 3"/></svg><p>{state.error ? 'Lỗi tải dữ liệu.' : emptyText}</p></div></td></tr>}</tbody></Table>
   </>;
 }

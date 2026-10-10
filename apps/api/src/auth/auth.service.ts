@@ -12,7 +12,7 @@ export class AuthService {
     return {
       module: 'auth',
       status: 'READY',
-      message: 'Authentication and RBAC active for Operator, QA Reviewer, Admin, and Viewer.',
+      message: 'Authentication and RBAC active for Operator, QA Reviewer, and Admin.',
     };
   }
 
