@@ -266,7 +266,9 @@ describe('Logger Ingestion Contract v1', () => {
       'MISSING_TEMPERATURE',
       'INVALID_TEMPERATURE',
       'DUPLICATE_RECORD',
+      'CONFLICTING_RECORD',
       'OUT_OF_ORDER_RECORD',
+      'MISSING_INTERVAL',
       'UNKNOWN_DEVICE_FORMAT',
     ]);
   });
