@@ -140,10 +140,12 @@ Contract v1 can represent:
 - `MISSING_TEMPERATURE`
 - `INVALID_TEMPERATURE`
 - `DUPLICATE_RECORD`
+- `CONFLICTING_RECORD`
 - `OUT_OF_ORDER_RECORD`
+- `MISSING_INTERVAL`
 - `UNKNOWN_DEVICE_FORMAT`
 
-These codes make outcomes representable; this milestone does not implement complete runtime detection. Existing time-series DQ evaluation remains responsible for sequence-level duplicate and out-of-order analysis after canonicalization.
+These codes make outcomes representable. Runtime Data Quality v1 performs sequence-level duplicate, conflict, out-of-order and missing-interval assessment after canonicalization.
 
 ## Team boundaries
 

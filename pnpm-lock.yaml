@@ -171,6 +171,15 @@ importers:
         specifier: ^3.25.76
         version: 3.25.76
 
+  packages/runtime-data-quality:
+    dependencies:
+      '@coldproof/canonical-schema':
+        specifier: workspace:*
+        version: link:../canonical-schema
+      '@coldproof/parser-contracts':
+        specifier: workspace:*
+        version: link:../parser-contracts
+
   packages/scenario-schema:
     dependencies:
       zod:

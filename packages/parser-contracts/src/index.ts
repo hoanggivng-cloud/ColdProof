@@ -34,7 +34,9 @@ export const LoggerDataQualityCode = z.enum([
   'MISSING_TEMPERATURE',
   'INVALID_TEMPERATURE',
   'DUPLICATE_RECORD',
+  'CONFLICTING_RECORD',
   'OUT_OF_ORDER_RECORD',
+  'MISSING_INTERVAL',
   'UNKNOWN_DEVICE_FORMAT',
 ]);
 export type LoggerDataQualityCode = z.infer<typeof LoggerDataQualityCode>;
