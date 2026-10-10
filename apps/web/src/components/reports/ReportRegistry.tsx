@@ -38,7 +38,7 @@ export function ReportRegistry() {
   const meta = data ? [<><strong className="number">{data.length}</strong> hồ sơ</>, <><strong className="number">{distinct(data.map(row => row.batch_id)).length}</strong> lô</>, <><strong className="number">{distinct(data.flatMap(row => row.source_assets)).length}</strong> nguồn dữ liệu</>, <>Tải lúc <strong className="number">{state.loadedAt}</strong> (UTC+7)</>] : undefined;
   const tabs: [string, string, number][] = [['all', 'Tất cả hồ sơ', filtered.length], ['selected', 'Đã chọn', filtered.filter(row => selected.includes(row.id)).length]];
   return <><PageHeader title="Hồ sơ bằng chứng" description="Metadata hồ sơ, provenance và mã SHA-256 do server lưu." meta={meta}><Button disabled={!rows.length} onClick={exportRows}>Xuất danh sách CSV</Button><Button primary disabled={state.loading} onClick={reload}>Làm mới danh sách</Button></PageHeader>
-    <WorkflowProgress current={6} />
+    <WorkflowProgress current={5} />
     <Alert title="Chế độ đọc">Chưa nối tạo hồ sơ mới, ký duyệt QA hoặc xuất PDF. SHA-256 hiển thị đúng như server trả về; giao diện chưa tính lại để đối chiếu.</Alert>
     <section className="report-registry" aria-label="Danh sách hồ sơ">
       <div className="report-tabs-row"><div className="report-tabs" aria-label="Nhóm hồ sơ">{tabs.map(([value, label, count]) => <button key={value} type="button" className="report-tab" aria-pressed={tab === value} onClick={() => changeTab(value)}>{label}<span className="report-count number">{count}</span></button>)}</div><p className="report-showing">Hiển thị {shown.length} / {rows.length} hồ sơ</p></div>

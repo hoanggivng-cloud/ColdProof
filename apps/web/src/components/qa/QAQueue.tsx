@@ -27,7 +27,7 @@ export function QAQueue() {
   const pending = data?.exceptions.filter(row => row.status === 'PENDING_REVIEW').length;
   const meta = data ? [<><strong className="number">{data.exceptions.length}</strong> sự cố</>, <><strong className="number">{pending}</strong> chờ xem xét</>, <><strong className="number">{data.reviews.length}</strong> ghi nhận QA</>, <><strong className="number">{new Set(data.exceptions.map(row => row.batch_id)).size}</strong> lô liên quan</>] : undefined;
   return <><PageHeader title="Hàng đợi QA" description="Xem sự cố, đối chiếu số đo và lịch sử ghi nhận QA." meta={meta}><Button href="/reports">Tiếp tục: Hồ sơ bằng chứng</Button><Button primary disabled={state.loading} onClick={reload}>Làm mới hàng đợi</Button></PageHeader>
-    <WorkflowProgress current={5} />
+    <WorkflowProgress current={4} />
     <Alert title="Chế độ đọc">Chưa kết nối phân công, ký duyệt hoặc gửi quyết định review. Không có kết luận lô đạt/không đạt.</Alert>
     <section className="report-registry" aria-label="Hàng đợi sự cố">
       <div className="report-tabs-row"><div className="report-tabs" aria-label="Nhóm hàng đợi">{[['all', 'Tất cả'], ['pending', 'Chờ xem xét'], ['recorded', 'Có ghi nhận QA'], ['selected', 'Đã chọn']].map(([value, label]) => <button key={value} type="button" className="report-tab" aria-pressed={tab === value} onClick={() => changeTab(value)}>{label}</button>)}</div><p className="report-showing">Hiển thị {shown.length} / {rows.length} sự cố</p></div>
