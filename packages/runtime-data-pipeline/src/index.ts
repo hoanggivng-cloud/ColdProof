@@ -13,6 +13,8 @@ import {
   type RuntimeDataQualityResult,
 } from '@coldproof/runtime-data-quality';
 
+export * from './shipment-temperature-analysis';
+
 export const RUNTIME_DATA_PIPELINE_VERSION = 'runtime-data-pipeline-v1';
 
 export interface RuntimeProcessingOptions {
